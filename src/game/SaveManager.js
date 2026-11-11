@@ -86,9 +86,25 @@ export class SaveManager {
    * Force sync current local save to Supabase cloud
    */
   static async syncToCloud() {
-    const localSave = SaveManager.loadGame();
+    let localSave = SaveManager.loadGame();
     if (!localSave) {
-      return { success: false, message: 'Tidak ada save data lokal untuk di-sync.' };
+      // Inisialisasi save Night 1 awal agar slot cloud langsung terbentuk
+      localSave = {
+        currentNightIndex: 0,
+        inventory: [],
+        readDocuments: [],
+        discoveredAnomalies: [],
+        state: {
+          trust_control: 0,
+          trust_unknown: 0,
+          evidence: 0,
+          suspicion: 0,
+          signal_contamination: 0,
+          secrets_found: 0
+        },
+        objectives: {}
+      };
+      SaveManager.saveGame(localSave);
     }
     const achievements = SaveManager.loadAchievements();
     return await supabaseService.saveGame(localSave, achievements);
