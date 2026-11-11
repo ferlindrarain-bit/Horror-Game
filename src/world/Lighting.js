@@ -77,6 +77,19 @@ export class Lighting {
 
     // 13. Secret Research Chamber - Pulsating resonance core
     this.chamberLight = addLight(44, 3.6, -27, 0x38bdf8, 2.4, 28, 1.6);
+
+    // Electrical Substation high-voltage flash spark light
+    this.sparkLight = new THREE.PointLight(0x38bdf8, 0, 22, 2.0);
+    this.sparkLight.position.set(-20, 2.5, 4.0);
+    this.scene.add(this.sparkLight);
+  }
+
+  flashSpark() {
+    if (!this.sparkLight) return;
+    this.sparkLight.intensity = 3.8;
+    setTimeout(() => {
+      if (this.sparkLight) this.sparkLight.intensity = 0;
+    }, 80);
   }
 
   setEmergencyMode(active = true) {

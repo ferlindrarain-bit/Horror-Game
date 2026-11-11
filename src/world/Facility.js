@@ -15,6 +15,8 @@ export class Facility {
     this.sparkTimer = 0;
     this.sparkLight = null;
     this.entityMesh = null;
+    this.lighting = null;
+    this.audio = null;
 
     this._initMaterials();
     this._buildFloorAndCeilingPlan();
@@ -2741,6 +2743,29 @@ export class Facility {
     createPaperScatter(1.8, 11.8, -0.6);
     createPaperScatter(-18.5, 13.0, 0.8);
     createPaperScatter(42.5, -9.5, 0.2);
+
+    // 6. Medical Ward Trauma Bloodstain Decal on Floor
+    const medBlood = new THREE.Mesh(new THREE.PlaneGeometry(1.6, 1.2), this.matBlood);
+    medBlood.rotation.x = -Math.PI / 2;
+    medBlood.position.set(16.5, 0.012, 4.0);
+    this.group.add(medBlood);
+
+    // 7. Research Lab C Laser Containment Alignment Beams
+    for (const bx of [-1.5, 1.5]) {
+      for (const bz of [-21.5, -24.5]) {
+        const laserPillar = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 3.2, 6), this.matCyanGlow);
+        laserPillar.position.set(bx, 1.8, bz);
+        this.group.add(laserPillar);
+      }
+    }
+  }
+
+  setLighting(lighting) {
+    this.lighting = lighting;
+  }
+
+  setAudio(audio) {
+    this.audio = audio;
   }
 
   setEntityPosition(pos, lookAtTarget = null) {
@@ -2823,9 +2848,15 @@ export class Facility {
       if (this.sparks && this.sparks.length > 0) {
         const spark = this.sparks[Math.floor(Math.random() * this.sparks.length)];
         spark.visible = true;
+        if (this.lighting && typeof this.lighting.flashSpark === 'function') {
+          this.lighting.flashSpark();
+        }
+        if (this.audio && typeof this.audio.playElectricBuzz === 'function') {
+          this.audio.playElectricBuzz();
+        }
         setTimeout(() => {
           spark.visible = false;
-        }, 60);
+        }, 75);
       }
     }
 

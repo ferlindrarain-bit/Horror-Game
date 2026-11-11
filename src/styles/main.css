@@ -281,24 +281,156 @@ canvas { display: block; }
 }
 #night-transition .night-subtitle { font-size: 1rem; color: #64748b; margin-top: .8rem; letter-spacing: 4px; }
 
-/* ===== ENDING SCREEN ===== */
+/* ===== ENDING CINEMATIC CUTSCENE & RESOLUTION SCREEN ===== */
+#ending-cutscene {
+  position: fixed; inset: 0; z-index: 9900;
+  background: #020617;
+  display: none; flex-direction: column; justify-content: space-between; align-items: center;
+  font-family: 'Courier New', monospace;
+  overflow: hidden;
+  user-select: none;
+}
+#ending-cutscene.active { display: flex; }
+
+/* Cinematic Widescreen Letterbox Bars */
+#ending-cutscene .letterbox-bar {
+  width: 100%; height: 9vh; min-height: 55px; background: #000; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between; padding: 0 40px;
+}
+#ending-cutscene .letterbox-bar.top {
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+#ending-cutscene .letterbox-bar.bottom {
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+/* CRT Scanline & Grain overlay */
+#ending-cutscene .cutscene-vignette {
+  position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(circle at center, transparent 40%, rgba(0,0,0,0.85) 100%);
+  box-shadow: inset 0 0 100px rgba(0,0,0,0.9);
+  z-index: 5;
+}
+#ending-cutscene .cutscene-scanlines {
+  position: absolute; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(0,0,0,0.18) 0px, rgba(0,0,0,0.18) 2px, transparent 2px, transparent 4px);
+  z-index: 6;
+  opacity: 0.75;
+}
+
+/* Main Cinematic Stage */
+#ending-cutscene .cutscene-stage {
+  position: relative; z-index: 8; width: 100%; max-width: 950px;
+  flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
+  padding: 20px 40px; text-align: center;
+}
+
+#ending-cutscene .cutscene-telemetry {
+  font-size: 0.82rem; letter-spacing: 3px; margin-bottom: 16px;
+  padding: 4px 14px; border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(15,23,42,0.6); display: inline-block;
+}
+
+#ending-cutscene .cutscene-scene-title {
+  font-size: 1.6rem; font-weight: bold; letter-spacing: 4px; margin-bottom: 24px;
+  text-shadow: 0 0 25px currentColor;
+}
+
+#ending-cutscene .cutscene-prose {
+  font-size: 1.05rem; line-height: 2.0; color: #e2e8f0; max-width: 800px;
+  margin-bottom: 30px; text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+  min-height: 120px; display: flex; align-items: center; justify-content: center;
+}
+
+/* Step Progress Dots */
+#ending-cutscene .cutscene-progress {
+  display: flex; gap: 12px; margin-bottom: 20px; align-items: center;
+}
+#ending-cutscene .progress-dot {
+  width: 10px; height: 10px; border-radius: 50%; border: 1px solid #64748b; background: transparent;
+  transition: all 0.3s;
+}
+#ending-cutscene .progress-dot.active {
+  background: #38bdf8; border-color: #38bdf8; box-shadow: 0 0 12px #38bdf8;
+}
+
+/* Cutscene Navigation Buttons */
+#ending-cutscene .cutscene-btn {
+  padding: 10px 28px; background: rgba(15,23,42,0.8); border: 1px solid #475569;
+  color: #f8fafc; font-family: 'Courier New', monospace; font-size: 0.9rem;
+  letter-spacing: 2px; cursor: pointer; transition: all 0.25s;
+}
+#ending-cutscene .cutscene-btn.primary {
+  border-color: #38bdf8; color: #38bdf8; box-shadow: 0 0 15px rgba(56,189,248,0.25);
+}
+#ending-cutscene .cutscene-btn.primary:hover {
+  background: #38bdf8; color: #0f172a; box-shadow: 0 0 25px rgba(56,189,248,0.6);
+}
+#ending-cutscene .cutscene-btn.skip {
+  background: transparent; border-color: #334155; color: #64748b; font-size: 0.8rem;
+}
+#ending-cutscene .cutscene-btn.skip:hover {
+  color: #94a3b8; border-color: #64748b;
+}
+
+/* ===== FINAL RESOLUTION SUMMARY SCREEN ===== */
 #ending-screen {
   position: fixed; inset: 0; z-index: 9800;
   background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
   display: none; flex-direction: column; align-items: center; justify-content: center;
-  padding: 40px;
+  padding: 30px; font-family: 'Courier New', monospace; overflow-y: auto;
 }
 #ending-screen.active { display: flex; }
-#ending-screen .ending-title { font-size: 2.2rem; color: #ef4444; letter-spacing: 6px; margin-bottom: .6rem; }
-#ending-screen .ending-text {
-  font-size: .92rem; color: #cbd5e1; max-width: 650px; text-align: center;
-  line-height: 1.8; margin-bottom: 2.5rem;
+
+#ending-screen .ending-header-badge {
+  font-size: 0.85rem; letter-spacing: 4px; padding: 4px 18px; margin-bottom: 12px;
+  background: rgba(15,23,42,0.9); border: 1px solid #475569;
+}
+#ending-screen .ending-title {
+  font-size: 2.2rem; font-weight: bold; letter-spacing: 6px; margin-bottom: 0.5rem; text-align: center;
+}
+#ending-screen .ending-subtitle {
+  font-size: 1.0rem; letter-spacing: 3px; margin-bottom: 1.8rem; text-align: center;
+}
+
+#ending-screen .lore-card {
+  background: rgba(15,23,42,0.75); border: 1px solid #334155; padding: 22px 28px;
+  max-width: 820px; width: 100%; margin-bottom: 24px; text-align: left;
+}
+#ending-screen .lore-card h4 {
+  font-size: 0.95rem; letter-spacing: 3px; color: #38bdf8; margin-bottom: 10px;
+}
+#ending-screen .lore-card p {
+  font-size: 0.88rem; line-height: 1.8; color: #cbd5e1; margin-bottom: 12px;
+}
+
+#ending-screen .stats-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  max-width: 820px; width: 100%; margin-bottom: 24px;
+}
+#ending-screen .stat-box {
+  background: rgba(10,15,26,0.6); border: 1px solid #1e293b; padding: 14px; text-align: center;
+}
+#ending-screen .stat-val { font-size: 1.4rem; font-weight: bold; color: #38bdf8; margin-bottom: 4px; }
+#ending-screen .stat-lbl { font-size: 0.72rem; color: #64748b; letter-spacing: 2px; }
+
+#ending-screen .action-row {
+  display: flex; gap: 20px; justify-content: center;
 }
 #ending-screen button {
-  padding: 12px 32px; background: transparent; border: 1px solid #475569; color: #cbd5e1;
-  font-family: 'Courier New', monospace; font-size: .95rem; cursor: pointer; transition: all .25s;
+  padding: 12px 34px; background: transparent; border: 1px solid #475569; color: #cbd5e1;
+  font-family: 'Courier New', monospace; font-size: 0.95rem; letter-spacing: 2px;
+  cursor: pointer; transition: all 0.25s;
 }
-#ending-screen button:hover { border-color: #ef4444; color: #ef4444; background: rgba(239,68,68,0.08); }
+#ending-screen button.primary-btn {
+  border-color: #38bdf8; color: #38bdf8;
+}
+#ending-screen button.primary-btn:hover {
+  background: rgba(56,189,248,0.15); box-shadow: 0 0 20px rgba(56,189,248,0.4);
+}
+#ending-screen button.secondary-btn:hover {
+  border-color: #ef4444; color: #ef4444; background: rgba(239,68,68,0.08);
+}
 
 /* ===== SETTINGS UI ===== */
 #settings-ui {

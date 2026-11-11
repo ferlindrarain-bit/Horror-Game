@@ -72,6 +72,8 @@ export class Game {
     this.facility = new Facility();
     this.facility.addToScene(this.scene);
     this.lighting = new Lighting(this.scene);
+    this.facility.setLighting(this.lighting);
+    this.facility.setAudio(this.audio);
 
     this.player = new PlayerController(this.camera, this.renderer.domElement);
     this.scene.add(this.player.getObject());
@@ -103,7 +105,7 @@ export class Game {
     this.radioUI = new RadioUI(this.radio, this.audio);
     this.docUI = new DocumentUI();
     this.settingsUI = new SettingsUI(this.audio, this.player);
-    this.endingUI = new EndingUI();
+    this.endingUI = new EndingUI(this.audio);
     this.mapUI = new FacilityMapUI(this.story, this.player);
     this.introCutscene = new IntroCutscene(this.audio);
     this.cloudSaveUI = new CloudSaveUI(this.audio, (saveData) => this._onCloudSaveLoaded(saveData));
@@ -513,7 +515,12 @@ export class Game {
       if (upper === 'C') {
         this.achievements.unlock('reality_check');
       }
-      this.endingUI.showEnding(ending);
+      const stats = {
+        documentsCount: this.story.readDocuments ? this.story.readDocuments.size : 0,
+        anomaliesCount: this.anomaly ? this.anomaly.getDiscoveredCount() : 0,
+        night: 5
+      };
+      this.endingUI.showEnding(ending, stats);
     });
   }
 
