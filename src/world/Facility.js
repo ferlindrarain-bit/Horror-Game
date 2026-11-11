@@ -458,9 +458,9 @@ export class Facility {
     stripe.position.y = dh * 0.65;
     doorGroup.add(stripe);
 
-    // Electronic Card Reader / Keypad
-    const reader = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.5, 0.15), this.matRedAlarm);
-    reader.position.set(dw / 2 + 0.3, 1.4, 0.1);
+    // Electronic Card Reader Unit mounted on door frame post
+    const reader = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.45, 0.15), this.matRedAlarm);
+    reader.position.set(dw / 2 + 0.25, 1.4, 0.26);
     doorGroup.add(reader);
 
     doorGroup.position.set(x, 0, z);
@@ -492,38 +492,40 @@ export class Facility {
       ctx.fillStyle = '#0f172a';
       ctx.fillRect(0, 0, 512, 128);
       ctx.strokeStyle = '#38bdf8';
-      ctx.lineWidth = 6;
+      ctx.lineWidth = 5;
       ctx.strokeRect(6, 6, 500, 116);
       ctx.fillStyle = '#38bdf8';
-      ctx.font = 'bold 34px monospace';
+      ctx.font = 'bold 32px monospace';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(text, 256, 64);
 
       const tex = new THREE.CanvasTexture(canvas);
       const signMat = new THREE.MeshBasicMaterial({ map: tex });
-      const signMesh = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 0.6), signMat);
+      // Clean lintel nameplate (fits cleanly on the 0.4m tall door frame lintel)
+      const signMesh = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 0.32), signMat);
       signMesh.position.set(x, y, z);
       signMesh.rotation.y = rotY;
       this.group.add(signMesh);
     };
 
-    makeSign('MAIN CORRIDOR >>', 0, 3.4, 6.75, Math.PI);
-    makeSign('<< SECURITY HUB', 0, 3.4, 7.25, 0);
+    // Door frame lintel nameplates (mounted cleanly on door frame casing at y = 3.22)
+    makeSign('MAIN CORRIDOR >>', 0, 3.22, 6.72, Math.PI);
+    makeSign('<< SECURITY HUB', 0, 3.22, 7.28, 0);
 
-    makeSign('RESEARCH LAB C >>', 0, 3.4, -6.75, 0);
-    makeSign('<< SECURITY HUB', 0, 3.4, -7.25, Math.PI);
+    makeSign('RESEARCH LAB C >>', 0, 3.22, -6.72, 0);
+    makeSign('<< SECURITY HUB', 0, 3.22, -7.28, Math.PI);
 
-    makeSign('ELECTRICAL WING', -20, 3.4, 9.75, 0);
-    makeSign('STORAGE BAY A', -20, 3.4, 15.25, Math.PI);
+    makeSign('ELECTRICAL WING', -20, 3.22, 9.72, 0);
+    makeSign('STORAGE BAY A', -20, 3.22, 15.28, Math.PI);
 
-    makeSign('MEDICAL WARD', 20, 3.4, 9.75, 0);
-    makeSign('COMMUNICATIONS', 20, 3.4, 15.25, Math.PI);
+    makeSign('MEDICAL WARD', 20, 3.22, 9.72, 0);
+    makeSign('COMMUNICATIONS', 20, 3.22, 15.28, Math.PI);
 
-    makeSign('RESTRICTED ARCHIVE', 44, 3.4, -3.75, 0);
-    makeSign('PROJECT ECHO CORE', 44, 3.4, -17.75, 0);
+    makeSign('RESTRICTED ARCHIVE', 44, 3.22, -3.72, 0);
+    makeSign('PROJECT ECHO CORE', 44, 3.22, -17.72, 0);
 
-    makeSign('ELEVATOR SHAFTS [OUT]', -36, 3.4, 12.5, Math.PI / 2);
+    makeSign('ELEVATOR SHAFTS [OUT]', -35.8, 2.8, 12.5, Math.PI / 2);
   }
 
   _buildArchitecturalBeamsAndDucts() {
@@ -557,8 +559,8 @@ export class Facility {
     createPipe(new THREE.Vector3(-35, 3.9, 13.8), new THREE.Vector3(42, 3.9, 13.8), 0.09, this.matPipeYellow);
     createPipe(new THREE.Vector3(-35, 3.7, 14.2), new THREE.Vector3(42, 3.7, 14.2), 0.12, this.matPipe);
 
-    // 3. Wall Conduit Boxes with Blinking LEDs & Fire Extinguishers
-    for (let x = -30; x <= 35; x += 12) {
+    // 3. Wall Conduit Boxes with Blinking LEDs & Fire Extinguishers (coordinated spacing)
+    for (const x of [-32, -14, 14, 32]) {
       // Conduit Box
       const box = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.6, 0.2), this.matDarkMetal);
       box.position.set(x, 2.2, 10.15);
@@ -568,19 +570,19 @@ export class Facility {
       led.position.set(x, 2.35, 10.27);
       this.group.add(led);
       this.blinkingLights.push(led);
+    }
 
-      // Fire Extinguisher (alternating sides)
-      if (x % 24 === 0) {
-        const extGroup = new THREE.Group();
-        const tank = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.65, 8), this.matRedAlarm);
-        tank.position.y = 0.35;
-        const hose = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.4, 0.04), this.matDarkMetal);
-        hose.position.set(0.12, 0.35, 0);
-        extGroup.add(tank);
-        extGroup.add(hose);
-        extGroup.position.set(x + 2, 1.4, 10.2);
-        this.group.add(extGroup);
-      }
+    // Fire Extinguishers placed at clean dedicated wall spots
+    for (const ex of [-16, 16]) {
+      const extGroup = new THREE.Group();
+      const tank = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.65, 8), this.matRedAlarm);
+      tank.position.y = 0.35;
+      const hose = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.4, 0.04), this.matDarkMetal);
+      hose.position.set(0.12, 0.35, 0);
+      extGroup.add(tank);
+      extGroup.add(hose);
+      extGroup.position.set(ex, 1.4, 10.15);
+      this.group.add(extGroup);
     }
   }
 
@@ -640,7 +642,7 @@ export class Facility {
     });
 
     // 2. Physical 3D Door Frames at Room Entrances
-    const createDoorFrame = (x, z, width = 3.0, height = 3.0, rotY = 0, label = 'DOOR') => {
+    const createDoorFrame = (x, z, width = 3.0, height = 3.0, rotY = 0, label = 'DOOR', hasKeypad = true) => {
       const frame = new THREE.Group();
 
       const halfW = width / 2;
@@ -656,29 +658,31 @@ export class Facility {
 
       // Overhead Lintel Casing
       const lintel = new THREE.Mesh(new THREE.BoxGeometry(width + 0.6, 0.4, 0.55), this.matDarkMetal);
-      lintel.position.set(0, height + 0.22, 0);
+      lintel.position.set(0, height + 0.2, 0);
       frame.add(lintel);
 
-      // Hazard Warning Stripe Strip mounted cleanly on bottom trim
-      const stripe = new THREE.Mesh(new THREE.BoxGeometry(width + 0.5, 0.1, 0.57), this.matHazard);
-      stripe.position.set(0, height + 0.06, 0);
+      // Hazard Warning Stripe Strip mounted cleanly on bottom trim of lintel
+      const stripe = new THREE.Mesh(new THREE.BoxGeometry(width + 0.5, 0.08, 0.57), this.matHazard);
+      stripe.position.set(0, height + 0.04, 0);
       frame.add(stripe);
 
       // Pneumatic Hydraulic Door Closer Cylinder above door
       const cylinder = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, width * 0.7, 8), this.matMetal);
       cylinder.rotation.z = Math.PI / 2;
-      cylinder.position.set(0, height + 0.45, 0.2);
+      cylinder.position.set(0, height + 0.44, 0.2);
       frame.add(cylinder);
 
-      // Keypad / Card Reader Unit on frame
-      const keypad = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.4, 0.15), this.matDarkMetal);
-      keypad.position.set(halfW + 0.25, 1.4, 0.26);
-      frame.add(keypad);
+      // Keypad / Card Reader Unit on frame (only if not a security door with its own card reader)
+      if (hasKeypad) {
+        const keypad = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.4, 0.15), this.matDarkMetal);
+        keypad.position.set(halfW + 0.25, 1.4, 0.26);
+        frame.add(keypad);
 
-      const keyLed = new THREE.Mesh(new THREE.SphereGeometry(0.03, 6, 6), this.matGreenGlow);
-      keyLed.position.set(halfW + 0.25, 1.52, 0.35);
-      frame.add(keyLed);
-      this.blinkingLights.push(keyLed);
+        const keyLed = new THREE.Mesh(new THREE.SphereGeometry(0.03, 6, 6), this.matGreenGlow);
+        keyLed.position.set(halfW + 0.25, 1.52, 0.35);
+        frame.add(keyLed);
+        this.blinkingLights.push(keyLed);
+      }
 
       frame.position.set(x, 0, z);
       frame.rotation.y = rotY;
@@ -693,8 +697,8 @@ export class Facility {
     createDoorFrame(-20, 15, 3.0, 3.0, 0, 'STORAGE BAY A');
     createDoorFrame(20, 10, 3.0, 3.0, 0, 'TRAUMA WARD');
     createDoorFrame(20, 15, 3.0, 3.0, 0, 'RF COMMUNICATIONS');
-    createDoorFrame(44, -4, 3.0, 3.0, 0, 'RESTRICTED ARCHIVE');
-    createDoorFrame(44, -18, 3.0, 3.0, 0, 'PROJECT ECHO CORE');
+    createDoorFrame(44, -4, 3.0, 3.0, 0, 'RESTRICTED ARCHIVE', false);
+    createDoorFrame(44, -18, 3.0, 3.0, 0, 'PROJECT ECHO CORE', false);
   }
 
   // =========================================================================
@@ -859,8 +863,9 @@ export class Facility {
       this.group.add(cab);
     };
 
-    createHoseCabinet(-18, 1.2, 14.85, Math.PI);
-    createHoseCabinet(22, 1.2, 14.85, Math.PI);
+    // Wall Fire Hose Cabinets (placed cleanly on solid wall sections away from doors)
+    createHoseCabinet(-13.5, 1.2, 14.85, Math.PI);
+    createHoseCabinet(13.5, 1.2, 14.85, Math.PI);
 
     // 4. Folding Yellow "CAUTION WET FLOOR" Signs
     const createCautionSign = (x, z, rotY = 0) => {
@@ -1566,41 +1571,32 @@ export class Facility {
     this.group.add(janitorCart);
     this.collidables.push(cBase);
 
-    // Wall-mounted Red Fire Axe emergency glass boxes along corridor
-    for (const axPos of [{ x: -10, z: 10.2 }, { x: 10, z: 10.2 }, { x: -30, z: 10.2 }, { x: 30, z: 10.2 }]) {
+    // Wall-mounted Red Fire Axe emergency glass boxes along corridor (placed at clean dedicated spots)
+    for (const axPos of [{ x: -26, z: 10.15 }, { x: 26, z: 10.15 }]) {
       const axCase = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.9, 0.14), this.matWarning);
-      axCase.position.set(axPos.x, 2.1, axPos.z);
+      axCase.position.set(axPos.x, 2.0, axPos.z);
       this.group.add(axCase);
       const axGlass = new THREE.Mesh(new THREE.PlaneGeometry(0.55, 0.8), this.matGlass);
-      axGlass.position.set(axPos.x, 2.1, axPos.z + 0.08);
+      axGlass.position.set(axPos.x, 2.0, axPos.z + 0.08);
       this.group.add(axGlass);
     }
 
-    // Heavy snaking industrial conduits with blinking status nodes along corridor floor edges
-    for (let cx = -36; cx <= 36; cx += 6) {
-      if (Math.abs(cx) < 2) continue; // skip hub entrance
-      const conduitBox = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.45, 0.2), this.matIndustrialSteel);
-      conduitBox.position.set(cx, 1.5, 10.2);
-      this.group.add(conduitBox);
-
-      const statusLed = new THREE.Mesh(new THREE.SphereGeometry(0.025, 4, 4), Math.random() < 0.3 ? this.matRedGlow : this.matGreenGlow);
-      statusLed.position.set(cx, 1.5, 10.32);
-      this.group.add(statusLed);
-      this.blinkingLights.push(statusLed);
-    }
-
-    // Overhead Industrial Cable Tray Ladders running the full length of Main Corridor
+    // Overhead Industrial Cable Tray Ladders running along South ceiling (clear of bulkhead arches)
+    const archXs = [-28, -12, 0, 12, 28, 36];
     for (let tx = -36; tx <= 42; tx += 4) {
-      const trayCross = new THREE.Mesh(new THREE.BoxGeometry(3.8, 0.05, 0.4), this.matIndustrialSteel);
-      trayCross.position.set(tx, 3.95, 12.5);
+      // Skip positions that collide with bulkhead arches
+      if (archXs.some(ax => Math.abs(tx - ax) < 1.6)) continue;
+
+      const trayCross = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.05, 0.35), this.matIndustrialSteel);
+      trayCross.position.set(tx, 4.05, 13.8);
       this.group.add(trayCross);
 
-      // Hanging colored industrial cables in tray
-      for (const cz of [12.2, 12.5, 12.8]) {
-        const cColor = cz === 12.2 ? this.matRedAlarm : (cz === 12.5 ? this.matPipeYellow : this.matDarkMetal);
-        const cableRun = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 4.0, 6), cColor);
+      // Hanging colored industrial cables neatly tucked inside tray along side wall
+      for (const cz of [13.65, 13.85]) {
+        const cColor = cz === 13.65 ? this.matPipeYellow : this.matDarkMetal;
+        const cableRun = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 3.8, 6), cColor);
         cableRun.rotation.z = Math.PI / 2;
-        cableRun.position.set(tx, 4.01, cz);
+        cableRun.position.set(tx, 4.08, cz);
         this.group.add(cableRun);
       }
     }
@@ -1616,15 +1612,8 @@ export class Facility {
     this.group.add(decontamBeacon);
     this.blinkingLights.push(decontamBeacon);
 
-    // Broken Ceiling Section with Dangling Insulation Panel (X: -26, Z: 12.5)
-    const brokenTile = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.04, 1.4), this.matIndustrialSteel);
-    brokenTile.position.set(-26, 3.7, 12.5);
-    brokenTile.rotation.z = 0.35;
-    brokenTile.rotation.x = -0.2;
-    this.group.add(brokenTile);
-
-    // Wall-Mounted Emergency Blue Intercom Call Boxes
-    for (const iboxX of [-20, 20]) {
+    // Wall-Mounted Emergency Blue Intercom Call Boxes (mounted on solid walls next to door frames, NOT in doorways!)
+    for (const iboxX of [-23.5, 23.5]) {
       const iBox = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.55, 0.18), this.matIndustrialSteel);
       iBox.position.set(iboxX, 1.8, 14.85);
       this.group.add(iBox);
