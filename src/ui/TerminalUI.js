@@ -21,6 +21,12 @@ export class TerminalUI {
 SECTOR-OS (TM) VERSION 4.9.2 (x86_64-sector-posix)
 Copyright (c) 2049 Sector 09 Defense Systems
 Type 'help' for command reference or 'ls' to view directory files.
+
+[STICKY NOTE TAPED BESIDE MONITOR]:
+  • Password Subject 12 : 997  (Medical Log #47)
+  • Password Echo       : ECHO (Research Project)
+  • Chamber Override    : 47.3 (Carrier Frequency)
+  -> Quick command: type 'unlock 997', 'unlock echo', or 'unlock 47.3'
 ====================================================================
       </div>
       <div class="terminal-input">

@@ -1,5 +1,31 @@
 // In-game documents the player can discover
 export const DOCUMENTS = {
+  terminal_postit: {
+    id: 'terminal_postit',
+    title: 'OPERATOR EMERGENCY PASSWORDS',
+    classification: 'POST-IT NOTE',
+    night: 1,
+    location: 'control_room',
+    content: `[YELLOW STICKY NOTE TAPED ON MONITOR]
+
+EMERGENCY TERMINAL AUTHORIZATION CODES:
+
+1. SUBJECT 12 BIOMETRIC CODE : 997
+   (From Medical Log #47, correlation index 99.7%)
+
+2. RESEARCH LAB CODENAME     : ECHO
+   (Project Echo Research Summary)
+
+3. CARRIER RESONANCE FREQ    : 47.3
+   (Frequency in Hz to unlock Secret Research Chamber)
+
+* QUICK SHORTCUT: On the terminal, you can simply type:
+  > unlock 997
+  > unlock echo
+  > unlock 47.3
+  > unlock all (unlocks all encrypted files at once!)`,
+  },
+
   initial_report: {
     id: 'initial_report',
     title: 'SECTOR 09 — INITIAL ASSESSMENT REPORT',
@@ -190,18 +216,16 @@ Choose wisely. Or don't. The loop will begin again regardless.
 
   keycard_note: {
     id: 'keycard_note',
-    title: 'MAINTENANCE NOTE',
+    title: 'MAINTENANCE NOTE — ARCHIVE KEYCARD LOCATION',
     classification: 'INTERNAL',
     night: 4,
     location: 'electrical_room',
     content: `To whoever finds this:
 
-The archive keycard is in the storage room, inside the 
-medical supply cabinet. Dr. Webb hid it there after the 
-evacuation order. He said nobody should access the archive 
-until "the loop stabilizes."
+The Level 4 Archive Keycard was left in STORAGE BAY A (Warehouse).
+It is placed right on top of the central cargo supply desk under the glowing beacon light. Dr. Webb left it there during the evacuation order. He said nobody should access the archive until "the loop stabilizes."
 
-I don't know what that means. I just want to go home.
+Go to Storage Bay A, find the illuminated cargo workbench, and take the keycard to unlock the Restricted Archive doors.
 
 — J. Torres, Maintenance Staff`,
   },

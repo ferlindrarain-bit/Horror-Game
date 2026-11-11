@@ -7,15 +7,15 @@ export class FlashlightSystem {
     this.enabled = false;
     this.battery = 100;
     this.maxBattery = 100;
-    this.drainRate = 1.0; // 1% per second
+    this.drainRate = 0.45; // ~220 seconds of continuous illumination (balanced for dark exploration)
 
-    // Main flashlight cone (cinematic warm beam)
-    this.spotLight = new THREE.SpotLight(0xfef08a, 3.6, 30, Math.PI / 6.5, 0.45, 1.6);
+    // Main flashlight cone (cinematic warm beam - enhanced throw)
+    this.spotLight = new THREE.SpotLight(0xfef08a, 4.8, 38, Math.PI / 6.0, 0.4, 1.5);
     this.spotLight.visible = false;
     this.scene.add(this.spotLight);
 
     // Inner brighter core
-    this.coreLight = new THREE.SpotLight(0xffffff, 2.4, 20, Math.PI / 12, 0.2, 1.4);
+    this.coreLight = new THREE.SpotLight(0xffffff, 3.2, 26, Math.PI / 11, 0.2, 1.3);
     this.coreLight.visible = false;
     this.scene.add(this.coreLight);
 

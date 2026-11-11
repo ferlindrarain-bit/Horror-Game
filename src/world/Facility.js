@@ -25,6 +25,7 @@ export class Facility {
     this._buildIndustrialCeilingLights();
     this._buildWallMountedDetails();
     this._buildAllRoomProps();
+    this._buildAtmosphericStoryDetails();
     this._buildObserverEntity();
     this._buildDustParticles();
   }
@@ -607,9 +608,9 @@ export class Facility {
       beam.position.set(0, 3.85, 0);
       arch.add(beam);
 
-      // Diagonal Hazard Warning Stripe Plate
-      const hazardPlate = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.22, 4.4), this.matHazard);
-      hazardPlate.position.set(0, 3.85, 0);
+      // Diagonal Hazard Warning Stripe Plate (mounted cleanly along bottom flange)
+      const hazardPlate = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.14, 4.4), this.matHazard);
+      hazardPlate.position.set(0, 3.56, 0);
       arch.add(hazardPlate);
 
       // Bulkhead Stencil Sign Plaque
@@ -655,12 +656,12 @@ export class Facility {
 
       // Overhead Lintel Casing
       const lintel = new THREE.Mesh(new THREE.BoxGeometry(width + 0.6, 0.4, 0.55), this.matDarkMetal);
-      lintel.position.set(0, height + 0.2, 0);
+      lintel.position.set(0, height + 0.22, 0);
       frame.add(lintel);
 
-      // Hazard Warning Stripe Strip on Lintel
-      const stripe = new THREE.Mesh(new THREE.BoxGeometry(width + 0.5, 0.18, 0.58), this.matHazard);
-      stripe.position.set(0, height + 0.2, 0);
+      // Hazard Warning Stripe Strip mounted cleanly on bottom trim
+      const stripe = new THREE.Mesh(new THREE.BoxGeometry(width + 0.5, 0.1, 0.57), this.matHazard);
+      stripe.position.set(0, height + 0.06, 0);
       frame.add(stripe);
 
       // Pneumatic Hydraulic Door Closer Cylinder above door
@@ -820,10 +821,10 @@ export class Facility {
       box.add(body);
 
       // Red cross symbol
-      const crossV = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.3, 0.02), this.matRedAlarm);
-      crossV.position.set(0, 0.3, 0.11);
-      const crossH = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.08, 0.02), this.matRedAlarm);
-      crossH.position.set(0, 0.3, 0.11);
+      const crossV = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.3, 0.01), this.matRedAlarm);
+      crossV.position.set(0, 0.3, 0.106);
+      const crossH = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.08, 0.01), this.matRedAlarm);
+      crossH.position.set(0, 0.3, 0.118);
       box.add(crossV);
       box.add(crossH);
 
@@ -1296,6 +1297,27 @@ export class Facility {
       data: { docId: 'initial_report' }
     });
 
+    // Glowing Yellow Sticky Note with Terminal Passwords on Desk
+    const postitMesh = new THREE.Mesh(
+      new THREE.BoxGeometry(0.28, 0.015, 0.28),
+      new THREE.MeshStandardMaterial({
+        color: 0xfef08a,
+        emissive: 0xeab308,
+        emissiveIntensity: 0.9,
+        roughness: 0.4
+      })
+    );
+    postitMesh.position.set(-1.45, 0.915, -1.6);
+    this.group.add(postitMesh);
+
+    this.interactables.push({
+      mesh: postitMesh,
+      type: 'document',
+      id: 'terminal_postit',
+      prompt: '[E] Read Security Override Post-It Note (Terminal Passwords)',
+      data: { docId: 'terminal_postit' }
+    });
+
     // Details: Keyboards, Coffee Mug, Paper Stacks, Desk Lamp
     const kb = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.04, 0.25), this.matDarkMetal);
     kb.position.set(-1.0, 0.92, -1.6);
@@ -1578,7 +1600,7 @@ export class Facility {
         const cColor = cz === 12.2 ? this.matRedAlarm : (cz === 12.5 ? this.matPipeYellow : this.matDarkMetal);
         const cableRun = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 4.0, 6), cColor);
         cableRun.rotation.z = Math.PI / 2;
-        cableRun.position.set(tx, 3.98, cz);
+        cableRun.position.set(tx, 4.01, cz);
         this.group.add(cableRun);
       }
     }
@@ -2061,13 +2083,29 @@ export class Facility {
     this._createOilDrum(-20, 0, 25, 0x1e3a8a, false);
     this._createOilDrum(-18, 0, 22, 0x334155, true);
 
-    // Level 4 Archive Keycard Item on Shelf
+    // Central Staging Workbench in Storage Bay A (High visibility for keycard)
+    const stagingDesk = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.85, 1.0), this.matIndustrialSteel);
+    stagingDesk.position.set(-18.0, 0.425, 19.5);
+    this.group.add(stagingDesk);
+    this.collidables.push(stagingDesk);
+
+    // Level 4 Archive Keycard Item on Staging Desk with Glowing Cyan Aura
     const keycardMesh = new THREE.Mesh(
-      new THREE.BoxGeometry(0.25, 0.05, 0.38),
-      new THREE.MeshStandardMaterial({ color: 0x0284c7, emissive: 0x0369a1, roughness: 0.2 })
+      new THREE.BoxGeometry(0.32, 0.04, 0.45),
+      new THREE.MeshStandardMaterial({
+        color: 0x38bdf8,
+        emissive: 0x0ea5e9,
+        emissiveIntensity: 1.4,
+        roughness: 0.15
+      })
     );
-    keycardMesh.position.set(-24.1, 1.65, 18.2);
+    keycardMesh.position.set(-18.0, 0.88, 19.5);
     this.group.add(keycardMesh);
+
+    // Glowing beacon light shining down on Keycard
+    const keycardBeacon = new THREE.PointLight(0x38bdf8, 1.4, 6.0, 2.0);
+    keycardBeacon.position.set(-18.0, 1.6, 19.5);
+    this.group.add(keycardBeacon);
 
     this.interactables.push({
       mesh: keycardMesh,
@@ -2431,10 +2469,12 @@ export class Facility {
     }
 
     // Concentric Circular Caution Markings on Floor around Pylon
+    let ringY = 0.012;
     for (const rad of [4.5, 6.2]) {
       const cautionRing = new THREE.Mesh(new THREE.RingGeometry(rad - 0.1, rad + 0.1, 32), this.matHazard);
       cautionRing.rotation.x = -Math.PI / 2;
-      cautionRing.position.set(44, 0.015, -27);
+      cautionRing.position.set(44, ringY, -27);
+      ringY += 0.004;
       this.group.add(cautionRing);
     }
     // Massive Central Generator Pylon
@@ -2451,7 +2491,7 @@ export class Facility {
 
     const ring2 = new THREE.Mesh(new THREE.TorusGeometry(4.4, 0.14, 8, 32), this.matDarkMetal);
     ring2.rotation.x = Math.PI / 3;
-    ring2.position.set(44, 3.8, -27);
+    ring2.position.set(44, 3.84, -27);
     this.group.add(ring2);
     this.animatedRings.push({ mesh: ring2, speed: -0.6 });
 
@@ -2600,6 +2640,118 @@ export class Facility {
 
     this.dustPoints = new THREE.Points(geo, mat);
     this.group.add(this.dustPoints);
+  }
+
+  _buildAtmosphericStoryDetails() {
+    // 1. Doorway Industrial Hazard Stripe Thresholds
+    const createThreshold = (x, z, width = 3.0, depth = 0.45, isZAxis = false) => {
+      const geo = isZAxis ? new THREE.PlaneGeometry(depth, width) : new THREE.PlaneGeometry(width, depth);
+      const threshold = new THREE.Mesh(geo, this.matHazard);
+      threshold.rotation.x = -Math.PI / 2;
+      threshold.position.set(x, 0.015, z);
+      this.group.add(threshold);
+    };
+
+    // Major doorways transition stripes
+    createThreshold(0, 6.75, 3.2, 0.5);   // Control Room South doorway
+    createThreshold(0, -6.75, 3.2, 0.5);  // Research Lab North doorway
+    createThreshold(-20, 9.75, 3.2, 0.5); // Electrical Room doorway
+    createThreshold(-20, 15.25, 3.2, 0.5); // Storage Bay A doorway
+    createThreshold(20, 9.75, 3.2, 0.5);  // Medical Ward doorway
+    createThreshold(20, 15.25, 3.2, 0.5); // Communications Room doorway
+    createThreshold(44, -3.9, 3.2, 0.5);  // Restricted Archive entrance
+    createThreshold(44, -17.9, 3.2, 0.5); // Secret Chamber entrance
+
+    // 2. Reflective Floor Puddles (Industrial leaks & dampness)
+    const createPuddle = (x, z, radius = 1.1) => {
+      const puddle = new THREE.Mesh(new THREE.CircleGeometry(radius, 16), this.matPuddle);
+      puddle.rotation.x = -Math.PI / 2;
+      puddle.position.set(x, 0.012, z);
+      this.group.add(puddle);
+    };
+
+    createPuddle(-16, 12.5, 1.4); // Corridor West near Electrical
+    createPuddle(14, 12.5, 1.2);  // Corridor East near Medical
+    createPuddle(0, 10.5, 1.0);   // Corridor Central connector
+    createPuddle(-18, 5.0, 0.9);  // Electrical Room leak
+    createPuddle(36, 12.5, 1.3);  // Approach to Archive
+
+    // 3. Creepy Environmental Storytelling Wall Graffiti
+    const makeWallGraffiti = (text, x, y, z, rotY = 0, color = '#ef4444') => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 512; canvas.height = 128;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = color;
+      ctx.font = 'bold 26px monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(text, 256, 64);
+
+      const tex = new THREE.CanvasTexture(canvas);
+      const mat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, opacity: 0.85 });
+      const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 0.6), mat);
+      mesh.position.set(x, y, z);
+      mesh.rotation.y = rotY;
+      this.group.add(mesh);
+    };
+
+    makeWallGraffiti('THE SIGNAL IS ALIVE', -35.0, 2.4, 10.92, 0, '#dc2626');
+    makeWallGraffiti("DON'T TRUST THE SCREENS", 32.0, 2.4, 10.92, 0, '#ef4444');
+    makeWallGraffiti('LOOP 47 // IT NEVER ENDS', 42.45, 2.4, 0.0, Math.PI / 2, '#b91c1c');
+    makeWallGraffiti('STAY IN THE LIGHT', 42.45, 2.4, -14.0, Math.PI / 2, '#f59e0b');
+    makeWallGraffiti('CAN YOU HEAR IT?', -2.2, 2.4, 12.45, Math.PI, '#dc2626');
+
+    // 4. Physical CCTV Surveillance Cameras with Blinking Red LEDs
+    const createCCTVCamera = (x, y, z, rotY = 0, pitch = 0.3) => {
+      const camGroup = new THREE.Group();
+
+      const bracket = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.25, 0.12), this.matDarkMetal);
+      bracket.position.y = 0.12;
+      camGroup.add(bracket);
+
+      const housing = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.15, 0.35), this.matMetal);
+      housing.position.set(0, 0, 0.12);
+      housing.rotation.x = pitch;
+      camGroup.add(housing);
+
+      const lens = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.05, 10), this.matDarkMetal);
+      lens.rotation.x = Math.PI / 2;
+      lens.position.set(0, -0.02, 0.3);
+      housing.add(lens);
+
+      const led = new THREE.Mesh(
+        new THREE.SphereGeometry(0.028, 8, 8),
+        new THREE.MeshBasicMaterial({ color: 0xef4444 })
+      );
+      led.position.set(0.07, 0.04, 0.28);
+      housing.add(led);
+      this.blinkingLights.push(led);
+
+      camGroup.position.set(x, y, z);
+      camGroup.rotation.y = rotY;
+      this.group.add(camGroup);
+    };
+
+    // Mount cameras matching CCTV camera system perspectives
+    createCCTVCamera(0, 3.8, 14.5, Math.PI, 0.35);    // CAM_01 Main Corridor
+    createCCTVCamera(7.0, 3.8, -17.0, -Math.PI / 2, 0.35); // CAM_02 Research Lab
+    createCCTVCamera(-16.0, 3.8, 8.0, 0, 0.35);      // CAM_03 Electrical Substation
+    createCCTVCamera(41.0, 3.8, -6.0, 0, 0.35);      // CAM_04 Restricted Archive
+    createCCTVCamera(0, 3.8, -4.8, 0, 0.35);         // Security Hub (Watching operator)
+
+    // 5. Scattered Documents & Abandoned Clipboards on Floor
+    const createPaperScatter = (x, z, rotY = 0) => {
+      const paper = new THREE.Mesh(new THREE.PlaneGeometry(0.35, 0.45), this.matPaper);
+      paper.rotation.x = -Math.PI / 2;
+      paper.rotation.z = rotY;
+      paper.position.set(x, 0.014, z);
+      this.group.add(paper);
+    };
+
+    createPaperScatter(-1.2, 1.2, 0.4);
+    createPaperScatter(1.8, 11.8, -0.6);
+    createPaperScatter(-18.5, 13.0, 0.8);
+    createPaperScatter(42.5, -9.5, 0.2);
   }
 
   setEntityPosition(pos, lookAtTarget = null) {

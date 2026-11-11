@@ -121,12 +121,37 @@ Transmitter Core accessible.`
           text: `================== SECTOR-OS COMMAND REFERENCE ==================
   ls / dir              - List files and classification status
   cat / read <file>     - Display contents of a document
-  unlock <file> <code>  - Decrypt encrypted research files
-  diagnostic [system]   - Run hardware subsystem diagnostics
-  override <target> <code>- Execute security lock overrides (e.g. chamber)
-  report <anomaly>      - Submit observed anomaly to Central Command
+  unlock <code | file>  - Decrypt research files (e.g. 'unlock 997', 'unlock echo')
+  codes / passwords     - Display discovered password clues
+  override <target>     - Execute security lock overrides (e.g. 'override chamber')
+  diagnostic            - Run hardware subsystem diagnostics
   status                - View facility telemetry and sensor grid
   clear                 - Clear terminal screen
+
+  QUICK SHORTCUTS:
+  Type 'unlock 997', 'unlock echo', 'unlock 47.3', or 'unlock all'
+=================================================================`,
+          type: 'normal'
+        };
+
+      case 'code':
+      case 'codes':
+      case 'password':
+      case 'passwords':
+      case 'hint':
+      case 'hints':
+        return {
+          text: `================== SECTOR 09 PASSWORD REGISTRY ==================
+Discovered authorization codes in Sector 09:
+  [1] Medical Session Log #47 (Subject 12) : 997   -> Decrypts subject_12.enc
+  [2] Project Codename (Research Lab C)    : ECHO  -> Decrypts research_echo.enc
+  [3] Carrier Resonance Frequency (Hz)     : 47.3  -> Decrypts chamber_override.exe
+
+Quick commands:
+  > unlock 997
+  > unlock echo
+  > unlock 47.3
+  > unlock all
 =================================================================`,
           type: 'normal'
         };
@@ -169,20 +194,107 @@ Transmitter Core accessible.`
 
       case 'unlock':
       case 'decrypt': {
-        if (args.length < 2) {
-          return { text: 'USAGE: unlock <filename> <password_or_code>', type: 'error' };
+        if (args.length === 0) {
+          return {
+            text: `USAGE: unlock <code> or unlock <filename> <code>\nAvailable codes: 997, ECHO, 47.3, or type 'unlock all'`,
+            type: 'warning'
+          };
         }
-        const fname = args[0];
-        const code = args[1].trim();
-        const f = this.files[fname];
+
+        // Shorthand: 'unlock all'
+        if (args[0].toLowerCase() === 'all') {
+          let unlockedCount = 0;
+          for (const fname in this.files) {
+            const f = this.files[fname];
+            if (f.locked) {
+              f.locked = false;
+              unlockedCount++;
+            }
+          }
+          if (this.onChamberUnlocked) this.onChamberUnlocked();
+          if (this.onPasswordSolved) this.onPasswordSolved('all');
+          return {
+            text: `[MASTER OVERRIDE SUCCESSFUL]\nAll ${unlockedCount} encrypted files decrypted.\nSecret Research Chamber containment seal disengaged!`,
+            type: 'success'
+          };
+        }
+
+        // Shorthand: single argument (e.g. 'unlock 997', 'unlock echo', 'unlock 47.3', 'unlock chamber')
+        if (args.length === 1) {
+          const input = args[0].trim().toUpperCase();
+
+          if (input === 'CHAMBER' || input === 'CORE') {
+            const f = this.files['chamber_override.exe'];
+            f.locked = false;
+            if (this.onChamberUnlocked) this.onChamberUnlocked();
+            if (this.onPasswordSolved) this.onPasswordSolved('chamber_override.exe');
+            return {
+              text: `[AUTHORIZATION CONFIRMED - CHAMBER UNLOCKED]\n${f.content}`,
+              type: 'success'
+            };
+          }
+
+          // Search for any locked file matching this password
+          let matched = null;
+          for (const fname in this.files) {
+            const f = this.files[fname];
+            if (f.locked && f.password && f.password.toUpperCase() === input) {
+              matched = { fname, file: f };
+              break;
+            }
+          }
+
+          if (matched) {
+            matched.file.locked = false;
+            if (matched.fname === 'chamber_override.exe' && this.onChamberUnlocked) {
+              this.onChamberUnlocked();
+            }
+            if (this.onPasswordSolved) {
+              this.onPasswordSolved(matched.fname);
+            }
+            return {
+              text: `[DECRYPTION SUCCESSFUL - ${matched.fname}]\nCryptographic checksum verified.\n\n${matched.file.content}`,
+              type: 'success'
+            };
+          }
+
+          // If argument was actually a filename, display its hint
+          const fByName = this.files[args[0]];
+          if (fByName) {
+            if (!fByName.locked) {
+              return { text: `NOTICE: File "${args[0]}" is already decrypted. Use 'cat ${args[0]}'.`, type: 'normal' };
+            }
+            return {
+              text: `File "${args[0]}" requires password.\nHint: ${fByName.hint || 'Code required'}\nUsage: unlock ${args[0]} <code>`,
+              type: 'warning'
+            };
+          }
+
+          return {
+            text: `[ACCESS DENIED] Code "${args[0]}" not recognized.\nTry one of: 997, ECHO, 47.3, or type 'codes' for hints.`,
+            type: 'error'
+          };
+        }
+
+        // Two arguments: unlock <file> <code> OR unlock <code> <file>
+        let fname = args[0];
+        let code = args[1].trim().toUpperCase();
+        let f = this.files[fname];
+
+        if (!f && this.files[args[1]]) {
+          fname = args[1];
+          code = args[0].trim().toUpperCase();
+          f = this.files[fname];
+        }
+
         if (!f) {
-          return { text: `ERROR: File "${fname}" not found.`, type: 'error' };
+          return { text: `ERROR: File "${args[0]}" not found. Type 'ls' to view directory.`, type: 'error' };
         }
         if (!f.locked) {
           return { text: `NOTICE: File "${fname}" is already decrypted.`, type: 'normal' };
         }
 
-        if (code.toUpperCase() === f.password.toUpperCase()) {
+        if (code === f.password.toUpperCase() || code === '47.3' || code === '997' || code === 'ECHO') {
           f.locked = false;
           if (fname === 'chamber_override.exe' && this.onChamberUnlocked) {
             this.onChamberUnlocked();
@@ -199,54 +311,31 @@ Transmitter Core accessible.`
         }
       }
 
-      case 'diagnostic': {
-        const sub = (args[0] || 'all').toLowerCase();
-        if (this.onDiagnosticRun) this.onDiagnosticRun(sub);
-
-        return {
-          text: `[HARDWARE DIAGNOSTIC - SUBSYSTEM: ${sub.toUpperCase()}]
-- MAIN GENERATOR FREQUENCY: 59.98 Hz [STABLE]
-- RESONANCE CARRIER DETECTED: 47.30 Hz [ANOMALOUS AMPLITUDE]
-- PERIMETER SENSORS: 4 CAMERAS ONLINE
-- DIAGNOSTIC CODE: SYNC-2049
-Telemetry normal. Maintain operational vigilance.`,
-          type: 'success'
-        };
-      }
-
       case 'override': {
-        if (args.length < 2) {
-          return { text: 'USAGE: override <target> <authorization_code>\nTargets: archive, chamber', type: 'error' };
-        }
-        const target = args[0].toLowerCase();
-        const code = args[1].trim();
+        const target = (args[0] || 'chamber').toLowerCase();
+        const code = (args[1] || '47.3').trim();
 
-        if (target === 'chamber') {
-          if (code === '47.3' || code === '47.30') {
-            if (this.files['chamber_override.exe']) {
-              this.files['chamber_override.exe'].locked = false;
-            }
-            if (this.onChamberUnlocked) {
-              this.onChamberUnlocked();
-            }
-            return {
-              text: `[AUTHORIZATION CONFIRMED]\nSecret Research Chamber containment seal disengaged.\nVault blast door unlocked.`,
-              type: 'success'
-            };
-          } else {
-            return { text: 'ERROR: Invalid frequency code for chamber override. Expected carrier frequency (Hz).', type: 'error' };
-          }
-        } else if (target === 'archive') {
-          if (code === '0801') {
-            return {
-              text: `[AUTHORIZATION CONFIRMED]\nArchive security protocols updated.\nPhysical Keycard access confirmed for Storage Bay A.`,
-              type: 'success'
-            };
-          } else {
-            return { text: 'ERROR: Invalid override code for Archive. Check evacuation incident logs.', type: 'error' };
-          }
+        if (target === 'chamber' || target === 'core' || target === '47.3') {
+          const f = this.files['chamber_override.exe'];
+          f.locked = false;
+          if (this.onChamberUnlocked) this.onChamberUnlocked();
+          if (this.onPasswordSolved) this.onPasswordSolved('chamber_override.exe');
+          return {
+            text: `[OVERRIDE ACCEPTED - FREQUENCY 47.3 Hz SYNCHRONIZED]
+Secret Research Chamber containment seal disengaged!
+Vault blast door opening...`,
+            type: 'success'
+          };
         }
-        return { text: `ERROR: Unknown override target "${target}".`, type: 'error' };
+
+        if (target === 'archive') {
+          return {
+            text: `NOTICE: Archive door requires physical Keycard.\nLocation: Stored in Storage Bay A on the center workbench.`,
+            type: 'warning'
+          };
+        }
+
+        return { text: `USAGE: override chamber [47.3]`, type: 'error' };
       }
 
       case 'report': {
