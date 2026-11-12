@@ -7,16 +7,16 @@ export class Lighting {
     this.flickerLights = [];
     this.isEmergency = false;
 
-    // Ambient light - balanced for true horror atmosphere (darkened for high-contrast shadows & flashlight depth)
-    this.ambientLight = new THREE.AmbientLight(0x10141e, 0.44);
+    // Ambient light - balanced for true horror atmosphere (slightly lifted for visibility)
+    this.ambientLight = new THREE.AmbientLight(0x141824, 0.56);
     this.scene.add(this.ambientLight);
 
     // Hemisphere light - subtle soft bounce between industrial steel ceiling and cold concrete floor
-    this.hemiLight = new THREE.HemisphereLight(0x243242, 0x060910, 0.28);
+    this.hemiLight = new THREE.HemisphereLight(0x2c3a4d, 0x080c14, 0.36);
     this.scene.add(this.hemiLight);
 
-    // Fog: deeper atmospheric cinematic darkness (hides boundaries and adds oppressive underground depth)
-    this.scene.fog = new THREE.FogExp2(0x04060b, 0.038);
+    // Fog: atmospheric cinematic darkness (slightly reduced density for visibility)
+    this.scene.fog = new THREE.FogExp2(0x05070d, 0.032);
 
     this._createRoomLights();
   }
@@ -96,20 +96,22 @@ export class Lighting {
     this.isEmergency = active;
     if (active) {
       this.ambientLight.color.setHex(0x380505);
-      this.ambientLight.intensity = 0.55;
+      this.ambientLight.intensity = 0.6;
       this.hemiLight.color.setHex(0xb91c1c);
-      this.hemiLight.intensity = 0.35;
+      this.hemiLight.intensity = 0.4;
       this.scene.fog.color.setHex(0x180303);
+      this.scene.fog.density = 0.03;
       this.lights.forEach(({ light }) => {
         light.color.setHex(0xdc2626);
-        light.intensity = 1.1;
+        light.intensity = 1.15;
       });
     } else {
-      this.ambientLight.color.setHex(0x10141e);
-      this.ambientLight.intensity = 0.44;
-      this.hemiLight.color.setHex(0x243242);
-      this.hemiLight.intensity = 0.28;
-      this.scene.fog.color.setHex(0x04060b);
+      this.ambientLight.color.setHex(0x141824);
+      this.ambientLight.intensity = 0.56;
+      this.hemiLight.color.setHex(0x2c3a4d);
+      this.hemiLight.intensity = 0.36;
+      this.scene.fog.color.setHex(0x05070d);
+      this.scene.fog.density = 0.032;
       this.lights.forEach(({ light, baseIntensity, baseColor }) => {
         light.color.setHex(baseColor);
         light.intensity = baseIntensity;

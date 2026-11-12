@@ -59,7 +59,7 @@ export class Game {
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.05;
+    this.renderer.toneMappingExposure = 1.15;
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.domElement.style.position = 'fixed';
     this.renderer.domElement.style.inset = '0';
@@ -67,8 +67,8 @@ export class Game {
     document.body.appendChild(this.renderer.domElement);
 
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x05070b);
-    this.scene.fog = new THREE.FogExp2(0x05070b, 0.038);
+    this.scene.background = new THREE.Color(0x060912);
+    this.scene.fog = new THREE.FogExp2(0x060912, 0.032);
 
     this.camera = new THREE.PerspectiveCamera(72, window.innerWidth / window.innerHeight, 0.1, 1000);
 

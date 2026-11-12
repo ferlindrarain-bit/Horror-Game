@@ -10,17 +10,17 @@ export class FlashlightSystem {
     this.drainRate = 0.45; // ~220 seconds of continuous illumination (balanced for dark exploration)
 
     // Main flashlight cone (cinematic warm beam - enhanced throw & brightness)
-    this.spotLight = new THREE.SpotLight(0xfef08a, 8.5, 55, Math.PI / 5.0, 0.35, 1.3);
+    this.spotLight = new THREE.SpotLight(0xfef08a, 10.5, 60, Math.PI / 5.0, 0.33, 1.2);
     this.spotLight.visible = false;
     this.scene.add(this.spotLight);
 
     // Inner brighter core (tighter, whiter hotspot)
-    this.coreLight = new THREE.SpotLight(0xffffff, 6.0, 40, Math.PI / 9, 0.15, 1.1);
+    this.coreLight = new THREE.SpotLight(0xffffff, 7.5, 45, Math.PI / 9, 0.14, 1.0);
     this.coreLight.visible = false;
     this.scene.add(this.coreLight);
 
     // Near-field fill light (illuminates surfaces close to player)
-    this.fillLight = new THREE.PointLight(0xfef08a, 2.0, 8, 2.0);
+    this.fillLight = new THREE.PointLight(0xfef08a, 2.8, 10, 1.8);
     this.fillLight.visible = false;
     this.scene.add(this.fillLight);
 
@@ -84,29 +84,29 @@ export class FlashlightSystem {
         this.fillLight.color.setHex(0xea580c);
 
         if (Math.random() < 0.15) {
-          this.spotLight.intensity = (this.battery / 20) * 4.0 * Math.random();
-          this.coreLight.intensity = (this.battery / 20) * 3.0 * Math.random();
-          this.fillLight.intensity = (this.battery / 20) * 1.0 * Math.random();
+          this.spotLight.intensity = (this.battery / 20) * 5.0 * Math.random();
+          this.coreLight.intensity = (this.battery / 20) * 3.8 * Math.random();
+          this.fillLight.intensity = (this.battery / 20) * 1.4 * Math.random();
         } else {
-          this.spotLight.intensity = (this.battery / 20) * 5.5;
-          this.coreLight.intensity = (this.battery / 20) * 4.0;
-          this.fillLight.intensity = (this.battery / 20) * 1.5;
+          this.spotLight.intensity = (this.battery / 20) * 7.0;
+          this.coreLight.intensity = (this.battery / 20) * 5.0;
+          this.fillLight.intensity = (this.battery / 20) * 2.0;
         }
       } else if (this.battery < 40) {
         // Slight warm tint shift as power reduces
         this.spotLight.color.setHex(0xfde047);
         this.coreLight.color.setHex(0xfef08a);
         this.fillLight.color.setHex(0xf59e0b);
-        this.spotLight.intensity = 6.8;
-        this.coreLight.intensity = 4.8;
-        this.fillLight.intensity = 1.8;
+        this.spotLight.intensity = 8.5;
+        this.coreLight.intensity = 6.0;
+        this.fillLight.intensity = 2.4;
       } else {
         this.spotLight.color.setHex(0xfef08a);
         this.coreLight.color.setHex(0xffffff);
         this.fillLight.color.setHex(0xfef08a);
-        this.spotLight.intensity = 7.0;
-        this.coreLight.intensity = 5.0;
-        this.fillLight.intensity = 2.0;
+        this.spotLight.intensity = 9.5;
+        this.coreLight.intensity = 6.8;
+        this.fillLight.intensity = 2.8;
       }
 
       if (this.battery <= 0) {
