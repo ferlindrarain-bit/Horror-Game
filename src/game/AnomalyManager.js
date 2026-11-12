@@ -77,34 +77,45 @@ export class AnomalyManager {
   }
 
   reportAnomaly(reportQuery) {
-    const q = reportQuery.toLowerCase().trim();
-    // Search for match among active anomalies
-    for (const [id, def] of this.activeAnomalies.entries()) {
-      if (
-        id.toLowerCase().includes(q) ||
-        def.name.toLowerCase().includes(q) ||
-        def.category.toLowerCase().includes(q) ||
-        q.includes('anomaly') ||
-        q.includes('figure') ||
-        q.includes('shadow') ||
-        q.includes('door') ||
-        q.includes('camera') ||
-        q.includes('light')
-      ) {
-        this.reportedAnomalies.add(id);
-        this.activeAnomalies.delete(id);
-        return {
-          text: `[CENTRAL COMMAND VERIFICATION: CONFIRMED]\nAnomaly "${def.name}" verified and cataloged.\nContainment protocol updated. Investigation progress increased.`,
-          type: 'success',
-          correct: true
-        };
+    const q = (reportQuery || '').toLowerCase().trim();
+
+    // 1. If there are active anomalies, match query or automatically report the first active anomaly
+    if (this.activeAnomalies.size > 0) {
+      for (const [id, def] of this.activeAnomalies.entries()) {
+        if (
+          !q ||
+          q === 'lapor' ||
+          q === 'report' ||
+          q === 'finding' ||
+          q === 'temuan' ||
+          q === 'anomali' ||
+          id.toLowerCase().includes(q) ||
+          def.name.toLowerCase().includes(q) ||
+          def.category.toLowerCase().includes(q) ||
+          q.includes('anomaly') ||
+          q.includes('figure') ||
+          q.includes('shadow') ||
+          q.includes('door') ||
+          q.includes('camera') ||
+          q.includes('light')
+        ) {
+          this.reportedAnomalies.add(id);
+          this.activeAnomalies.delete(id);
+          return {
+            text: `[KOMANDO PUSAT: LAPORAN DITERIMA & DIVERIFIKASI]\nAnomali "${def.name}" terverifikasi dan berhasil dicatat ke server pusat.\nProtokol isolasi diperbarui. Target pelaporan selesai!`,
+            type: 'success',
+            correct: true
+          };
+        }
       }
     }
 
+    // 2. If player reports even without active anomaly (e.g. routine shift finding report for Night 2)
+    this.discoveredCount++;
     return {
-      text: `[CENTRAL COMMAND VERIFICATION: UNCONFIRMED]\nNo matching anomaly registered for "${reportQuery}".\nWarning: False anomaly reports lead to disciplinary reprimands.`,
-      type: 'warning',
-      correct: false
+      text: `[KOMANDO PUSAT: LAPORAN DITERIMA & DIVERIFIKASI]\nLaporan hasil observasi dan anomali keamanan Anda telah diarsipkan.\nStatus pemantauan Sektor 09 diperbarui. Target pelaporan selesai!`,
+      type: 'success',
+      correct: true
     };
   }
 

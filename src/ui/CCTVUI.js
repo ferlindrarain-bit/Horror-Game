@@ -22,12 +22,12 @@ export class CCTVUI {
     this.container.innerHTML = `
       <div class="cctv-header">
         <div style="display:flex; align-items:center; gap:12px;">
-          <span id="cctv-header-title">SECURITY SURVEILLANCE NETWORK // 4 CHANNELS ACTIVE</span>
-          <span style="font-size:0.7rem; color:#22c55e; background:#062312; border:1px solid #166534; padding:2px 6px; border-radius:2px;">● LIVE TELEMETRY</span>
+          <span id="cctv-header-title">JARINGAN PENGAWAS CCTV // 4 KAMERA AKTIF</span>
+          <span style="font-size:0.7rem; color:#22c55e; background:#062312; border:1px solid #166534; padding:2px 6px; border-radius:2px;">● SIARAN LANGSUNG</span>
         </div>
         <div style="display:flex; gap:10px; align-items:center;">
-          <button id="cctv-header-grid-btn" style="background:#1e293b; border:1px solid #38bdf8; color:#38bdf8; cursor:pointer; padding:5px 12px; font-family:'Courier New',monospace; font-size:0.75rem; font-weight:bold;">[ ⛶ 2x2 GRID ]</button>
-          <button id="cctv-close-btn" style="background:#450a0a; border:1px solid #ef4444; color:#fca5a5; cursor:pointer; padding:5px 14px; font-family:'Courier New',monospace; font-size:0.75rem; font-weight:bold;">[ ✖ CLOSE (ESC/E) ]</button>
+          <button id="cctv-header-grid-btn" style="background:#1e293b; border:1px solid #38bdf8; color:#38bdf8; cursor:pointer; padding:5px 12px; font-family:'Courier New',monospace; font-size:0.75rem; font-weight:bold;">[ ⛶ KISI 2x2 ]</button>
+          <button id="cctv-close-btn" style="background:#450a0a; border:1px solid #ef4444; color:#fca5a5; cursor:pointer; padding:5px 14px; font-family:'Courier New',monospace; font-size:0.75rem; font-weight:bold;">[ ✖ TUTUP (ESC/E) ]</button>
         </div>
       </div>
       
@@ -35,24 +35,24 @@ export class CCTVUI {
       
       <div class="cctv-controls">
         <div style="display:flex; gap:6px;">
-          <button id="cctv-btn-all" class="active" style="border-color:#38bdf8; color:#38bdf8;">GRID (2x2)</button>
-          <button id="cctv-btn-cam1">CAM 01: HUB</button>
-          <button id="cctv-btn-cam2">CAM 02: LAB</button>
-          <button id="cctv-btn-cam3">CAM 03: HALL</button>
-          <button id="cctv-btn-cam4">CAM 04: CORE</button>
+          <button id="cctv-btn-all" class="active" style="border-color:#38bdf8; color:#38bdf8;">SEMUA (2x2)</button>
+          <button id="cctv-btn-cam1">KAM 01: PUSAT</button>
+          <button id="cctv-btn-cam2">KAM 02: LAB</button>
+          <button id="cctv-btn-cam3">KAM 03: LORONG</button>
+          <button id="cctv-btn-cam4">KAM 04: REAKTOR</button>
         </div>
         
         <div style="display:flex; gap:8px; align-items:center;">
           <select id="cctv-anomaly-select" style="background:#111; color:#da4; border:1px solid #444; padding:5px 8px; font-family:'Courier New',monospace; font-size:0.75rem;">
-            <option value="">-- SELECT DETECTED ANOMALY --</option>
-            <option value="figure">Humanoid Figure / Shadow</option>
-            <option value="object_moved">Displaced Object / Equipment</option>
-            <option value="camera_distortion">Camera Static / Video Glitch</option>
-            <option value="impossible_room">Room Layout Contradiction</option>
-            <option value="writing_wall">Writing / Blood On Surface</option>
-            <option value="light_flicker">Electrical / Lighting Anomaly</option>
+            <option value="">-- PILIH ANOMALI YANG TERLIHAT --</option>
+            <option value="figure">Sosok Bayangan / Manusia Misterius</option>
+            <option value="object_moved">Pergeseran Posisi Benda / Alat</option>
+            <option value="camera_distortion">Gangguan Glitch / Statis Kamera</option>
+            <option value="impossible_room">Kejanggalan Tata Ruangan</option>
+            <option value="writing_wall">Tulisan / Noda Darah di Dinding</option>
+            <option value="light_flicker">Kedipan Lampu / Anomali Listrik</option>
           </select>
-          <button id="cctv-report-submit-btn" style="border-color:#ef4444; color:#ef4444; font-weight:bold; cursor:pointer; padding:5px 14px; font-family:'Courier New',monospace;">[ TRANSMIT REPORT ]</button>
+          <button id="cctv-report-submit-btn" style="border-color:#ef4444; color:#ef4444; font-weight:bold; cursor:pointer; padding:5px 14px; font-family:'Courier New',monospace;">[ 📢 KIRIM LAPORAN ]</button>
         </div>
       </div>
       

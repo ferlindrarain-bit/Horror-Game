@@ -1,267 +1,259 @@
-// In-game documents the player can discover
+// Dokumen dalam game yang dapat ditemukan pemain (Bahasa Indonesia)
 export const DOCUMENTS = {
   terminal_postit: {
     id: 'terminal_postit',
-    title: 'OPERATOR EMERGENCY PASSWORDS',
-    classification: 'POST-IT NOTE',
+    title: 'KATA SANDI DARURAT OPERATOR',
+    classification: 'CATATAN TEMPEL',
     night: 1,
     location: 'control_room',
-    content: `[YELLOW STICKY NOTE TAPED ON MONITOR]
+    content: `[CATATAN KERTAS KUNING TERTEMPEL DI MONITOR]
 
-EMERGENCY TERMINAL AUTHORIZATION CODES:
+KODE OTORISASI TERMINAL DARURAT:
 
-1. SUBJECT 12 BIOMETRIC CODE : 997
-   (From Medical Log #47, correlation index 99.7%)
+1. KODE BIOMETRIK SUBJEK 12 : 997
+   (Dari Catatan Medis #47, korelasi DNA 99.7%)
 
-2. RESEARCH LAB CODENAME     : ECHO
-   (Project Echo Research Summary)
+2. NAMA SANDI RISET LAB C   : ECHO
+   (Ringkasan Penelitian Proyek ECHO)
 
-3. CARRIER RESONANCE FREQ    : 47.3
-   (Frequency in Hz to unlock Secret Research Chamber)
+3. FREKUENSI SINYAL REAKTOR : 47.3
+   (Frekuensi dalam Hz untuk membuka Pintu Reaktor Rahasia)
 
-* QUICK SHORTCUT: On the terminal, you can simply type:
+* PINTASAN CEPAT TERMINAL:
+  Anda bisa langsung mengetik perintah berikut di terminal:
   > unlock 997
   > unlock echo
-  > unlock 47.3
-  > unlock all (unlocks all encrypted files at once!)`,
+  > override chamber 47.3
+  > unlock all (membuka semua file terenkripsi sekaligus!)
+  > lapor (melaporkan temuan anomali Malam 2)`,
   },
 
   initial_report: {
     id: 'initial_report',
-    title: 'SECTOR 09 — INITIAL ASSESSMENT REPORT',
-    classification: 'CONFIDENTIAL',
+    title: 'SEKTOR 09 — LAPORAN PENILAIAN AWAL',
+    classification: 'RAHASIA',
     night: 1,
     location: 'control_room',
-    content: `DATE: 2049-03-14
-FROM: Dr. Elena Vasquez, Lead Researcher
-TO: Oversight Committee
+    content: `TANGGAL: 14 Maret 2049
+DARI: Dr. Elena Vasquez, Kepala Peneliti
+KEPADA: Komite Pengawas Pusat
 
-SUBJECT: Project ECHO — Phase 3 Status
+SUBJEK: Status Proyek ECHO — Fase 3
 
-The signal amplification tests have exceeded all projections. 
-The resonance frequency we isolated at 47.3 Hz produces consistent 
-results across all test subjects.
+Uji coba penguatan sinyal frekuensi telah melampaui semua perkiraan awal.
+Frekuensi resonansi yang kami isolasi pada 47.3 Hz menghasilkan efek
+yang konsisten pada semua subjek uji coba.
 
-However, I must note several concerns:
+Namun, saya wajib mencatat sejumlah kejanggalan serius:
 
-1. Test subjects report vivid "memories" of events that have not occurred.
-2. Three subjects independently described the same location — a facility 
-   matching Sector 09's layout — despite never visiting it.
-3. Subject 07 became agitated during Session 12, claiming she had 
-   "already done this before, many times."
+1. Subjek uji coba melaporkan "ingatan" yang sangat nyata mengenai peristiwa
+   yang sebenarnya belum pernah terjadi.
+2. Tiga subjek secara terpisah menggambarkan tata letak ruangan yang persis sama
+   dengan Sektor 09 — padahal mereka belum pernah berkunjung ke bunker ini.
+3. Subjek 07 mengalami histeria saat Sesi 12, berteriak bahwa ia telah
+   "melakukan tugas jaga ini berulang kali sebelumnya."
 
-I recommend we proceed with caution. The boundary between observation 
-and participation may be thinner than we assumed.
+Saya menyarankan agar kita melangkah dengan sangat hati-hati. Batas antara
+pengamat dan peristiwa yang diamati mungkin jauh lebih tipis dari dugaan kita.
 
-— Dr. Vasquez`,
+— Dr. Elena Vasquez`,
   },
 
   missing_report: {
     id: 'missing_report',
-    title: 'PROJECT ECHO — SESSION LOG #47',
-    classification: 'TOP SECRET',
+    title: 'PROYEK ECHO — CATATAN SESI MEDIS #47',
+    classification: 'SANGAT RAHASIA',
     night: 2,
     location: 'medical_room',
-    content: `DATE: 2049-06-22
-RESEARCHER: Dr. Marcus Webb
+    content: `TANGGAL: 22 Juni 2049
+PENELITI: Dr. Marcus Webb
 
-SESSION SUBJECT: Subject 12 (Operator Class)
+SUBJEK UJI: Subjek 12 (Kelas Operator)
 
-Subject 12 was exposed to the signal at standard intensity. 
-Response was immediate and unusual.
+Subjek 12 dipaparkan pada sinyal resonansi dengan intensitas standar.
+Respon mental subjek terjadi seketika dan sangat tidak wajar.
 
-Subject began reciting facility security protocols — protocols that 
-have not yet been written. When questioned, Subject 12 stated:
+Subjek mulai melafalkan seluruh protokol keamanan fasilitas — protokol yang
+bahkan belum selesai ditulis oleh komite. Saat diinterogasi, Subjek 12 menyatakan:
 
-"I've worked here for five nights. I know what happens. 
-The cameras show things that aren't real. The radio talks to me. 
-And at the end, I have to choose."
+"Aku telah bekerja di sini selama lima malam. Aku tahu persis apa yang akan terjadi.
+Kamera memperlihatkan hal-hal yang tidak nyata. Radio berbicara kepadaku.
+Dan pada malam terakhir, aku harus membuat keputusan."
 
-Subject was sedated and returned to containment.
+Subjek segera dibius dan dikembalikan ke ruang isolasi.
 
-NOTE: Subject 12's biometric profile is a 99.7% match to the 
-operator scheduled for the upcoming emergency monitoring shift.
+CATATAN: Profil biometrik Subjek 12 memiliki kecocokan 99.7% dengan operator
+yang dijadwalkan untuk tugas jaga darurat mendatang.
 
-THIS DOCUMENT HAS BEEN FLAGGED FOR IMMEDIATE REMOVAL FROM THE DATABASE.`,
+KODE AKSES: 997. DOKUMEN INI HARUS SEGERA DIHAPUS DARI DATABASE PUSAT.`,
   },
 
   conflicting_doc_a: {
     id: 'conflicting_doc_a',
-    title: 'INCIDENT REPORT — SECTOR 09 SHUTDOWN',
-    classification: 'OFFICIAL',
+    title: 'LAPORAN INSIDEN — PENUTUPAN SEKTOR 09',
+    classification: 'DOKUMEN RESMI',
     night: 3,
     location: 'comm_room',
-    content: `DATE: 2049-08-01
-FROM: Central Command
-TO: All Personnel
+    content: `TANGGAL: 1 Agustus 2049
+DARI: Komando Pusat
+KEPADA: Seluruh Personel
 
-Sector 09 has been shut down due to a catastrophic containment 
-failure in Laboratory C. All personnel have been evacuated. 
-The facility will remain sealed until decontamination is complete.
+Sektor 09 telah resmi ditutup akibat kegagalan penahanan katastropik
+di Laboratorium Riset C. Seluruh staf telah dievakuasi keluar dari fasilitas.
+Fasilitas akan disegel rapat sampai proses dekontaminasi selesai.
 
-No casualties reported.
-All research data has been secured.
-Project ECHO has been suspended indefinitely.
+Tidak ada korban jiwa yang dilaporkan.
+Seluruh data penelitian telah diamankan.
+Proyek ECHO dibekukan untuk batas waktu yang belum ditentukan.
 
-This is the official record.`,
+Ini adalah catatan resmi penutupan fasilitas.`,
   },
 
   conflicting_doc_b: {
     id: 'conflicting_doc_b',
-    title: 'PERSONAL JOURNAL — DR. ELENA VASQUEZ',
-    classification: 'PRIVATE',
+    title: 'BUKU HARIAN PRIBADI — DR. ELENA VASQUEZ',
+    classification: 'PRIBADI',
     night: 3,
     location: 'storage_room',
-    content: `They're lying. All of them.
+    content: `Mereka berbohong. Semuanya berbohong.
 
-There was no "containment failure." The experiment WORKED. 
-That's what terrified them.
+Tidak pernah ada yang namanya "kegagalan penahanan." Eksperimen kami BERHASIL.
+Dan itulah yang membuat mereka ketakutan setengah mati.
 
-Project ECHO proved that consciousness can be transmitted 
-through the signal. Not just observed — TRANSMITTED. The subjects 
-didn't just remember the facility. They WERE in the facility. 
-Their awareness existed in two places simultaneously.
+Proyek ECHO membuktikan bahwa kesadaran manusia dapat dipancarkan melalui sinyal.
+Bukan hanya diamati — DIPANCARKAN. Para subjek bukan sekadar mengingat bunker ini.
+Mereka BENAR-BENAR BERADA di dalam bunker ini secara mental.
 
-And then Subject 12 said something that made them shut everything down:
+Lalu Subjek 12 mengatakan sesuatu yang membuat mereka panik dan menutup segalanya:
 
-"The operator is not real. The operator is a signal. 
-And the signal is a loop."
+"Operator itu tidak nyata. Operator adalah sinyal itu sendiri.
+Dan sinyal itu adalah putaran waktu tanpa akhir."
 
-They evacuated everyone within the hour. But they didn't shut 
-down the signal. I checked the readings. It's still broadcasting.
+Mereka mengevakuasi semua orang dalam hitungan jam. Tapi mereka tidak mematikan
+pemancar sinyal reaktor. Aku memeriksa sensornya. Sinyal itu masih memancar.
 
-Someone is still in the loop.
+Seseorang masih terjebak di dalam putaran ini.
 
-God help them.`,
+Tuhan tolonglah mereka.`,
   },
 
   experiment_logs: {
     id: 'experiment_logs',
-    title: 'PROJECT ECHO — ORIGINAL EXPERIMENT LOGS',
-    classification: 'ULTRA SECRET',
+    title: 'PROYEK ECHO — LOG EKSPERIMEN ASLI',
+    classification: 'RAHASIA TINGKAT TINGGI',
     night: 4,
     location: 'archive_room',
-    content: `PROJECT ECHO — CORE HYPOTHESIS
+    content: `PROYEK ECHO — HIPOTESIS UTAMA
 
-If human consciousness operates on a waveform, that waveform 
-can be captured, stored, and retransmitted — like any other signal.
+Jika kesadaran manusia bekerja pada bentuk gelombang tertentu, maka gelombang
+tersebut dapat ditangkap, disimpan, dan dipancarkan kembali seperti sinyal radio.
 
-PHASE 1: Signal Isolation ✓
-We successfully isolated the consciousness frequency at 47.3 Hz.
+FASE 1: Isolasi Sinyal [SELESAI]
+Kami berhasil mengisolasi frekuensi kesadaran manusia pada 47.3 Hz.
 
-PHASE 2: Signal Recording ✓
-We recorded and stored the consciousness waveform of 14 subjects.
+FASE 2: Perekaman Sinyal [SELESAI]
+Kami merekam dan menyimpan pola gelombang kesadaran dari 14 subjek.
 
-PHASE 3: Signal Transmission ✓
-We transmitted Subject 07's waveform into the facility's 
-monitoring systems. Subject 07 reported "being" inside the 
-facility while physically remaining in the lab.
+FASE 3: Transmisi Sinyal [SELESAI]
+Kami memancarkan pola gelombang Subjek 07 ke dalam sistem pemantauan bunker.
+Subjek 07 melaporkan "hidup dan bergerak" di dalam bunker meski tubuh fisiknya
+tetap duduk di laboratorium.
 
-PHASE 4: Signal Loop [IN PROGRESS]
-Objective: Create a self-sustaining consciousness loop within 
-the facility. The signal would generate an operator who monitors 
-the facility, discovers the signal, and in doing so, reinforces 
-the signal. A perpetual observer.
+FASE 4: Putaran Sinyal Mandiri [SEDANG BERLANGSUNG]
+Tujuan: Menciptakan putaran kesadaran mandiri di dalam bunker. Sinyal akan
+menciptakan sosok Operator yang memantau bunker, menemukan anomali, dan dengan
+melakukannya, memperkuat eksistensi sinyal itu sendiri. Seorang pengamat abadi.
 
-STATUS: The loop has been active for [ERROR: VALUE EXCEEDS 
-MAXIMUM INTEGER] cycles.
+STATUS: Putaran ini telah aktif selama [ERROR: MELEBIHI BATAS MAKSIMUM] siklus.
 
-NOTE FROM DR. WEBB: "We didn't create the loop. 
-The loop created us. The facility, the experiment, the researchers 
-— we are all part of the signal. We always have been."
-
-[DOCUMENT ENDS — REMAINING DATA CORRUPTED]`,
+CATATAN DR. WEBB: "Bukan kita yang menciptakan putaran ini. Putaran inilah yang
+menciptakan kita. Bunker ini, eksperimen ini, para peneliti — kita semua hanyalah
+bagian dari sinyal abadi ini."`,
   },
 
   final_truth: {
     id: 'final_truth',
-    title: 'MESSAGE FOUND IN THE RESEARCH CHAMBER',
-    classification: 'NONE',
+    title: 'PESAN TERTINGGAL DI RUANG REAKTOR RAHASIA',
+    classification: 'TANPA KLASIFIKASI',
     night: 5,
     location: 'secret_chamber',
-    content: `To the operator reading this:
+    content: `Untuk operator yang membaca lembaran ini:
 
-You are not the first. You will not be the last.
+Kau bukan yang pertama. Dan kau bukan yang terakhir.
 
-The facility you are standing in does not exist in the way 
-you understand existence. It is a pattern. A signal. A thought 
-that thinks itself into being every time someone observes it.
+Fasilitas bunker tempatmu berpijak saat ini tidak nyata dalam arti fisik yang kau pahami.
+Tempat ini adalah pola gelombang. Sebuah sinyal. Sebuah pikiran yang mewujudkan
+dirinya sendiri setiap kali ada seseorang yang mengamatinya.
 
-You are the observer. The facility exists because you are 
-watching it. The moment you stop, it will cease to be.
+Kau adalah pengamat itu. Bunker ini ada karena kau memperhatikannya.
+Saat kau berhenti mengamati, tempat ini akan sirna.
 
-But here is the part they didn't tell you:
+Namun ada hal penting yang belum kau ketahui:
 
-You are also the signal.
+KAU JUGA ADALAH SINYAL ITU SENDIRI.
 
-You were never sent here. You were generated here. Your memories 
-of the outside world, your assignment, your name — all of it 
-was constructed by the loop to give you a reason to observe.
+Kau tidak pernah dikirim ke sini. Kau tercipta di sini. Ingatanmu tentang dunia luar,
+surat tugasmu, bahkan namamu — semuanya disusun oleh putaran ini agar kau memiliki
+alasan untuk terus mengawasi.
 
-You have three choices:
+Kau memiliki tiga pilihan di konsol pemancar:
 
-1. Trust the signal. Let it continue. Accept your role as 
-   the eternal observer. (The loop sustains itself.)
+1. PERCAYAI SINYAL: Biarkan putaran terus berlanjut. Terima peranmu sebagai
+   pengamat abadi demi kelangsungan eksistensi dunia ini. (Ending A)
 
-2. Destroy the signal. Shut down the transmitter. Free yourself 
-   from the loop. (But what happens to a signal when it stops?)
+2. HANCURKAN SINYAL: Matikan pemancar reaktor. Bebaskan dirimu dari putaran.
+   Namun sadarilah bahwa saat sinyal berhenti, wujudmu pun akan lenyap. (Ending B)
 
-3. Become the signal. Merge your consciousness with the 
-   transmission. Understand the truth of what you are.
+3. MELEBUR DENGAN SINYAL: Satukan kesadaranmu ke dalam gelombang frekuensi 47.3 Hz.
+   Jadilah pengamat mutlak dari semua siklus dan lihat kebenaran tertinggi. (Ending C)
 
-Choose wisely. Or don't. The loop will begin again regardless.
+Tentukan pilihanmu dengan bijak.
 
-— The one who wrote this the last time you were here`,
+— Dari dirimu yang menuliskan surat ini pada iterasi sebelumnya`,
   },
 
   keycard_note: {
     id: 'keycard_note',
-    title: 'MAINTENANCE NOTE — ARCHIVE KEYCARD LOCATION',
+    title: 'CATATAN TEKNISI — LOKASI KARTU AKSES ARSIP',
     classification: 'INTERNAL',
     night: 4,
     location: 'electrical_room',
-    content: `To whoever finds this:
+    content: `Kepada siapa pun yang menemukan catatan ini:
 
-The Level 4 Archive Keycard was left in STORAGE BAY A (Warehouse).
-It is placed right on top of the central cargo supply desk under the glowing beacon light. Dr. Webb left it there during the evacuation order. He said nobody should access the archive until "the loop stabilizes."
+Kartu Akses Ruang Arsip Level 4 tertinggal di STORAGE BAY A (Gudang Barat).
+Kartu tersebut tergeletak tepat di atas meja kargo tengah di bawah cahaya lampu biru menyala. Dr. Webb meninggalkannya di sana saat perintah evakuasi mendadak. Ia berpesan agar tidak ada yang memasuki arsip sebelum "putaran stabil."
 
-Go to Storage Bay A, find the illuminated cargo workbench, and take the keycard to unlock the Restricted Archive doors.
+Pergilah ke Storage Bay A, cari meja kerja kargo yang bercahaya biru, dan ambil kartu akses itu untuk membuka pintu Ruang Arsip Terlarang (Restricted Archive).
 
-— J. Torres, Maintenance Staff`,
+— J. Torres, Tim Teknisi Listrik`,
   },
 
   hidden_signal_doc: {
     id: 'hidden_signal_doc',
-    title: 'SIGNAL ANALYSIS — CLASSIFIED',
-    classification: 'EYES ONLY',
+    title: 'ANALISIS SINYAL — RAHASIA TERTINGGI',
+    classification: 'HANYA UNTUK OPERATOR',
     night: 5,
     location: 'secret_chamber',
-    content: `The signal at 47.3 Hz contains embedded data.
+    content: `Sinyal pada frekuensi 47.3 Hz memuat struktur data rekursif:
 
-When decoded, the data resolves into a recursive pattern:
-An operator enters a facility. The operator monitors cameras.
-The operator discovers anomalies. The operator finds documents.
-The operator reaches a chamber. The operator makes a choice.
-The choice generates a signal. The signal creates an operator.
+Seorang operator memasuki bunker. Operator memantau kamera CCTV.
+Operator menemukan anomali. Operator membaca dokumen rahasia.
+Operator mencapai ruang reaktor. Operator membuat keputusan.
+Keputusan tersebut memancarkan sinyal baru. Sinyal baru menciptakan operator baru.
 
-The signal IS the story. The story IS the signal.
+Sinyal ADALAH ceritanya. Cerita ADALAH sinyalnya.
 
-Total detected iterations: [COUNTER OVERFLOW]
+Total iterasi yang terdeteksi: [OVERFLOW TIDAK TERHITUNG]
 
-Each iteration is slightly different. The operator's choices 
-create variations. But the structure never changes.
+Setiap putaran memiliki sedikit perbedaan dari pilihan operator.
+Namun pola utamanya tidak pernah berubah.
 
-Until now.
+Hingga saat ini.
 
-This iteration, the operator found this document.
-That has never happened before.
-
-Something has changed.
-
-//ADDENDUM: If you are reading this, the loop may be breakable.
-//The frequency 47.3 Hz can be inverted. Find the transmitter.
-//Invert the signal. End the loop.
-//But understand: ending the loop ends everything. Including you.`,
+//CATATAN TAMBAHAN: Frekuensi 47.3 Hz dapat dibalik (invert).
+//Temukan konsol pemancar di depan reaktor. Balikkan sinyalnya untuk
+//mengakhiri putaran selamanya. Namun ingatlah: mengakhiri sinyal berarti
+//mengakhiri segalanya, termasuk eksistensi dirimu sendiri.`,
   },
 };
 

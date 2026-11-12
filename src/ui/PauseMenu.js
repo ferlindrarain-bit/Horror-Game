@@ -16,20 +16,20 @@ export class PauseMenu {
     this.container = document.createElement('div');
     this.container.id = 'pause-menu';
     this.container.innerHTML = `
-      <h2>SIMULATION PAUSED</h2>
-      <button id="btn-pause-resume">RESUME</button>
-      <button id="btn-pause-objectives">OBJECTIVES</button>
-      <button id="btn-pause-map" style="border-color:#38bdf8; color:#38bdf8;">🗺 TACTICAL BLUEPRINT [M]</button>
-      <button id="btn-pause-tutorial" style="border-color:#f59e0b; color:#fbbf24;">📖 MANUAL / PANDUAN [H]</button>
-      <button id="btn-pause-cloud" style="border-color:#38bdf8; color:#38bdf8;">☁ CLOUD SAVE</button>
-      <button id="btn-pause-settings">SETTINGS</button>
-      <button id="btn-pause-credits">CREDITS</button>
-      <button id="btn-pause-menu">MAIN MENU</button>
+      <h2>GAME DIJEDA</h2>
+      <button id="btn-pause-resume">LANJUTKAN PERMAINAN</button>
+      <button id="btn-pause-objectives">DAFTAR TARGET MISI</button>
+      <button id="btn-pause-map" style="border-color:#38bdf8; color:#38bdf8;">🗺 PETA FASILITAS [M]</button>
+      <button id="btn-pause-tutorial" style="border-color:#f59e0b; color:#fbbf24;">📖 PANDUAN & CARA MAIN [H]</button>
+      <button id="btn-pause-cloud" style="border-color:#38bdf8; color:#38bdf8;">☁ PENYIMPANAN CLOUD</button>
+      <button id="btn-pause-settings">PENGATURAN</button>
+      <button id="btn-pause-credits">KREDIT & PENGEMBANG</button>
+      <button id="btn-pause-menu">KEMBALI KE MENU UTAMA</button>
 
       <div id="objectives-panel">
-        <h3>ACTIVE OBJECTIVES</h3>
+        <h3>TARGET MISI AKTIF</h3>
         <div id="obj-list-container"></div>
-        <button id="btn-close-obj" style="margin-top: 15px; width: 100%; padding: 6px 0;">CLOSE</button>
+        <button id="btn-close-obj" style="margin-top: 15px; width: 100%; padding: 6px 0;">TUTUP</button>
       </div>
     `;
     document.body.appendChild(this.container);

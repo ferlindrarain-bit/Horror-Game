@@ -9,12 +9,12 @@ export class HUD {
     this.hudContainer.id = 'hud';
     this.hudContainer.innerHTML = `
       <div class="hud-left">
-        <div class="hud-label" id="hud-facility-label">SECTOR 09 // FACILITY STATUS</div>
-        <div class="hud-value" id="hud-night-title">NIGHT 1 : THE ARRIVAL</div>
+        <div class="hud-label" id="hud-facility-label">STATUS FASILITAS // SEKTOR 09</div>
+        <div class="hud-value" id="hud-night-title">MALAM 1 : KEDATANGAN</div>
       </div>
       <div class="hud-right">
         <div class="flashlight-indicator">
-          <div class="hud-label">FLASHLIGHT [F]</div>
+          <div class="hud-label">SENTER [F]</div>
           <div class="battery-bar"><div class="fill" id="hud-battery-fill" style="width: 100%;"></div></div>
         </div>
         <div class="stamina-indicator" style="display: flex; align-items: center; gap: 6px;">
@@ -22,16 +22,16 @@ export class HUD {
           <div class="stamina-bar"><div class="fill" id="hud-stamina-fill" style="width: 100%;"></div></div>
         </div>
         <div style="font-size: 0.65rem; color: #38bdf8; letter-spacing: 1.2px; margin-top: 6px; text-align: right; display: flex; justify-content: flex-end; gap: 6px; pointer-events: auto;">
-          <span id="hud-btn-map" style="cursor: pointer; padding: 2px 6px; border: 1px solid rgba(56,189,248,0.45); background: rgba(3,7,18,0.7); border-radius: 2px; user-select: none;" title="Toggle Tactical Blueprint">[M] PETA</span>
+          <span id="hud-btn-map" style="cursor: pointer; padding: 2px 6px; border: 1px solid rgba(56,189,248,0.45); background: rgba(3,7,18,0.7); border-radius: 2px; user-select: none;" title="Buka Denah Peta Fasilitas">[M] PETA</span>
           <span id="hud-btn-tutorial" style="cursor: pointer; padding: 2px 6px; border: 1px solid rgba(245,158,11,0.45); color: #f59e0b; background: rgba(3,7,18,0.7); border-radius: 2px; user-select: none;" title="Buka Panduan & Tutorial">[H] TUTORIAL</span>
-          <span id="hud-btn-tab" style="cursor: pointer; padding: 2px 6px; border: 1px solid rgba(148,163,184,0.45); color: #94a3b8; background: rgba(3,7,18,0.7); border-radius: 2px; user-select: none;" title="Jeda & Daftar Objektif">[TAB] PAUSE</span>
+          <span id="hud-btn-tab" style="cursor: pointer; padding: 2px 6px; border: 1px solid rgba(148,163,184,0.45); color: #94a3b8; background: rgba(3,7,18,0.7); border-radius: 2px; user-select: none;" title="Menu Jeda & Daftar Objektif">[TAB] PAUSE</span>
         </div>
       </div>
       <div class="hud-objective" id="hud-objective-box">
-        <div class="hud-label" style="margin-bottom: 4px;">CURRENT OBJECTIVE</div>
-        <div id="hud-objective-text">Enter Sector 09 and investigate the security control room.</div>
+        <div class="hud-label" style="margin-bottom: 4px;">TARGET SAAT INI</div>
+        <div id="hud-objective-text">Masuk ke Sektor 09 dan periksa Ruang Kontrol Keamanan.</div>
       </div>
-      <div class="interact-prompt" id="hud-interact-prompt">[E] Interact</div>
+      <div class="interact-prompt" id="hud-interact-prompt">[E] Interaksi</div>
     `;
     document.body.appendChild(this.hudContainer);
 
@@ -89,6 +89,7 @@ export class HUD {
     const vignette = document.createElement('div');
     vignette.id = 'vignette';
     document.body.appendChild(vignette);
+    this.vignette = vignette;
 
     // Cache elements
     this.batteryFill = document.getElementById('hud-battery-fill');

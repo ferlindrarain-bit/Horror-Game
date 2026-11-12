@@ -117,20 +117,24 @@ Transmitter Core accessible.`
 
     switch (cmd) {
       case 'help':
+      case 'bantuan':
         return {
-          text: `================== SECTOR-OS COMMAND REFERENCE ==================
-  ls / dir              - List files and classification status
-  cat / read <file>     - Display contents of a document
-  unlock <code | file>  - Decrypt research files (e.g. 'unlock 997', 'unlock echo')
-  codes / passwords     - Display discovered password clues
-  override <target>     - Execute security lock overrides (e.g. 'override chamber')
-  diagnostic            - Run hardware subsystem diagnostics
-  status                - View facility telemetry and sensor grid
-  clear                 - Clear terminal screen
+          text: `================== PANDUAN PERINTAH TERMINAL SEKTOR-OS ==================
+  ls / lihat / dir      - Menampilkan semua file sistem
+  cat / baca <file>     - Membaca isi file (contoh: baca mission_protocols.txt)
+  unlock / buka <code>  - Membuka file terkunci (contoh: unlock 997, unlock echo)
+  lapor / report [info] - Melaporkan temuan anomali ke Komando Pusat
+  kode / sandi / hints  - Menampilkan catatan kode sandi yang ditemukan
+  override chamber 47.3 - Membuka pintu segel Ruang Reaktor Rahasia
+  clear / bersih        - Membersihkan layar terminal
 
-  QUICK SHORTCUTS:
-  Type 'unlock 997', 'unlock echo', 'unlock 47.3', or 'unlock all'
-=================================================================`,
+  TOMBOL PINTAS CEPAT:
+  Klik tombol di atas kolom input atau ketik:
+  > lapor
+  > unlock 997
+  > unlock echo
+  > unlock all (membuka semua file sekaligus)
+========================================================================`,
           type: 'normal'
         };
 
@@ -140,52 +144,58 @@ Transmitter Core accessible.`
       case 'passwords':
       case 'hint':
       case 'hints':
+      case 'kode':
+      case 'sandi':
         return {
-          text: `================== SECTOR 09 PASSWORD REGISTRY ==================
-Discovered authorization codes in Sector 09:
-  [1] Medical Session Log #47 (Subject 12) : 997   -> Decrypts subject_12.enc
-  [2] Project Codename (Research Lab C)    : ECHO  -> Decrypts research_echo.enc
-  [3] Carrier Resonance Frequency (Hz)     : 47.3  -> Decrypts chamber_override.exe
+          text: `================== CATATAN KODE SANDI SEKTOR 09 ==================
+Kode otorisasi yang ditemukan di fasilitas Sektor 09:
+  [1] Log Medis Sesi #47 (Subjek 12)  : 997   -> Membuka subject_12.enc
+  [2] Nama Sandi Laboratorium Riset   : ECHO  -> Membuka research_echo.enc
+  [3] Frekuensi Resonansi Sinyal (Hz) : 47.3  -> Membuka chamber_override.exe
 
-Quick commands:
+Perintah cepat:
   > unlock 997
   > unlock echo
   > unlock 47.3
-  > unlock all
-=================================================================`,
+  > unlock all (buka semua)
+===================================================================`,
           type: 'normal'
         };
 
       case 'ls':
-      case 'dir': {
-        let list = 'DIRECTORY: /SECTOR09/SYSTEM/\n';
+      case 'dir':
+      case 'lihat':
+      case 'daftar': {
+        let list = 'DIREKTORI: /SEKTOR09/SYSTEM/\n';
         list += '-----------------------------------------------------------------\n';
-        list += 'STATUS    CATEGORY    FILENAME\n';
+        list += 'STATUS    KATEGORI    NAMA FILE\n';
         list += '-----------------------------------------------------------------\n';
         for (const fname in this.files) {
           const f = this.files[fname];
-          const st = f.locked ? '[LOCKED]  ' : '[OPEN]    ';
-          const cat = (f.category || 'MISC').padEnd(12, ' ');
+          const st = f.locked ? '[TERKUNCI] ' : '[TERBUKA]  ';
+          const cat = (f.category || 'LAINNYA').padEnd(12, ' ');
           list += `${st}${cat}${fname}\n`;
         }
         list += '-----------------------------------------------------------------\n';
-        list += `Total files: ${Object.keys(this.files).length}. Use 'cat <file>' or 'unlock <file> <code>'.`;
+        list += `Total file: ${Object.keys(this.files).length}. Gunakan 'cat <file>' atau 'unlock <code>'.`;
         return { text: list, type: 'normal' };
       }
 
       case 'cat':
-      case 'read': {
+      case 'read':
+      case 'baca':
+      case 'buka': {
         if (!args[0]) {
-          return { text: 'ERROR: Specify filename to read. Example: cat mission_protocols.txt', type: 'error' };
+          return { text: 'PETUNJUK: Tentukan nama file yang ingin dibaca. Contoh: baca mission_protocols.txt', type: 'error' };
         }
         const fname = args[0];
         const f = this.files[fname];
         if (!f) {
-          return { text: `ERROR: File "${fname}" not found. Type 'ls' to view directory.`, type: 'error' };
+          return { text: `ERROR: File "${fname}" tidak ditemukan. Ketik 'ls' untuk melihat daftar file.`, type: 'error' };
         }
         if (f.locked) {
           return {
-            text: `[ACCESS DENIED] File is encrypted.\nHint: ${f.hint || 'Decryption code required.'}\nUse command: unlock ${fname} <code>`,
+            text: `[AKSES DITOLAK] File terenkripsi kata sandi.\nPetunjuk: ${f.hint || 'Butuh kode dekripsi.'}\nKetik: unlock ${fname} <kode> atau langsung unlock <code>`,
             type: 'warning'
           };
         }
@@ -193,10 +203,11 @@ Quick commands:
       }
 
       case 'unlock':
-      case 'decrypt': {
+      case 'decrypt':
+      case 'buka-kunci': {
         if (args.length === 0) {
           return {
-            text: `USAGE: unlock <code> or unlock <filename> <code>\nAvailable codes: 997, ECHO, 47.3, or type 'unlock all'`,
+            text: `PANDUAN: unlock <kode> atau unlock <nama_file> <kode>\nKode yang tersedia: 997, ECHO, 47.3, atau klik tombol 'UNLOCK ALL'`,
             type: 'warning'
           };
         }
@@ -330,33 +341,33 @@ Vault blast door opening...`,
 
         if (target === 'archive') {
           return {
-            text: `NOTICE: Archive door requires physical Keycard.\nLocation: Stored in Storage Bay A on the center workbench.`,
+            text: `PEMBERITAHUAN: Pintu Arsip membutuhkan Kartu Akses fisik.\nLokasi: Tersimpan di meja kerja ruang Storage Bay A.`,
             type: 'warning'
           };
         }
 
-        return { text: `USAGE: override chamber [47.3]`, type: 'error' };
+        return { text: `PANDUAN: override chamber 47.3`, type: 'error' };
       }
 
-      case 'report': {
-        if (!args[0]) {
-          return { text: 'USAGE: report <anomaly_description_or_id>', type: 'error' };
-        }
-        const query = args.join(' ');
+      case 'report':
+      case 'lapor':
+      case 'laporan': {
+        const query = args.length > 0 ? args.join(' ') : 'laporan anomali';
         if (this.onAnomalyReported) {
           return this.onAnomalyReported(query);
         }
-        return { text: `Anomaly report "${query}" transmitted.`, type: 'success' };
+        return { text: `Laporan anomali "${query}" berhasil dikirim ke Komando Pusat.`, type: 'success' };
       }
 
       case 'status':
         return { text: this.files['system_status.log'].content, type: 'normal' };
 
       case 'clear':
+      case 'bersih':
         return { text: '__CLEAR__', type: 'normal' };
 
       default:
-        return { text: `Unknown command "${cmd}". Type 'help' for available commands.`, type: 'error' };
+        return { text: `Perintah "${cmd}" tidak dikenal. Ketik 'bantuan' atau 'help' untuk daftar perintah.`, type: 'error' };
     }
   }
 }

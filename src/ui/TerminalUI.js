@@ -13,25 +13,36 @@ export class TerminalUI {
     this.container.id = 'terminal-ui';
     this.container.innerHTML = `
       <div class="terminal-header">
-        <span>SECTOR 09 // CENTRAL MONITORING TERMINAL [TTY-01]</span>
-        <span class="close-btn" id="term-close-btn">[ ESC / CLOSE ]</span>
+        <span>SEKTOR 09 // TERMINAL PEMANTAUAN PUSAT [TTY-01]</span>
+        <span class="close-btn" id="term-close-btn">[ ESC / TUTUP ]</span>
       </div>
       <div class="terminal-body" id="term-body">
 ====================================================================
-SECTOR-OS (TM) VERSION 4.9.2 (x86_64-sector-posix)
-Copyright (c) 2049 Sector 09 Defense Systems
-Type 'help' for command reference or 'ls' to view directory files.
+SISTEM OPERASI SEKTOR-OS (VERSI 4.9.2)
+Hak Cipta (c) 2049 Komando Pertahanan Sektor 09
+Ketik 'bantuan' untuk daftar perintah atau 'ls' untuk melihat file.
 
-[STICKY NOTE TAPED BESIDE MONITOR]:
-  • Password Subject 12 : 997  (Medical Log #47)
-  • Password Echo       : ECHO (Research Project)
-  • Chamber Override    : 47.3 (Carrier Frequency)
-  -> Quick command: type 'unlock 997', 'unlock echo', or 'unlock 47.3'
+[CATATAN TERTEMPEL DI SAMPING MONITOR]:
+  • Kata Sandi Subjek 12 : 997  (Catatan Medis Sesi #47)
+  • Kata Sandi Proyek    : ECHO (Proyek Riset Laboratorium C)
+  • Kode Pintu Reaktor   : 47.3 (Frekuensi Pembawa Sinyal)
+  • Lapor Temuan Malam 2 : Ketik 'lapor' atau klik tombol di bawah!
 ====================================================================
+      </div>
+      <div class="terminal-quick-actions" id="term-quick-actions">
+        <span class="term-quick-label">PINTASAN:</span>
+        <button type="button" class="term-quick-btn" data-cmd="ls">📁 LIHAT FILE [ls]</button>
+        <button type="button" class="term-quick-btn" data-cmd="lapor" style="border-color: #38bdf8; color: #38bdf8;">📢 LAPOR TEMUAN [lapor]</button>
+        <button type="button" class="term-quick-btn" data-cmd="unlock 997">🔓 BUKA 997</button>
+        <button type="button" class="term-quick-btn" data-cmd="unlock echo">🔓 BUKA ECHO</button>
+        <button type="button" class="term-quick-btn" data-cmd="override chamber 47.3">⚡ BUKA REAKTOR 47.3</button>
+        <button type="button" class="term-quick-btn" data-cmd="unlock all">✨ BUKA SEMUA FILE</button>
+        <button type="button" class="term-quick-btn" data-cmd="codes">📋 CATATAN SANDI</button>
+        <button type="button" class="term-quick-btn" data-cmd="help">❓ BANTUAN</button>
       </div>
       <div class="terminal-input">
         <span>&gt;</span>
-        <input type="text" id="term-input" placeholder="Type command here (e.g. ls, cat, unlock)..." autocomplete="off" spellcheck="false" />
+        <input type="text" id="term-input" placeholder="Ketik perintah di sini (contoh: lapor, ls, unlock 997, bantuan)..." autocomplete="off" spellcheck="false" />
       </div>
     `;
     document.body.appendChild(this.container);
@@ -42,6 +53,20 @@ Type 'help' for command reference or 'ls' to view directory files.
 
     this.closeBtn.addEventListener('click', () => {
       this.hide();
+    });
+
+    const quickBtns = this.container.querySelectorAll('.term-quick-btn');
+    quickBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const cmd = btn.dataset.cmd;
+        if (cmd) {
+          if (this.audio) this.audio.playTerminalBeep(900);
+          this.inputEl.value = '';
+          this._handleCommand(cmd);
+          this.inputEl.focus();
+        }
+      });
     });
 
     this.inputEl.addEventListener('keydown', (e) => {

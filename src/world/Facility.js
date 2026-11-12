@@ -484,7 +484,7 @@ export class Facility {
       mesh: slab,
       type: 'door',
       id: doorId,
-      prompt: `[E] ${labelText} (LOCKED)`,
+      prompt: `[E] ${labelText} (TERKUNCI)`,
       data: { doorId }
     });
   }
@@ -1258,7 +1258,7 @@ export class Facility {
       mesh: mon1,
       type: 'terminal',
       id: 'main_terminal',
-      prompt: '[E] Access Security Terminal (SECTOR-OS)',
+      prompt: '[E] Akses Terminal Komputer (SECTOR-OS)',
       data: { system: 'terminal' }
     });
 
@@ -1278,7 +1278,7 @@ export class Facility {
       mesh: cctvBank,
       type: 'cctv',
       id: 'cctv_console',
-      prompt: '[E] Monitor CCTV Surveillance Cameras',
+      prompt: '[E] Pantau Kamera Pengawas CCTV',
       data: { system: 'cctv' }
     });
 
@@ -1291,7 +1291,7 @@ export class Facility {
       mesh: radioMesh,
       type: 'radio',
       id: 'radio_station',
-      prompt: '[E] Access RF Radio Communications',
+      prompt: '[E] Akses Radio Komunikasi',
       data: { system: 'radio' }
     });
 
@@ -1304,7 +1304,7 @@ export class Facility {
       mesh: doc1,
       type: 'document',
       id: 'initial_report',
-      prompt: '[E] Read Sector 09 Initial Assessment Report',
+      prompt: '[E] Baca Laporan Awal Sektor 09',
       data: { docId: 'initial_report' }
     });
 
@@ -1325,7 +1325,7 @@ export class Facility {
       mesh: postitMesh,
       type: 'document',
       id: 'terminal_postit',
-      prompt: '[E] Read Security Override Post-It Note (Terminal Passwords)',
+      prompt: '[E] Baca Catatan Sandi Terminal (Post-It)',
       data: { docId: 'terminal_postit' }
     });
 
@@ -1848,7 +1848,7 @@ export class Facility {
       mesh: medDoc,
       type: 'document',
       id: 'missing_report',
-      prompt: '[E] Examine Session Log #47 (Subject 12)',
+      prompt: '[E] Periksa Catatan Medis Subjek 12 (Log #47)',
       data: { docId: 'missing_report' }
     });
 
@@ -1950,7 +1950,7 @@ export class Facility {
       mesh: breakerSwitch,
       type: 'breaker',
       id: 'main_power_breaker',
-      prompt: '[E] Flip Main Power Grid Switch',
+      prompt: '[E] Tarik Saklar Daya Listrik Utama',
       data: { powered: false }
     });
 
@@ -1968,7 +1968,7 @@ export class Facility {
       mesh: maintNote,
       type: 'document',
       id: 'keycard_note',
-      prompt: '[E] Read Maintenance Note',
+      prompt: '[E] Baca Catatan Teknisi Listrik',
       data: { docId: 'keycard_note' }
     });
 
@@ -2090,24 +2090,26 @@ export class Facility {
       new THREE.MeshStandardMaterial({
         color: 0x38bdf8,
         emissive: 0x0ea5e9,
-        emissiveIntensity: 1.4,
+        emissiveIntensity: 1.6,
         roughness: 0.15
       })
     );
     keycardMesh.position.set(-18.0, 0.88, 19.5);
     this.group.add(keycardMesh);
+    this.keycardMesh = keycardMesh;
 
     // Glowing beacon light shining down on Keycard
-    const keycardBeacon = new THREE.PointLight(0x38bdf8, 1.4, 6.0, 2.0);
+    const keycardBeacon = new THREE.PointLight(0x38bdf8, 1.8, 7.0, 2.0);
     keycardBeacon.position.set(-18.0, 1.6, 19.5);
     this.group.add(keycardBeacon);
+    this.keycardBeacon = keycardBeacon;
 
     this.interactables.push({
       mesh: keycardMesh,
       type: 'item',
       id: 'archive_keycard',
-      prompt: '[E] Take Restricted Archive Keycard (Level 4)',
-      data: { item: 'archive_keycard', name: 'Restricted Archive Keycard' }
+      prompt: '[E] Ambil Kartu Akses Ruang Arsip (Level 4)',
+      data: { item: 'archive_keycard', name: 'Kartu Akses Arsip Terlarang' }
     });
 
     // Dr. Vasquez Personal Journal
@@ -2119,7 +2121,7 @@ export class Facility {
       mesh: journalDoc,
       type: 'document',
       id: 'conflicting_doc_b',
-      prompt: '[E] Read Dr. Vasquez\'s Personal Journal',
+      prompt: '[E] Baca Buku Harian Dr. Vasquez',
       data: { docId: 'conflicting_doc_b' }
     });
 
@@ -2191,7 +2193,7 @@ export class Facility {
       mesh: tuner,
       type: 'radio_tuner',
       id: 'comm_tuner',
-      prompt: '[E] Synchronize Resonance Frequency (47.3 Hz)',
+      prompt: '[E] Sinkronkan Frekuensi Radio (47.3 Hz)',
       data: { targetFreq: 47.3 }
     });
 
@@ -2204,7 +2206,7 @@ export class Facility {
       mesh: commDoc,
       type: 'document',
       id: 'conflicting_doc_a',
-      prompt: '[E] Read Official Shutdown Report',
+      prompt: '[E] Baca Laporan Resmi Penutupan Fasilitas',
       data: { docId: 'conflicting_doc_a' }
     });
 
@@ -2326,7 +2328,7 @@ export class Facility {
       mesh: expLogs,
       type: 'document',
       id: 'experiment_logs',
-      prompt: '[E] Read Project ECHO Original Experiment Logs',
+      prompt: '[E] Baca Catatan Eksperimen Asli Proyek ECHO',
       data: { docId: 'experiment_logs' }
     });
 
@@ -2544,7 +2546,7 @@ export class Facility {
       mesh: finalConsole,
       type: 'final_choice',
       id: 'transmitter_choice',
-      prompt: '[E] Access Resonance Transmitter (FINAL DECISION)',
+      prompt: '[E] Akses Konsol Pemancar Reaktor (KEPUTUSAN AKHIR)',
       data: { final: true }
     });
 
@@ -2557,7 +2559,7 @@ export class Facility {
       mesh: finalTruthDoc,
       type: 'document',
       id: 'final_truth',
-      prompt: '[E] Read Message Left by Previous Observer',
+      prompt: '[E] Baca Pesan Petugas Sebelum Anda',
       data: { docId: 'final_truth' }
     });
 
@@ -2821,6 +2823,16 @@ export class Facility {
       const t = performance.now() * 0.003;
       const s = 1.0 + Math.sin(t) * 0.06;
       this.resonanceSphere.scale.set(s, s, s);
+    }
+
+    // Keycard Beacon & Hover Animation for high visibility
+    if (this.keycardMesh) {
+      const kt = performance.now() * 0.0025;
+      this.keycardMesh.position.y = 0.88 + Math.sin(kt) * 0.035;
+      this.keycardMesh.rotation.y += delta * 1.6;
+      if (this.keycardBeacon) {
+        this.keycardBeacon.intensity = 1.8 + Math.sin(kt * 2.0) * 0.6;
+      }
     }
 
     // Animate Gyroscopic Accelerator Rings in Secret Chamber

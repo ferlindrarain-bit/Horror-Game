@@ -14,8 +14,8 @@ export class RadioUI {
     this.container.id = 'radio-ui';
     this.container.innerHTML = `
       <div class="radio-header">
-        <span>RF RECEIVER // 47.3 MHz</span>
-        <span id="radio-close-btn" style="cursor:pointer; color:#888;">[×]</span>
+        <span>RADIO PENERIMA // FREKUENSI 47.3 MHz</span>
+        <span id="radio-close-btn" style="cursor:pointer; color:#888;">[ TUTUP × ]</span>
       </div>
       <div class="radio-body" id="radio-body-el"></div>
       <div class="radio-choices" id="radio-choices-el" style="display:none;"></div>

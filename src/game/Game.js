@@ -185,12 +185,12 @@ export class Game {
     };
 
     this.achievements.onUnlock = (ach) => {
-      this.hud.showNotification(`ACHIEVEMENT UNLOCKED: ${ach.icon} ${ach.name} - ${ach.description}`, 4500);
+      this.hud.showNotification(`🏆 PENCAPAIAN TERBUKA: ${ach.icon} ${ach.name} - ${ach.description}`, 4500);
       this.audio.playNotification();
     };
 
     this.story.onObjectiveComplete = (obj) => {
-      this.hud.showNotification(`OBJECTIVE COMPLETED: ${obj.text}`, 3000);
+      this.hud.showNotification(`✅ TARGET SELESAI: ${obj.text}`, 3500);
       this.audio.playNotification();
       this._updateHUDObjective();
       this._saveGameState();
@@ -222,7 +222,7 @@ export class Game {
           // Night 4 Reality Failure: lights flicker and emergency red mode engages
           this.lighting.setEmergencyMode(true);
           this.audio.playRadioStatic(2.0);
-          this.hud.showNotification('WARNING: FACILITY STRUCTURAL INSTABILITY DETECTED.', 4000);
+          this.hud.showNotification('PERINGATAN: KETIDAKSTABILAN STRUKTUR FASILITAS TERDETEKSI.', 4000);
         }
       });
     };
@@ -364,7 +364,7 @@ export class Game {
       this.scene.updateMatrixWorld(true);
       this.player.setCollidables(this.facility.getCollidables());
       this.story.completeObjective('n5_chamber');
-      this.hud.showNotification('SYSTEM: Secret Research Chamber containment seal disengaged!', 4000);
+      this.hud.showNotification('SISTEM: Segel Pintu Reaktor Rahasia Berhasil Dibuka!', 4500);
       this.audio.playDoor(true);
     };
 
@@ -543,7 +543,7 @@ export class Game {
         this.lighting.flickerLights.forEach(f => f.light.intensity = f.baseIntensity * 1.5);
         this.story.completeObjective('n1_power');
         this.story.completeObjective('n4_power');
-        this.hud.showNotification('FACILITY POWER RESTORED: Main generators online.', 3500);
+        this.hud.showNotification('DAYA LISTRIK PULIH: Generator utama telah aktif kembali.', 3500);
         break;
 
       case 'document':
@@ -572,9 +572,14 @@ export class Game {
       case 'item':
         this.story.addItem(item.data.item);
         this.facility.group.remove(item.mesh);
+        if (item.data.item === 'archive_keycard' && this.facility.keycardBeacon) {
+          this.facility.group.remove(this.facility.keycardBeacon);
+          this.facility.keycardBeacon = null;
+          this.facility.keycardMesh = null;
+        }
         const idx = this.facility.interactables.indexOf(item);
         if (idx !== -1) this.facility.interactables.splice(idx, 1);
-        this.hud.showNotification(`OBTAINED: ${item.data.name}`, 3000);
+        this.hud.showNotification(`DIPEROLEH: ${item.data.name}`, 3000);
         this.audio.playItemPickup();
         this.audio.playNotification();
 
@@ -591,13 +596,13 @@ export class Game {
             this.player.setCollidables(this.facility.getCollidables());
             this.story.completeObjective('n4_archive');
             this.audio.playDoor(true);
-            this.hud.showNotification('Restricted Archive unlocked with Keycard.', 3000);
+            this.hud.showNotification('Ruang Arsip Terbuka menggunakan Kartu Akses.', 3500);
           } else {
-            this.hud.showNotification('LOCKED: Restricted Archive requires Keycard (found in Storage Bay A).', 3000);
+            this.hud.showNotification('TERKUNCI: Ruang Arsip butuh Kartu Akses (ada di Storage Bay A).', 3500);
             this.audio.playDoor(false);
           }
         } else if (item.id === 'secret_chamber_door') {
-          this.hud.showNotification('LOCKED: Requires Terminal Authorization (override chamber 47.3).', 3000);
+          this.hud.showNotification('TERKUNCI: Butuh otorisasi terminal (ketik: override chamber 47.3).', 3500);
           this.audio.playDoor(false);
         }
         break;
@@ -605,7 +610,7 @@ export class Game {
       case 'radio_tuner':
         this.story.completeObjective('n3_comms');
         this.story.completeObjective('n3_recording');
-        this.hud.showNotification('CALIBRATED: 47.3 Hz Frequency Synchronized.', 3000);
+        this.hud.showNotification('TERKALIBRASI: Frekuensi 47.3 Hz Berhasil Disinkronkan.', 3500);
         this.audio.playRadioStatic(1.5);
         this.radio.playTransmission('n3_doctor');
         break;

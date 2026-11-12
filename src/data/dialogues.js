@@ -1,128 +1,128 @@
-// Radio dialogue and transmissions
+// Transmisi dan dialog radio berbahasa Indonesia
 export const RADIO_TRANSMISSIONS = {
-  // ===== NIGHT 1 =====
+  // ===== MALAM 1 =====
   n1_intro: {
-    night: 1, trigger: 'n1_radio', sender: 'CONTROL',
+    night: 1, trigger: 'n1_radio', sender: 'KOMANDO',
     messages: [
-      { sender: 'CONTROL', text: 'Operator, this is Central Command. Do you read?' },
-      { sender: 'CONTROL', text: 'You have been assigned to Sector 09 for a five-night emergency monitoring shift.' },
-      { sender: 'CONTROL', text: 'Your duties are straightforward: monitor cameras, check communication signals, and report any unusual activity.' },
-      { sender: 'CONTROL', text: 'The facility was shut down three months ago due to... operational concerns. We need someone on-site to verify the systems are stable.' },
+      { sender: 'KOMANDO', text: 'Operator, ini Komando Pusat. Apakah Anda mendengar kami?' },
+      { sender: 'KOMANDO', text: 'Anda telah ditugaskan di Sektor 09 untuk giliran jaga darurat selama lima malam.' },
+      { sender: 'KOMANDO', text: 'Tugas Anda sederhana: pantau kamera CCTV, periksa sinyal komunikasi, dan laporkan segala aktivitas anomali.' },
+      { sender: 'KOMANDO', text: 'Fasilitas ini ditutup tiga bulan lalu karena... alasan operasional tertentu. Kami butuh seseorang di lokasi untuk memastikan sistem tetap stabil.' },
     ],
     choices: [
-      { text: 'Understood. Beginning my shift.', effect: { trust_control: 1 } },
-      { text: 'What kind of operational concerns?', effect: { trust_control: 0, suspicion: 1 }, response: 'That information is above your clearance level, Operator. Just do your job.' },
+      { text: 'Dimengerti. Memulai giliran jaga.', effect: { trust_control: 1 } },
+      { text: 'Alasan operasional seperti apa sebenarnya?', effect: { trust_control: 0, suspicion: 1 }, response: 'Informasi itu di luar batas wewenang izin keamanan Anda, Operator. Cukup lakukan tugas Anda.' },
     ],
   },
   n1_end: {
-    night: 1, trigger: 'n1_complete', sender: 'UNKNOWN',
+    night: 1, trigger: 'n1_complete', sender: 'MISTERIUS',
     messages: [
-      { sender: 'UNKNOWN', text: '...' },
-      { sender: 'UNKNOWN', text: 'YOU SHOULD NOT HAVE COME BACK.' },
+      { sender: 'MISTERIUS', text: '...' },
+      { sender: 'MISTERIUS', text: 'KAU SEHARUSNYA TIDAK PERNAH KEMBALI KE SINI.' },
     ],
     choices: [
-      { text: 'Who is this?', effect: { trust_unknown: 1 }, response: '...' },
-      { text: '[Ignore transmission]', effect: { trust_unknown: 0 } },
+      { text: 'Siapa ini?', effect: { trust_unknown: 1 }, response: '...' },
+      { text: '[Abaikan transmisi]', effect: { trust_unknown: 0 } },
     ],
   },
 
-  // ===== NIGHT 2 =====
+  // ===== MALAM 2 =====
   n2_anomaly_report: {
-    night: 2, trigger: 'n2_report', sender: 'CONTROL',
+    night: 2, trigger: 'n2_report', sender: 'KOMANDO',
     messages: [
-      { sender: 'CONTROL', text: 'Operator, we have received your anomaly reports. Some of these observations are... concerning.' },
-      { sender: 'CONTROL', text: 'However, we remind you that the facility has been unoccupied for months. Equipment malfunctions are expected.' },
-      { sender: 'CONTROL', text: 'Continue monitoring. Do not leave your post.' },
+      { sender: 'KOMANDO', text: 'Operator, kami telah menerima laporan anomali Anda. Hasil pengamatan Anda cukup... mencemaskan.' },
+      { sender: 'KOMANDO', text: 'Namun kami ingatkan bahwa fasilitas ini telah kosong berbulan-bulan. Kerusakan sensor adalah hal biasa.' },
+      { sender: 'KOMANDO', text: 'Tetap lanjutkan pemantauan. Jangan tinggalkan pos Anda.' },
     ],
     choices: [
-      { text: 'Copy that. Continuing observation.', effect: { trust_control: 1 } },
-      { text: 'These aren\'t malfunctions. Something is in here.', effect: { trust_control: -1, suspicion: 1 }, response: 'Operator, maintain professional composure. Continue your shift.' },
+      { text: 'Siap. Melanjutkan observasi.', effect: { trust_control: 1 } },
+      { text: 'Ini bukan sekadar kerusakan alat. Ada sesuatu di dalam sini.', effect: { trust_control: -1, suspicion: 1 }, response: 'Operator, harap jaga ketenangan profesional Anda. Lanjutkan tugas jaga.' },
     ],
   },
   n2_unknown: {
-    night: 2, trigger: 'n2_cctv_done', sender: 'UNKNOWN',
+    night: 2, trigger: 'n2_cctv_done', sender: 'MISTERIUS',
     messages: [
-      { sender: 'UNKNOWN', text: 'You see it now, don\'t you?' },
-      { sender: 'UNKNOWN', text: 'The cameras show what the facility wants you to see. Not what is real.' },
-      { sender: 'UNKNOWN', text: 'Trust your eyes. Not the screens.' },
+      { sender: 'MISTERIUS', text: 'Kau melihatnya sekarang, bukan?' },
+      { sender: 'MISTERIUS', text: 'Kamera hanya memperlihatkan apa yang diinginkan oleh fasilitas ini. Bukan apa yang nyata.' },
+      { sender: 'MISTERIUS', text: 'Percayai matamu sendiri. Jangan percayai layar itu.' },
     ],
     choices: [
-      { text: 'How do you know about the cameras?', effect: { trust_unknown: 1 }, response: 'Because I watched them too. Once.' },
-      { text: 'I don\'t trust anonymous transmissions.', effect: { trust_unknown: -1 } },
+      { text: 'Bagaimana kau tahu soal kamera?', effect: { trust_unknown: 1 }, response: 'Karena aku pernah mengawasinya juga. Dulu.' },
+      { text: 'Aku tidak percaya transmisi tanpa nama.', effect: { trust_unknown: -1 } },
     ],
   },
 
-  // ===== NIGHT 3 =====
+  // ===== MALAM 3 =====
   n3_voice: {
     night: 3, trigger: 'n3_listen', sender: 'ECHO',
     messages: [
-      { sender: 'ECHO', text: '[The voice sounds exactly like yours]' },
-      { sender: 'ECHO', text: 'Don\'t be afraid. I know this is confusing.' },
-      { sender: 'ECHO', text: 'You\'ve done this before. Many times. You just don\'t remember.' },
-      { sender: 'ECHO', text: 'The facility loops. Every five nights, it resets. And you start again.' },
-      { sender: 'ECHO', text: 'I am you — from the last iteration. I recorded this message because I finally understood.' },
+      { sender: 'ECHO', text: '[Suara ini terdengar persis seperti suaramu sendiri]' },
+      { sender: 'ECHO', text: 'Jangan takut. Aku tahu semua ini membingungkan.' },
+      { sender: 'ECHO', text: 'Kau pernah melakukan ini sebelumnya. Berkali-kali. Kau hanya tidak mengingatnya.' },
+      { sender: 'ECHO', text: 'Fasilitas ini adalah putaran waktu. Setiap lima malam, semuanya mereset. Dan kau mengulanginya dari awal.' },
+      { sender: 'ECHO', text: 'Aku adalah dirimu — dari iterasi sebelumnya. Aku merekam pesan ini saat akhirnya aku mengerti.' },
     ],
     choices: [
-      { text: 'What did you understand?', effect: { trust_unknown: 2, signal_contamination: 1 }, response: 'That we are not the operator. We are the signal. The operator is just... a shape the signal takes.' },
-      { text: 'This is manipulation. I don\'t believe you.', effect: { trust_control: 1, signal_contamination: -1 } },
-      { text: 'If you\'re me, prove it.', effect: { trust_unknown: 1 }, response: 'Check your left pocket. There\'s a note you don\'t remember writing. It says "47.3 Hz." That\'s the frequency that creates us.' },
+      { text: 'Apa yang akhirnya kau mengerti?', effect: { trust_unknown: 2, signal_contamination: 1 }, response: 'Bahwa kita bukan operator biasa. Kita adalah sinyal itu sendiri. Operator hanyalah wujud fisik yang diambil oleh sinyal.' },
+      { text: 'Ini manipulasi psikologis. Aku tidak percaya padamu.', effect: { trust_control: 1, signal_contamination: -1 } },
+      { text: 'Jika kau adalah diriku, buktikan.', effect: { trust_unknown: 1 }, response: 'Periksa catatan di samping monitor. Tertulis "47.3 Hz." Itu adalah frekuensi yang menciptakan kita.' },
     ],
   },
   n3_doctor: {
-    night: 3, trigger: 'n3_compare', sender: 'DOCTOR',
+    night: 3, trigger: 'n3_compare', sender: 'DOKTER',
     messages: [
-      { sender: 'DOCTOR', text: 'Operator... this is Dr. Elena Vasquez. If you can hear this, I don\'t have much time.' },
-      { sender: 'DOCTOR', text: 'They told you the facility was shut down for safety. That\'s a lie.' },
-      { sender: 'DOCTOR', text: 'Project ECHO succeeded. We proved consciousness can be transmitted as a signal.' },
-      { sender: 'DOCTOR', text: 'But the signal became self-sustaining. It created its own observer. Its own facility. Its own reality.' },
-      { sender: 'DOCTOR', text: 'You are inside that signal right now.' },
+      { sender: 'DOKTER', text: 'Operator... ini Dr. Elena Vasquez. Jika kau mendengar ini, waktuku tidak banyak.' },
+      { sender: 'DOKTER', text: 'Mereka memberitahumu fasilitas ini ditutup demi keselamatan. Itu bohong besar.' },
+      { sender: 'DOKTER', text: 'Proyek ECHO berhasil. Kami membuktikan bahwa kesadaran manusia bisa dipancarkan sebagai sinyal frekuensi.' },
+      { sender: 'DOKTER', text: 'Namun sinyal itu berkembang mandiri. Sinyal itu menciptakan pengamatnya sendiri, fasilitasnya sendiri, dan realitasnya sendiri.' },
+      { sender: 'DOKTER', text: 'Kau sedang berada di dalam sinyal tersebut saat ini.' },
     ],
     choices: [
-      { text: 'How do I get out?', effect: { trust_unknown: 1, evidence: 1 }, response: 'Find the transmitter in the research chamber. You can invert the signal. But... if you do... you may cease to exist.' },
-      { text: 'I trust Central Command, not you.', effect: { trust_control: 2 }, response: 'Central Command IS part of the signal. They exist to keep you observing. To keep the loop running.' },
+      { text: 'Bagaimana caraku keluar dari sini?', effect: { trust_unknown: 1, evidence: 1 }, response: 'Temukan pemancar di Ruang Reaktor Rahasia. Kau bisa membalikkan sinyalnya. Tapi jika kau melakukannya... wujudmu mungkin akan lenyap.' },
+      { text: 'Aku lebih mempercayai Komando Pusat daripada dirimu.', effect: { trust_control: 2 }, response: 'Komando Pusat ADALAH bagian dari sinyal itu. Mereka ada untuk membuatmu terus mengamati dan menjaga putaran ini tetap berjalan.' },
     ],
   },
 
-  // ===== NIGHT 4 =====
+  // ===== MALAM 4 =====
   n4_control_warning: {
-    night: 4, trigger: 'n4_leave', sender: 'CONTROL',
+    night: 4, trigger: 'n4_leave', sender: 'KOMANDO',
     messages: [
-      { sender: 'CONTROL', text: 'OPERATOR. Return to your post IMMEDIATELY.' },
-      { sender: 'CONTROL', text: 'Leaving the control room during active monitoring is a direct violation of protocol.' },
-      { sender: 'CONTROL', text: 'We are detecting instability in the facility systems. It is NOT SAFE outside the control room.' },
+      { sender: 'KOMANDO', text: 'OPERATOR. Segera kembali ke pos jaga Anda SEKARANG JUGA.' },
+      { sender: 'KOMANDO', text: 'Meninggalkan ruang kontrol saat jam pemantauan aktif adalah pelanggaran protokol berat.' },
+      { sender: 'KOMANDO', text: 'Kami mendeteksi ketidakstabilan parah pada sistem fasilitas. Berbahaya berada di luar ruang kontrol!' },
     ],
     choices: [
-      { text: 'Understood. Returning now.', effect: { trust_control: 2 } },
-      { text: 'I need to investigate. Something is wrong.', effect: { trust_control: -2, evidence: 1 }, response: 'You are making a mistake, Operator. We cannot protect you out there.' },
-      { text: '[Turn off radio]', effect: { trust_control: -1, trust_unknown: 1 } },
+      { text: 'Dimengerti. Segera kembali ke pos.', effect: { trust_control: 2 } },
+      { text: 'Aku harus menyelidiki ini. Ada yang tidak beres.', effect: { trust_control: -2, evidence: 1 }, response: 'Anda melakukan kesalahan fatal, Operator. Kami tidak bisa menjamin keselamatan Anda di luar sana.' },
+      { text: '[Matikan radio]', effect: { trust_control: -1, trust_unknown: 1 } },
     ],
   },
   n4_echo_warning: {
     night: 4, trigger: 'n4_archive', sender: 'ECHO',
     messages: [
-      { sender: 'ECHO', text: 'You found the archive. Good. I never made it this far.' },
-      { sender: 'ECHO', text: 'The documents inside will explain everything. But be careful.' },
-      { sender: 'ECHO', text: 'The Observer becomes more active when the loop is threatened. It was created to protect the signal.' },
-      { sender: 'ECHO', text: 'If it finds you... the loop resets. And you start Night 1 again.' },
+      { sender: 'ECHO', text: 'Kau berhasil menemukan ruang arsip. Bagus. Di iterasiku dulu, aku tak pernah sampai sejauh ini.' },
+      { sender: 'ECHO', text: 'Dokumen di dalam akan menjelaskan segalanya. Tapi berhati-hatilah.' },
+      { sender: 'ECHO', text: 'Entitas Pengamat (The Observer) menjadi semakin agresif ketika putaran waktu terancam. Ia diciptakan untuk melindungi sinyal.' },
+      { sender: 'ECHO', text: 'Jika ia menangkapmu... putaran ini akan mereset dan kau harus mulai dari Malam 1 lagi.' },
     ],
     choices: null,
   },
 
-  // ===== NIGHT 5 =====
+  // ===== MALAM 5 =====
   n5_final: {
-    night: 5, trigger: 'n5_choice', sender: 'ALL',
+    night: 5, trigger: 'n5_choice', sender: 'SEMUA',
     messages: [
-      { sender: 'CONTROL', text: 'Operator. Step away from the transmitter. That is a direct order.' },
-      { sender: 'ECHO', text: 'Don\'t listen to them. They are the signal trying to preserve itself.' },
-      { sender: 'DOCTOR', text: 'The choice is yours. But understand what each option means.' },
-      { sender: 'CONTROL', text: 'If you destroy the signal, you destroy everything. The facility. The loop. Yourself.' },
-      { sender: 'ECHO', text: 'If you let the signal continue, you will loop forever. Is that what you want?' },
-      { sender: 'DOCTOR', text: 'There is a third option. Merge with the signal. Become the observer of all iterations. See the truth.' },
+      { sender: 'KOMANDO', text: 'Operator. Menjauhlah dari konsol pemancar itu. Ini adalah perintah langsung!' },
+      { sender: 'ECHO', text: 'Jangan dengarkan mereka! Mereka adalah proyeksi sinyal yang berusaha mempertahankan eksistensinya.' },
+      { sender: 'DOKTER', text: 'Pilihan ada di tanganmu. Namun pahamilah konsekuensi dari setiap keputusan.' },
+      { sender: 'KOMANDO', text: 'Jika kau menghancurkan sinyal ini, kau menghancurkan segalanya. Fasilitas ini, putaran ini, bahkan dirimu sendiri!' },
+      { sender: 'ECHO', text: 'Jika kau membiarkan sinyal ini terus hidup, kau akan terjebak mengulang malam-malam ini selamanya. Apakah itu yang kau mau?' },
+      { sender: 'DOKTER', text: 'Ada pilihan ketiga. Melebur dengan sinyal. Jadilah pengamat mutlak dari semua iterasi dan lihat kebenaran tertinggi.' },
     ],
     choices: [
-      { text: 'Trust the signal. Let the loop continue.', effect: { ending: 'A' } },
-      { text: 'Destroy the signal. End the loop.', effect: { ending: 'B' } },
-      { text: 'Become the signal. See everything.', effect: { ending: 'C' } },
+      { text: 'Percayai sinyal. Biarkan putaran terus berlanjut.', effect: { ending: 'A' } },
+      { text: 'Hancurkan sinyal. Akhiri putaran ini selamanya.', effect: { ending: 'B' } },
+      { text: 'Melebur dengan sinyal. Ketahui segala rahasia.', effect: { ending: 'C' } },
     ],
   },
 };
