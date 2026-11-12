@@ -125,7 +125,7 @@ export class AudioManager {
     osc.frequency.setValueAtTime(freq, t);
     osc.frequency.exponentialRampToValueAtTime(18, t + 0.12);
 
-    const vol = isSprinting ? 0.38 : 0.22;
+    const vol = isSprinting ? 0.18 : 0.10;
     gain.gain.setValueAtTime(vol, t);
     gain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
 
@@ -139,60 +139,137 @@ export class AudioManager {
   playFlashlightClick() {
     if (!this.ctx) return;
     const t = this.ctx.currentTime;
-    const osc = this.ctx.createOscillator();
+
+    // Muted mechanical toggle click — short filtered noise snap
+    const bufSize = Math.floor(this.ctx.sampleRate * 0.04);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.006));
+    }
+
+    const src = this.ctx.createBufferSource();
+    src.buffer = buf;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(900, t);
+    filter.Q.setValueAtTime(1.2, t);
+
+    // Subtle low metallic thud underneath
+    const thud = this.ctx.createOscillator();
+    thud.type = 'sine';
+    thud.frequency.setValueAtTime(120, t);
+    thud.frequency.exponentialRampToValueAtTime(45, t + 0.04);
+    const thudGain = this.ctx.createGain();
+    thudGain.gain.setValueAtTime(0.06, t);
+    thudGain.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
+    thud.connect(thudGain);
+    thudGain.connect(this.sfxGain);
+    thud.start(t);
+    thud.stop(t + 0.04);
+
     const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.08, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
 
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(1600, t);
-    osc.frequency.exponentialRampToValueAtTime(350, t + 0.035);
-
-    gain.gain.setValueAtTime(0.45, t);
-    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.035);
-
-    osc.connect(gain);
+    src.connect(filter);
+    filter.connect(gain);
     gain.connect(this.sfxGain);
-
-    osc.start(t);
-    osc.stop(t + 0.035);
+    src.start(t);
+    src.stop(t + 0.04);
   }
 
   playDoor(isOpen = true) {
     if (!this.ctx) return;
     const t = this.ctx.currentTime;
+
+    // Heavy metallic door mechanism — low filtered thud + creaking noise
     const osc = this.ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(isOpen ? 80 : 110, t);
+    osc.frequency.exponentialRampToValueAtTime(25, t + 0.4);
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(180, t);
+
     const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.18, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
 
-    osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(isOpen ? 130 : 190, t);
-    osc.frequency.exponentialRampToValueAtTime(isOpen ? 260 : 35, t + 0.45);
-
-    gain.gain.setValueAtTime(0.35, t);
-    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.55);
-
-    osc.connect(gain);
+    osc.connect(filter);
+    filter.connect(gain);
     gain.connect(this.sfxGain);
-
     osc.start(t);
-    osc.stop(t + 0.55);
+    osc.stop(t + 0.5);
+
+    // Metallic scrape/creak overlay
+    const bufSize = Math.floor(this.ctx.sampleRate * 0.45);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      const env = Math.sin(Math.PI * i / bufSize);
+      data[i] = (Math.random() * 2 - 1) * env;
+    }
+    const src = this.ctx.createBufferSource();
+    src.buffer = buf;
+
+    const creakFilter = this.ctx.createBiquadFilter();
+    creakFilter.type = 'bandpass';
+    creakFilter.frequency.setValueAtTime(isOpen ? 350 : 240, t);
+    creakFilter.Q.setValueAtTime(3, t);
+
+    const creakGain = this.ctx.createGain();
+    creakGain.gain.setValueAtTime(0.06, t);
+    creakGain.gain.exponentialRampToValueAtTime(0.001, t + 0.45);
+
+    src.connect(creakFilter);
+    creakFilter.connect(creakGain);
+    creakGain.connect(this.sfxGain);
+    src.start(t);
+    src.stop(t + 0.45);
   }
 
   playTerminalBeep(freq = 880) {
     if (!this.ctx) return;
     const t = this.ctx.currentTime;
+
+    // Muted low-frequency terminal confirmation — soft sine pulse with decay
     const osc = this.ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(Math.min(freq * 0.22, 200), t);
+    osc.frequency.exponentialRampToValueAtTime(60, t + 0.12);
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(300, t);
+
     const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.04, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
 
-    osc.type = 'square';
-    osc.frequency.setValueAtTime(freq, t);
-
-    gain.gain.setValueAtTime(0.12, t);
-    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
-
-    osc.connect(gain);
+    osc.connect(filter);
+    filter.connect(gain);
     gain.connect(this.sfxGain);
-
     osc.start(t);
-    osc.stop(t + 0.05);
+    osc.stop(t + 0.12);
+
+    // Tiny static pop for that old-tech feel
+    const popBuf = this.ctx.createBuffer(1, Math.floor(this.ctx.sampleRate * 0.02), this.ctx.sampleRate);
+    const popData = popBuf.getChannelData(0);
+    for (let i = 0; i < popData.length; i++) {
+      popData[i] = (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.004));
+    }
+    const popSrc = this.ctx.createBufferSource();
+    popSrc.buffer = popBuf;
+    const popGain = this.ctx.createGain();
+    popGain.gain.setValueAtTime(0.025, t);
+    popGain.gain.exponentialRampToValueAtTime(0.001, t + 0.02);
+    popSrc.connect(popGain);
+    popGain.connect(this.sfxGain);
+    popSrc.start(t);
+    popSrc.stop(t + 0.02);
   }
 
   playRadioStatic(duration = 1.0) {
@@ -209,11 +286,11 @@ export class AudioManager {
 
     const filter = this.ctx.createBiquadFilter();
     filter.type = 'bandpass';
-    filter.frequency.setValueAtTime(1400, this.ctx.currentTime);
-    filter.Q.setValueAtTime(3.5, this.ctx.currentTime);
+    filter.frequency.setValueAtTime(800, this.ctx.currentTime);
+    filter.Q.setValueAtTime(2.0, this.ctx.currentTime);
 
     const gain = this.ctx.createGain();
-    gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+    gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + duration);
 
     whiteNoise.connect(filter);
@@ -316,40 +393,72 @@ export class AudioManager {
   playItemPickup() {
     if (!this.ctx) return;
     const t = this.ctx.currentTime;
+
+    // Subtle dark pickup — muffled metallic clink with low resonance
     const osc = this.ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(280, t);
+    osc.frequency.exponentialRampToValueAtTime(120, t + 0.15);
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(400, t);
+
     const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.08, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
 
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(523.25, t); // C5
-    osc.frequency.exponentialRampToValueAtTime(1046.5, t + 0.18); // C6
-
-    gain.gain.setValueAtTime(0.28, t);
-    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
-
-    osc.connect(gain);
+    osc.connect(filter);
+    filter.connect(gain);
     gain.connect(this.sfxGain);
-
     osc.start(t);
-    osc.stop(t + 0.25);
+    osc.stop(t + 0.2);
+
+    // Soft secondary ring (muted metallic overtone)
+    const osc2 = this.ctx.createOscillator();
+    osc2.type = 'triangle';
+    osc2.frequency.setValueAtTime(560, t + 0.02);
+    osc2.frequency.exponentialRampToValueAtTime(200, t + 0.18);
+
+    const gain2 = this.ctx.createGain();
+    gain2.gain.setValueAtTime(0.03, t + 0.02);
+    gain2.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+
+    osc2.connect(gain2);
+    gain2.connect(this.sfxGain);
+    osc2.start(t + 0.02);
+    osc2.stop(t + 0.18);
   }
 
   playInteractFocus() {
     if (!this.ctx) return;
     const t = this.ctx.currentTime;
-    const osc = this.ctx.createOscillator();
+
+    // Whisper-quiet filtered noise tick — like brushing metal in the dark
+    const bufSize = Math.floor(this.ctx.sampleRate * 0.025);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.005));
+    }
+
+    const src = this.ctx.createBufferSource();
+    src.buffer = buf;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(600, t);
+    filter.Q.setValueAtTime(2, t);
+
     const gain = this.ctx.createGain();
-
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(1100, t);
-
-    gain.gain.setValueAtTime(0.06, t);
+    gain.gain.setValueAtTime(0.035, t);
     gain.gain.exponentialRampToValueAtTime(0.001, t + 0.025);
 
-    osc.connect(gain);
+    src.connect(filter);
+    filter.connect(gain);
     gain.connect(this.sfxGain);
-
-    osc.start(t);
-    osc.stop(t + 0.025);
+    src.start(t);
+    src.stop(t + 0.025);
   }
 
   playElectricBuzz() {
@@ -412,21 +521,38 @@ export class AudioManager {
   playNotification() {
     if (!this.ctx) return;
     const t = this.ctx.currentTime;
+
+    // Dark muted notification — low eerie bell tone with subtle dissonance
     const osc = this.ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(196, t); // G3 — dark register
+    osc.frequency.exponentialRampToValueAtTime(165, t + 0.5); // E3 subtle pitch drop
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(500, t);
+
     const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.07, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.55);
 
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(587.33, t); // D5
-    osc.frequency.setValueAtTime(880, t + 0.08); // A5
-
-    gain.gain.setValueAtTime(0.25, t);
-    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
-
-    osc.connect(gain);
+    osc.connect(filter);
+    filter.connect(gain);
     gain.connect(this.sfxGain);
-
     osc.start(t);
-    osc.stop(t + 0.35);
+    osc.stop(t + 0.55);
+
+    // Ghost overtone (subtle dissonant tritone shimmer)
+    const osc2 = this.ctx.createOscillator();
+    osc2.type = 'triangle';
+    osc2.frequency.setValueAtTime(277.2, t); // C#4 tritone against G3
+    const gain2 = this.ctx.createGain();
+    gain2.gain.setValueAtTime(0.02, t);
+    gain2.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+    osc2.connect(gain2);
+    gain2.connect(this.sfxGain);
+    osc2.start(t + 0.03);
+    osc2.stop(t + 0.4);
   }
 
   // ─── CUTSCENE SOUND EFFECTS ──────────────────────────────────────
@@ -484,26 +610,55 @@ export class AudioManager {
     osc2.stop(t + 0.08);
   }
 
-  /** Alert warning — two-tone klaxon beep */
+  /** Alert warning — eerie low alarm pulse (dark siren) */
   playCutsceneAlert() {
     if (!this.ctx) return;
     const t = this.ctx.currentTime;
 
+    // Deep ominous alarm pulse — low sine with slow pulse modulation
     for (let i = 0; i < 3; i++) {
-      const offset = i * 0.3;
+      const offset = i * 0.4;
       const osc = this.ctx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(110, t + offset);
+      osc.frequency.exponentialRampToValueAtTime(65, t + offset + 0.32);
+
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(250, t + offset);
+
       const gain = this.ctx.createGain();
-      osc.type = 'square';
-      osc.frequency.setValueAtTime(880, t + offset);
-      osc.frequency.setValueAtTime(660, t + offset + 0.12);
-      gain.gain.setValueAtTime(0.15, t + offset);
-      gain.gain.setValueAtTime(0.12, t + offset + 0.12);
-      gain.gain.exponentialRampToValueAtTime(0.001, t + offset + 0.25);
-      osc.connect(gain);
+      gain.gain.setValueAtTime(0.12, t + offset);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + offset + 0.35);
+
+      osc.connect(filter);
+      filter.connect(gain);
       gain.connect(this.sfxGain);
       osc.start(t + offset);
-      osc.stop(t + offset + 0.25);
+      osc.stop(t + offset + 0.35);
     }
+
+    // Noise hiss undertone (old speaker crackle)
+    const bufSize = Math.floor(this.ctx.sampleRate * 1.0);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * 0.3;
+    }
+    const src = this.ctx.createBufferSource();
+    src.buffer = buf;
+    const nFilter = this.ctx.createBiquadFilter();
+    nFilter.type = 'bandpass';
+    nFilter.frequency.setValueAtTime(300, t);
+    nFilter.Q.setValueAtTime(3, t);
+    const nGain = this.ctx.createGain();
+    nGain.gain.setValueAtTime(0.03, t);
+    nGain.gain.exponentialRampToValueAtTime(0.001, t + 1.0);
+    src.connect(nFilter);
+    nFilter.connect(nGain);
+    nGain.connect(this.sfxGain);
+    src.start(t);
+    src.stop(t + 1.0);
   }
 
   /** Radio static burst — grainy noise with bandpass */
