@@ -28,8 +28,12 @@ export class HUD {
         </div>
       </div>
       <div class="hud-objective" id="hud-objective-box">
-        <div class="hud-label" style="margin-bottom: 4px;">TARGET SAAT INI</div>
+        <div class="hud-label" style="margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center;">
+          <span>TARGET SAAT INI</span>
+          <span style="font-size: 0.62rem; color: #38bdf8; letter-spacing: 0.5px;">[M] PETA</span>
+        </div>
         <div id="hud-objective-text">Masuk ke Sektor 09 dan periksa Ruang Kontrol Keamanan.</div>
+        <div id="hud-nav-guidance" style="font-size: 0.72rem; color: #f59e0b; margin-top: 5px; font-weight: bold; display: flex; align-items: center; gap: 4px; letter-spacing: 0.5px;">📍 PANDUAN: Ruang Kontrol Keamanan (Lobi Tengah)</div>
       </div>
       <div class="interact-prompt" id="hud-interact-prompt">[E] Interaksi</div>
     `;
@@ -96,6 +100,7 @@ export class HUD {
     this.staminaFill = document.getElementById('hud-stamina-fill');
     this.nightTitle = document.getElementById('hud-night-title');
     this.objectiveText = document.getElementById('hud-objective-text');
+    this.guidanceText = document.getElementById('hud-nav-guidance');
     this.interactPrompt = document.getElementById('hud-interact-prompt');
     this.currentNightTitle = '';
     this.currentNightSubtitle = '';
@@ -145,6 +150,20 @@ export class HUD {
   updateObjective(text) {
     if (this.objectiveText) {
       this.objectiveText.textContent = text;
+    }
+  }
+
+  updateGuidance(text) {
+    if (!this.guidanceText) {
+      this.guidanceText = document.getElementById('hud-nav-guidance');
+    }
+    if (this.guidanceText) {
+      if (text) {
+        this.guidanceText.style.display = 'flex';
+        this.guidanceText.textContent = text;
+      } else {
+        this.guidanceText.style.display = 'none';
+      }
     }
   }
 

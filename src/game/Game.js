@@ -693,9 +693,83 @@ export class Game {
     this.hud.updateNight(currNight.title, currNight.subtitle);
     this._updateHUDObjective();
 
+    // Helpful controls reminder notification on start
+    setTimeout(() => {
+      this.hud.showNotification('💡 KONTROL: [W,A,S,D] Bergerak • [F] Senter • [E] Interaksi • [M] Buka Peta Bunker', 6000);
+    }, 1200);
+
     if (!this.flashlight.isOn()) {
       this.achievements.unlock('no_light');
     }
+  }
+
+  _getTargetMetadata(objId) {
+    const meta = {
+      'n1_enter': { x: 0, z: 0, name: 'Ruang Kontrol (Lobi Tengah)', room: 'Ruang Kontrol' },
+      'n1_power': { x: -20, z: 4, name: 'Ruang Listrik (Lorong Barat)', room: 'Ruang Listrik' },
+      'n1_cctv': { x: 1.8, z: -1.8, name: 'Konsol CCTV (Meja Ruang Kontrol)', room: 'Ruang Kontrol' },
+      'n1_report': { x: -1.8, z: -1.8, name: 'Terminal Komputer (Meja Ruang Kontrol)', room: 'Ruang Kontrol' },
+      'n1_radio': { x: 0, z: -2.2, name: 'Transceiver Radio (Meja Ruang Kontrol)', room: 'Ruang Kontrol' },
+      'n2_cctv': { x: 1.8, z: -1.8, name: 'Konsol CCTV (Meja Ruang Kontrol)', room: 'Ruang Kontrol' },
+      'n2_medical': { x: 20, z: 4, name: 'Ruang Medis (Lorong Timur)', room: 'Ruang Medis' },
+      'n2_document': { x: 16.5, z: 4.0, name: 'Dokumen Subjek 12 (Meja Ruang Medis)', room: 'Ruang Medis' },
+      'n2_password': { x: -1.8, z: -1.8, name: 'Terminal Komputer (Klik Tombol BUKA 997)', room: 'Ruang Kontrol' },
+      'n2_report': { x: -1.8, z: -1.8, name: 'Terminal Komputer (Klik LAPOR TEMUAN)', room: 'Ruang Kontrol' },
+      'n3_comms': { x: 20, z: 21, name: 'Ruang Komunikasi (Lorong Timur)', room: 'Ruang Komunikasi' },
+      'n3_listen': { x: 0, z: -2.2, name: 'Radio Komunikasi (Ruang Kontrol)', room: 'Ruang Kontrol' },
+      'n3_recording': { x: 19.6, z: 24.5, name: 'Tuner Frekuensi 47.3 Hz (Ruang Komunikasi)', room: 'Ruang Komunikasi' },
+      'n3_compare': { x: 21.6, z: 24.5, name: 'Catatan Dokumen (Meja Komunikasi)', room: 'Ruang Komunikasi' },
+      'n3_decide': { x: 0, z: -2.2, name: 'Radio Komunikasi (Ruang Kontrol)', room: 'Ruang Kontrol' },
+      'n4_leave': { x: 0, z: 12.5, name: 'Lorong Utama Bunker', room: 'Lorong Utama' },
+      'n4_power': { x: -20, z: 4, name: 'Ruang Listrik (Lorong Barat)', room: 'Ruang Listrik' },
+      'n4_keycard': { x: -20, z: 21, name: 'Kartu Akses Arsip (Meja Storage Bay A)', room: 'Gudang Barat' },
+      'n4_escape': { x: 30, z: 12.5, name: 'Lorong Timur (Menuju Ruang Arsip)', room: 'Lorong Timur' },
+      'n4_archive': { x: 44, z: -3.9, name: 'Pintu Ruang Arsip (Ujung Timur)', room: 'Ruang Arsip' },
+      'n4_evidence': { x: 39.0, z: -11.0, name: 'Dokumen Proyek ECHO (Ruang Arsip)', room: 'Ruang Arsip' },
+      'n5_chamber': { x: 44, z: -17.9, name: 'Pintu Secret Chamber (Di Balik Arsip)', room: 'Secret Chamber' },
+      'n5_truth': { x: 43.3, z: -21.5, name: 'Dokumen Kebenaran (Ruang Reaktor)', room: 'Secret Chamber' },
+      'n5_logs': { x: 44, z: -11.0, name: 'Catatan Dr. Vasquez (Meja Arsip)', room: 'Ruang Arsip' },
+      'n5_signal': { x: 44, z: -20.5, name: 'Konsol Reaktor (Secret Chamber)', room: 'Secret Chamber' },
+      'n5_choice': { x: 44, z: -20.5, name: 'Konsol Pemancar (Secret Chamber)', room: 'Secret Chamber' }
+    };
+    return meta[objId] || null;
+  }
+
+  _updateNavigationGuidance() {
+    if (!this.hud || !this.player) return;
+    const currNight = this.story.getCurrentNight();
+    if (!currNight) return;
+    const pending = currNight.objectives.find(o => !o.completed);
+    if (!pending) {
+      this.hud.updateGuidance('✅ Semua tugas malam ini telah selesai.');
+      return;
+    }
+
+    const target = this._getTargetMetadata(pending.id);
+    if (!target) {
+      this.hud.updateGuidance(null);
+      return;
+    }
+
+    const pos = this.player.getPosition();
+    const dx = target.x - pos.x;
+    const dz = target.z - pos.z;
+    const dist = Math.sqrt(dx * dx + dz * dz);
+
+    let dirText = '';
+    if (dist <= 3.6) {
+      dirText = '🎯 ANDA DI LOKASI! Dekati objek dan tekan [E]';
+    } else {
+      let direction = '';
+      if (Math.abs(dx) > Math.abs(dz)) {
+        direction = dx > 0 ? 'arah Timur (Kanan)' : 'arah Barat (Kiri)';
+      } else {
+        direction = dz > 0 ? 'arah Selatan (Lurus)' : 'arah Utara (Mundur)';
+      }
+      dirText = `📍 TUJUAN: ${target.name} • ${Math.round(dist)}m (${direction})`;
+    }
+
+    this.hud.updateGuidance(dirText);
   }
 
   _updateHUDObjective() {
@@ -705,8 +779,9 @@ export class Game {
     if (pending) {
       this.hud.updateObjective(pending.text);
     } else {
-      this.hud.updateObjective('All night shift objectives completed.');
+      this.hud.updateObjective('Semua objektif giliran jaga selesai.');
     }
+    this._updateNavigationGuidance();
   }
 
   _onCloudSaveLoaded(saveData) {
@@ -744,6 +819,13 @@ export class Game {
       this.interaction.update();
       this.facility.update(delta);
       this.anomaly.update(delta, this.story.currentNightIndex);
+
+      // Real-time navigation distance and guidance update
+      this.navGuidanceTimer = (this.navGuidanceTimer || 0) - delta;
+      if (this.navGuidanceTimer <= 0) {
+        this.navGuidanceTimer = 0.35;
+        this._updateNavigationGuidance();
+      }
 
       // Periodic underground bunker pipe creak / ambient groan
       this.pipeCreakTimer -= delta;

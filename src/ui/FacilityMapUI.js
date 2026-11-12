@@ -537,6 +537,52 @@ export class FacilityMapUI {
       ctx.fillText(`YOU [X:${pos.x.toFixed(1)} Z:${pos.z.toFixed(1)}]`, px, py + 18);
     }
 
+    // Render Active Objective Waypoint Target Beacon
+    const targetLoc = this._getTargetLocation();
+    if (targetLoc) {
+      const tx = toScreenX(targetLoc.x);
+      const ty = toScreenY(targetLoc.z);
+
+      const time = performance.now() * 0.004;
+      const pulseR = 12 + Math.sin(time * 2) * 5;
+
+      // Pulsing golden ring
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(tx, ty, pulseR, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Outer expanding radar ping
+      const pingR = 14 + ((time * 12) % 20);
+      const pingAlpha = Math.max(0, 1 - (pingR - 14) / 20) * 0.7;
+      ctx.strokeStyle = `rgba(245, 158, 11, ${pingAlpha})`;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(tx, ty, pingR, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Crosshair brackets
+      ctx.strokeStyle = '#fef08a';
+      ctx.lineWidth = 2;
+      const bSize = 6;
+      ctx.beginPath();
+      ctx.moveTo(tx - bSize - 4, ty); ctx.lineTo(tx - 4, ty);
+      ctx.moveTo(tx + 4, ty); ctx.lineTo(tx + bSize + 4, ty);
+      ctx.moveTo(tx, ty - bSize - 4); ctx.lineTo(tx, ty - 4);
+      ctx.moveTo(tx, ty + 4); ctx.lineTo(tx, ty + bSize + 4);
+      ctx.stroke();
+
+      // Target Label
+      ctx.fillStyle = '#fef08a';
+      ctx.font = 'bold 9px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(`🎯 ${targetLoc.name}`, tx, ty - pulseR - 6);
+      ctx.fillStyle = '#f59e0b';
+      ctx.font = '7.5px monospace';
+      ctx.fillText(`[${targetLoc.hint}]`, tx, ty + pulseR + 10);
+    }
+
     // Update Telemetry Panel text
     if (this.story) {
       const currNight = this.story.getCurrentNight();
@@ -546,8 +592,47 @@ export class FacilityMapUI {
       if (nightEl && currNight) nightEl.textContent = `${currNight.title} : ${currNight.subtitle}`;
       if (objEl && currNight) {
         const pending = currNight.objectives.find(o => !o.completed);
-        objEl.textContent = pending ? pending.text : 'All active shift protocols fulfilled.';
+        objEl.textContent = pending ? pending.text : 'Semua protokol aktif telah terpenuhi.';
       }
     }
+  }
+
+  _getTargetLocation() {
+    if (!this.story) return null;
+    const currNight = this.story.getCurrentNight();
+    if (!currNight || !currNight.objectives) return null;
+    const active = currNight.objectives.find(o => !o.completed);
+    if (!active) return null;
+
+    const targets = {
+      'n1_enter': { x: 0, z: 0, name: 'RUANG KONTROL', hint: 'Lobi Tengah (SEC-01)' },
+      'n1_power': { x: -20, z: 4, name: 'SUBSTASI LISTRIK', hint: 'Lorong Barat (PWR-04)' },
+      'n1_cctv': { x: 1.8, z: -1.8, name: 'KONSOL CCTV', hint: 'Meja Ruang Kontrol' },
+      'n1_report': { x: -1.8, z: -1.8, name: 'TERMINAL KOMPUTER', hint: 'Meja Ruang Kontrol' },
+      'n1_radio': { x: 0, z: -2.2, name: 'TRANSCEIVER RADIO', hint: 'Meja Ruang Kontrol' },
+      'n2_cctv': { x: 1.8, z: -1.8, name: 'KONSOL CCTV', hint: 'Meja Ruang Kontrol' },
+      'n2_medical': { x: 20, z: 4, name: 'RUANG MEDIS', hint: 'Lorong Timur (MED-05)' },
+      'n2_document': { x: 16.5, z: 4.0, name: 'DOKUMEN SUBJEK 12', hint: 'Meja Ruang Medis' },
+      'n2_password': { x: -1.8, z: -1.8, name: 'TERMINAL KOMPUTER', hint: 'Ruang Kontrol (Kode 997)' },
+      'n2_report': { x: -1.8, z: -1.8, name: 'TERMINAL KOMPUTER', hint: 'Ruang Kontrol (Ketik lapor)' },
+      'n3_comms': { x: 20, z: 21, name: 'RUANG KOMUNIKASI', hint: 'Lorong Timur Selatan (COM-07)' },
+      'n3_listen': { x: 0, z: -2.2, name: 'RADIO KOMUNIKASI', hint: 'Ruang Kontrol / Komunikasi' },
+      'n3_recording': { x: 19.6, z: 24.5, name: 'TUNER FREKUENSI', hint: 'Ruang Komunikasi (47.3 Hz)' },
+      'n3_compare': { x: 21.6, z: 24.5, name: 'CATATAN DOKUMEN', hint: 'Meja Ruang Komunikasi' },
+      'n3_decide': { x: 0, z: -2.2, name: 'RADIO KOMUNIKASI', hint: 'Ruang Kontrol' },
+      'n4_leave': { x: 0, z: 12.5, name: 'LORONG UTAMA', hint: 'Keluar ke Lorong Transit' },
+      'n4_power': { x: -20, z: 4, name: 'SUBSTASI LISTRIK', hint: 'Lorong Barat (PWR-04)' },
+      'n4_keycard': { x: -20, z: 21, name: 'KARTU AKSES ARSIP', hint: 'Meja Storage Bay A (Gudang Barat)' },
+      'n4_escape': { x: 30, z: 12.5, name: 'LORONG TIMUR', hint: 'Menuju Ruang Arsip' },
+      'n4_archive': { x: 44, z: -3.9, name: 'PINTU ARSIP', hint: 'Pintu Sisi Timur (ARC-09)' },
+      'n4_evidence': { x: 39.0, z: -11.0, name: 'BUKTI PROYEK ECHO', hint: 'Di Dalam Ruang Arsip' },
+      'n5_chamber': { x: 44, z: -17.9, name: 'PINTU REAKTOR', hint: 'Secret Chamber di balik Arsip' },
+      'n5_truth': { x: 43.3, z: -21.5, name: 'DOKUMEN KEBENARAN', hint: 'Ruang Reaktor Rahasia' },
+      'n5_logs': { x: 44, z: -11.0, name: 'CATATAN DR. VASQUEZ', hint: 'Meja Ruang Arsip' },
+      'n5_signal': { x: 44, z: -20.5, name: 'KONSOL REAKTOR', hint: 'Ruang Reaktor Rahasia' },
+      'n5_choice': { x: 44, z: -20.5, name: 'KONSOL PEMANCAR', hint: 'Keputusan Akhir di Reaktor' }
+    };
+
+    return targets[active.id] || null;
   }
 }
