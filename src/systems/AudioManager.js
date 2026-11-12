@@ -805,34 +805,36 @@ export class AudioManager {
 
   // ─── HORROR AMBIENT MUSIC & ENVIRONMENTAL SFX ─────────────────────
 
-  /** Start looping horror ambient music layers */
+  /** Start looping terrifying psychological horror soundtrack engine */
   startHorrorMusic() {
     if (!this.ctx || this.horrorMusicActive) return;
     this.horrorMusicActive = true;
+    this.horrorTimeouts = this.horrorTimeouts || [];
     const t = this.ctx.currentTime;
 
-    // Layer 1: Deep minor drone pad (D2 ~73Hz + Ab2 ~104Hz tritone)
+    // Layer 1: Deep Subterranean Abyss Drone (43.6Hz F1 + 61.7Hz B1 demonic tritone)
     const drone1 = this.ctx.createOscillator();
     drone1.type = 'sawtooth';
-    drone1.frequency.setValueAtTime(73.42, t);
+    drone1.frequency.setValueAtTime(43.65, t); // F1
     const drone2 = this.ctx.createOscillator();
     drone2.type = 'sawtooth';
-    drone2.frequency.setValueAtTime(103.83, t); // tritone dissonance
-    // Slow detune LFO
+    drone2.frequency.setValueAtTime(61.74, t); // B1 (diabolus in musica)
+
+    // Slow organic pitch detuning
     const droneLfo = this.ctx.createOscillator();
-    droneLfo.frequency.setValueAtTime(0.08, t);
+    droneLfo.frequency.setValueAtTime(0.06, t);
     const droneLfoGain = this.ctx.createGain();
-    droneLfoGain.gain.setValueAtTime(2.5, t);
+    droneLfoGain.gain.setValueAtTime(2.2, t);
     droneLfo.connect(droneLfoGain);
     droneLfoGain.connect(drone2.frequency);
     droneLfo.start(t);
 
     const droneFilter = this.ctx.createBiquadFilter();
     droneFilter.type = 'lowpass';
-    droneFilter.frequency.setValueAtTime(150, t);
+    droneFilter.frequency.setValueAtTime(110, t);
 
     const droneGain = this.ctx.createGain();
-    droneGain.gain.setValueAtTime(0.10, t);
+    droneGain.gain.setValueAtTime(0.12, t);
 
     drone1.connect(droneFilter);
     drone2.connect(droneFilter);
@@ -841,30 +843,32 @@ export class AudioManager {
     drone1.start(t);
     drone2.start(t);
 
-    // Layer 2: Evolving dissonant chord (minor 2nd intervals, LFO modulated)
-    const chord1 = this.ctx.createOscillator();
-    chord1.type = 'sine';
-    chord1.frequency.setValueAtTime(146.83, t); // D3
-    const chord2 = this.ctx.createOscillator();
-    chord2.type = 'sine';
-    chord2.frequency.setValueAtTime(155.56, t); // Eb3 - minor 2nd
-    const chordLfo = this.ctx.createOscillator();
-    chordLfo.frequency.setValueAtTime(0.15, t);
-    const chordLfoGain = this.ctx.createGain();
-    chordLfoGain.gain.setValueAtTime(3, t);
-    chordLfo.connect(chordLfoGain);
-    chordLfoGain.connect(chord1.frequency);
-    chordLfo.start(t);
+    // Layer 2: Ghostly Choir Vocal Formant Hum (Lost Souls in the Concrete)
+    const choirOsc = this.ctx.createOscillator();
+    choirOsc.type = 'sawtooth';
+    choirOsc.frequency.setValueAtTime(82.41, t); // E2
+    const choirVibrato = this.ctx.createOscillator();
+    choirVibrato.frequency.setValueAtTime(4.2, t);
+    const choirVibGain = this.ctx.createGain();
+    choirVibGain.gain.setValueAtTime(1.8, t);
+    choirVibrato.connect(choirVibGain);
+    choirVibGain.connect(choirOsc.frequency);
+    choirVibrato.start(t);
 
-    const chordGain = this.ctx.createGain();
-    chordGain.gain.setValueAtTime(0.04, t);
-    chord1.connect(chordGain);
-    chord2.connect(chordGain);
-    chordGain.connect(this.musicGain);
-    chord1.start(t);
-    chord2.start(t);
+    const choirFormant1 = this.ctx.createBiquadFilter();
+    choirFormant1.type = 'bandpass';
+    choirFormant1.frequency.setValueAtTime(380, t); // Vocal 'Ooo' formant
+    choirFormant1.Q.setValueAtTime(4.5, t);
 
-    // Layer 3: Filtered wind/breath noise with slow sweep
+    const choirGain = this.ctx.createGain();
+    choirGain.gain.setValueAtTime(0.045, t);
+
+    choirOsc.connect(choirFormant1);
+    choirFormant1.connect(choirGain);
+    choirGain.connect(this.musicGain);
+    choirOsc.start(t);
+
+    // Layer 3: Freezing Tunnel Draft Wind with Spectral Shimmer
     const windBufSize = this.ctx.sampleRate * 4;
     const windBuf = this.ctx.createBuffer(1, windBufSize, this.ctx.sampleRate);
     const windData = windBuf.getChannelData(0);
@@ -877,68 +881,199 @@ export class AudioManager {
 
     const windFilter = this.ctx.createBiquadFilter();
     windFilter.type = 'bandpass';
-    windFilter.frequency.setValueAtTime(300, t);
-    windFilter.Q.setValueAtTime(3, t);
+    windFilter.frequency.setValueAtTime(260, t);
+    windFilter.Q.setValueAtTime(2.8, t);
 
-    // Sweep filter with LFO
     const windLfo = this.ctx.createOscillator();
-    windLfo.frequency.setValueAtTime(0.05, t);
+    windLfo.frequency.setValueAtTime(0.04, t);
     const windLfoGain = this.ctx.createGain();
-    windLfoGain.gain.setValueAtTime(150, t);
+    windLfoGain.gain.setValueAtTime(140, t);
     windLfo.connect(windLfoGain);
     windLfoGain.connect(windFilter.frequency);
     windLfo.start(t);
 
     const windGain = this.ctx.createGain();
-    windGain.gain.setValueAtTime(0.06, t);
+    windGain.gain.setValueAtTime(0.055, t);
     windSrc.connect(windFilter);
     windFilter.connect(windGain);
     windGain.connect(this.musicGain);
     windSrc.start(t);
 
-    // Layer 4: Very low sub-bass pulse (heartbeat-like infrasound throb)
+    // Layer 4: Infrasound Horror Throb (24Hz Subconscious Anxiety Thump)
     const subOsc = this.ctx.createOscillator();
     subOsc.type = 'sine';
-    subOsc.frequency.setValueAtTime(28, t);
+    subOsc.frequency.setValueAtTime(24, t);
     const subLfo = this.ctx.createOscillator();
-    subLfo.frequency.setValueAtTime(0.35, t); // slow sinister pulse
+    subLfo.frequency.setValueAtTime(0.42, t);
     const subLfoGain = this.ctx.createGain();
-    subLfoGain.gain.setValueAtTime(0.09, t);
+    subLfoGain.gain.setValueAtTime(0.08, t);
     subLfo.connect(subLfoGain);
     const subGain = this.ctx.createGain();
-    subGain.gain.setValueAtTime(0.09, t);
+    subGain.gain.setValueAtTime(0.08, t);
     subLfoGain.connect(subGain.gain);
     subOsc.connect(subGain);
     subGain.connect(this.musicGain);
     subOsc.start(t);
     subLfo.start(t);
 
-    // Layer 5: Haunting high tension pitch (tinnitus of the void: 2960Hz & 3120Hz tritone beat)
-    const eerieHigh1 = this.ctx.createOscillator();
-    eerieHigh1.type = 'sine';
-    eerieHigh1.frequency.setValueAtTime(2960, t);
-    const eerieHigh2 = this.ctx.createOscillator();
-    eerieHigh2.type = 'sine';
-    eerieHigh2.frequency.setValueAtTime(3120, t); // Binaural dissonance
-    const highGain = this.ctx.createGain();
-    highGain.gain.setValueAtTime(0.015, t);
-    eerieHigh1.connect(highGain);
-    eerieHigh2.connect(highGain);
-    highGain.connect(this.musicGain);
-    eerieHigh1.start(t);
-    eerieHigh2.start(t);
+    this.horrorNodes = [
+      drone1, drone2, droneLfo, droneVibGain => droneLfoGain,
+      choirOsc, choirVibrato, windSrc, windLfo, subOsc, subLfo
+    ];
 
-    this.horrorNodes = [drone1, drone2, droneLfo, chord1, chord2, chordLfo, windSrc, windLfo, subOsc, subLfo, eerieHigh1, eerieHigh2];
+    // ── 5. GENERATIVE TERROR MELODY: HAUNTING DETUNED MUSIC BOX & CLUSTERS ──
+    // The broken antique music box melody that plays out-of-tune notes down the halls
+    const creepyMelody = [
+      622.25, 587.33, 739.99, 659.25, 466.16, 523.25, 415.30, 311.13,
+      440.00, 369.99, 493.88, 329.63, 554.37, 415.30, 277.18
+    ];
+    let noteIdx = 0;
+
+    const scheduleNextChime = () => {
+      if (!this.horrorMusicActive) return;
+      const note = creepyMelody[noteIdx % creepyMelody.length];
+      noteIdx++;
+      this.playCreepyChime(note);
+
+      // Random spacing between notes (2.4s to 5.2s) like an old broken spring mechanism
+      const delay = 2400 + Math.random() * 2800;
+      const timer = setTimeout(scheduleNextChime, delay);
+      this.horrorTimeouts.push(timer);
+    };
+
+    const scheduleNextDeepImpact = () => {
+      if (!this.horrorMusicActive) return;
+      if (Math.random() < 0.55) {
+        this.playHorrorPianoChord();
+      } else {
+        this.playWaterphoneScrape();
+      }
+      const delay = 18000 + Math.random() * 16000;
+      const timer = setTimeout(scheduleNextDeepImpact, delay);
+      this.horrorTimeouts.push(timer);
+    };
+
+    // Begin generative nightmare sequences after subtle introductory breath
+    const startChimeTimer = setTimeout(scheduleNextChime, 1800);
+    const startImpactTimer = setTimeout(scheduleNextDeepImpact, 8000);
+    this.horrorTimeouts.push(startChimeTimer, startImpactTimer);
+  }
+
+  /** Plays an out-of-tune, antique music box note echoing down dark corridors */
+  playCreepyChime(freq = 622.25) {
+    if (!this.ctx || !this.horrorMusicActive) return;
+    const t = this.ctx.currentTime;
+    const dur = 2.6;
+
+    // Primary music-box tine
+    const osc1 = this.ctx.createOscillator();
+    osc1.type = 'sine';
+    // Slight detune for that eerie abandoned antique feel
+    const microDetune = (Math.random() - 0.5) * 4.5;
+    osc1.frequency.setValueAtTime(freq + microDetune, t);
+
+    // Metallic bell overtone
+    const osc2 = this.ctx.createOscillator();
+    osc2.type = 'triangle';
+    osc2.frequency.setValueAtTime(freq * 2.76, t);
+
+    // Tape wow and flutter pitch drift (analog distortion)
+    const flutter = this.ctx.createOscillator();
+    flutter.frequency.setValueAtTime(1.2 + Math.random() * 0.8, t);
+    const flutterGain = this.ctx.createGain();
+    flutterGain.gain.setValueAtTime(3.8, t);
+    flutter.connect(flutterGain);
+    flutterGain.connect(osc1.frequency);
+    flutter.start(t);
+    flutter.stop(t + dur);
+
+    const gain1 = this.ctx.createGain();
+    gain1.gain.setValueAtTime(0.045, t);
+    gain1.gain.exponentialRampToValueAtTime(0.0004, t + dur);
+
+    const gain2 = this.ctx.createGain();
+    gain2.gain.setValueAtTime(0.018, t);
+    gain2.gain.exponentialRampToValueAtTime(0.0004, t + dur * 0.7);
+
+    osc1.connect(gain1);
+    gain1.connect(this.musicGain);
+    osc2.connect(gain2);
+    gain2.connect(this.musicGain);
+
+    osc1.start(t);
+    osc1.stop(t + dur);
+    osc2.start(t);
+    osc2.stop(t + dur * 0.7);
+  }
+
+  /** Distant ominous low piano cluster chord */
+  playHorrorPianoChord() {
+    if (!this.ctx || !this.horrorMusicActive) return;
+    const t = this.ctx.currentTime;
+    const dur = 4.2;
+    // Discordant horror tritone cluster (C2, F#2, G2, C#3)
+    const cluster = [65.41, 92.50, 98.00, 138.59];
+
+    cluster.forEach((f, idx) => {
+      const osc = this.ctx.createOscillator();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(f, t);
+      osc.frequency.exponentialRampToValueAtTime(f * 0.992, t + dur);
+
+      const gain = this.ctx.createGain();
+      gain.gain.setValueAtTime(0.04, t);
+      gain.gain.exponentialRampToValueAtTime(0.0004, t + dur);
+
+      osc.connect(gain);
+      gain.connect(this.musicGain);
+      osc.start(t + idx * 0.04);
+      osc.stop(t + dur);
+    });
+  }
+
+  /** Bowed waterphone / screeching cello glissando */
+  playWaterphoneScrape() {
+    if (!this.ctx || !this.horrorMusicActive) return;
+    const t = this.ctx.currentTime;
+    const dur = 3.4;
+
+    const osc = this.ctx.createOscillator();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(420 + Math.random() * 80, t);
+    osc.frequency.exponentialRampToValueAtTime(280 + Math.random() * 320, t + dur);
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(650, t);
+    filter.Q.setValueAtTime(4.0, t);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0, t);
+    gain.gain.linearRampToValueAtTime(0.038, t + 0.6);
+    gain.gain.exponentialRampToValueAtTime(0.0004, t + dur);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.musicGain);
+
+    osc.start(t);
+    osc.stop(t + dur);
   }
 
   /** Stop horror ambient music */
   stopHorrorMusic() {
     if (!this.horrorMusicActive) return;
     this.horrorMusicActive = false;
-    this.horrorNodes.forEach(n => {
-      try { n.stop(); } catch(e) { /* already stopped */ }
-    });
-    this.horrorNodes = [];
+    if (this.horrorTimeouts) {
+      this.horrorTimeouts.forEach(t => clearTimeout(t));
+      this.horrorTimeouts = [];
+    }
+    if (this.horrorNodes) {
+      this.horrorNodes.forEach(n => {
+        try { n.stop(); } catch(e) { /* already stopped */ }
+      });
+      this.horrorNodes = [];
+    }
   }
 
   // ─── RANDOM ENVIRONMENTAL HORROR SFX ──────────────────────────────
