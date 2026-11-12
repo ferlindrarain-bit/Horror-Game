@@ -2901,7 +2901,7 @@ export class Facility {
     return true;
   }
 
-  update(delta) {
+  update(delta, playerPos = null) {
     if (this.artifactCore) {
       this.artifactCore.rotation.x += delta * 0.8;
       this.artifactCore.rotation.y += delta * 1.2;
@@ -2945,18 +2945,22 @@ export class Facility {
       }
     }
 
-    // Periodic Electrical Sparks Discharge
+    // Periodic Electrical Sparks Discharge (Subtle & localized, no annoying global audio)
     this.sparkTimer -= delta;
     if (this.sparkTimer <= 0) {
-      this.sparkTimer = 1.6 + Math.random() * 2.4;
+      this.sparkTimer = 5.0 + Math.random() * 7.0;
       if (this.sparks && this.sparks.length > 0) {
         const spark = this.sparks[Math.floor(Math.random() * this.sparks.length)];
         spark.visible = true;
         if (this.lighting && typeof this.lighting.flashSpark === 'function') {
           this.lighting.flashSpark();
         }
-        if (this.audio && typeof this.audio.playElectricBuzz === 'function') {
-          this.audio.playElectricBuzz();
+        // Only play soft crackle if player is actually inside electrical room (< 7 meters)
+        if (this.audio && typeof this.audio.playElectricBuzz === 'function' && playerPos) {
+          const distToSpark = Math.hypot(playerPos.x - (-18), playerPos.z - 2.5);
+          if (distToSpark < 7.0) {
+            this.audio.playElectricBuzz();
+          }
         }
         setTimeout(() => {
           spark.visible = false;

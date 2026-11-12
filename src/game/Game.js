@@ -547,7 +547,6 @@ export class Game {
 
       case 'breaker':
         item.data.powered = true;
-        this.audio.playElectricBuzz();
         this.audio.playDoor(true);
         this.lighting.flickerLights.forEach(f => f.light.intensity = f.baseIntensity * 1.5);
         this.story.completeObjective('n1_power');
@@ -817,7 +816,7 @@ export class Game {
       this.player.update(delta);
       this.flashlight.update(delta);
       this.interaction.update();
-      this.facility.update(delta);
+      this.facility.update(delta, this.player ? this.player.getPosition() : null);
       this.anomaly.update(delta, this.story.currentNightIndex);
 
       // Real-time navigation distance and guidance update

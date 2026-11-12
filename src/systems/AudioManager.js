@@ -355,21 +355,32 @@ export class AudioManager {
   playElectricBuzz() {
     if (!this.ctx) return;
     const t = this.ctx.currentTime;
-    const osc = this.ctx.createOscillator();
+
+    // Realistic soft spark crackle (filtered noise snap, no annoying tonal beep)
+    const bufSize = Math.floor(this.ctx.sampleRate * 0.05);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.012));
+    }
+
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buf;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(1600, t);
+    filter.Q.setValueAtTime(1.5, t);
+
     const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.035, t); // Very soft, realistic spark snap
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
 
-    osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(120, t); // 120 Hz mains hum buzz
-    osc.frequency.setValueAtTime(240, t + 0.08);
-
-    gain.gain.setValueAtTime(0.22, t);
-    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
-
-    osc.connect(gain);
+    noise.connect(filter);
+    filter.connect(gain);
     gain.connect(this.sfxGain);
 
-    osc.start(t);
-    osc.stop(t + 0.2);
+    noise.start(t);
   }
 
   playPipeCreak() {
@@ -1149,27 +1160,35 @@ export class AudioManager {
     osc.stop(t + duration);
   }
 
-  /** Electronic glitch / interference */
+  /** Electronic glitch / radio interference crackle (realistic static, no tonal square wave beeps) */
   playElectricGlitch() {
     if (!this.ctx) return;
     const t = this.ctx.currentTime;
-    const numGlitches = 3 + Math.floor(Math.random() * 5);
+    const dur = 0.12;
 
-    for (let i = 0; i < numGlitches; i++) {
-      const offset = i * (0.04 + Math.random() * 0.06);
-      const osc = this.ctx.createOscillator();
-      osc.type = 'square';
-      osc.frequency.setValueAtTime(200 + Math.random() * 3000, t + offset);
-
-      const gain = this.ctx.createGain();
-      gain.gain.setValueAtTime(0.06 + Math.random() * 0.04, t + offset);
-      gain.gain.exponentialRampToValueAtTime(0.001, t + offset + 0.03);
-
-      osc.connect(gain);
-      gain.connect(this.sfxGain);
-      osc.start(t + offset);
-      osc.stop(t + offset + 0.03 + Math.random() * 0.02);
+    const bufSize = Math.floor(this.ctx.sampleRate * dur);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * (Math.random() > 0.4 ? 1 : 0);
     }
+
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buf;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'highpass';
+    filter.frequency.setValueAtTime(800, t);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.04, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.sfxGain);
+
+    noise.start(t);
   }
 
   /** Door slam / sudden bang */
