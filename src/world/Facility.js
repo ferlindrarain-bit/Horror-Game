@@ -59,8 +59,8 @@ export class Facility {
 
     this.matFloor = new THREE.MeshStandardMaterial({
       map: floorTex,
-      roughness: 0.65,
-      metalness: 0.25
+      roughness: 0.52,
+      metalness: 0.28
     });
 
     // 2. Concrete Facility Walls with Panel Seams & Baseboards
@@ -122,11 +122,11 @@ export class Facility {
 
     // 5. Advanced Industrial Surfaces & Decals
     this.matPuddle = new THREE.MeshStandardMaterial({
-      color: 0x050811,
-      roughness: 0.05,
-      metalness: 0.95,
+      color: 0x04060d,
+      roughness: 0.02,
+      metalness: 0.98,
       transparent: true,
-      opacity: 0.8
+      opacity: 0.88
     });
 
     // Diagonal Warning Hazard Stripes (Black & Yellow)
@@ -2616,23 +2616,23 @@ export class Facility {
   }
 
   _buildDustParticles() {
-    const particleCount = 450;
+    const particleCount = 520;
     const geo = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
 
     for (let i = 0; i < particleCount; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 85;
-      positions[i * 3 + 1] = 0.4 + Math.random() * 3.4;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 65;
+      positions[i * 3] = (Math.random() - 0.5) * 90;
+      positions[i * 3 + 1] = 0.3 + Math.random() * 3.5;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 70;
     }
 
     geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
     const mat = new THREE.PointsMaterial({
       color: 0x94a3b8,
-      size: 0.07,
+      size: 0.065,
       transparent: true,
-      opacity: 0.45,
+      opacity: 0.42,
       blending: THREE.AdditiveBlending
     });
 
@@ -2974,11 +2974,13 @@ export class Facility {
 
     if (this.dustPoints && this.dustPoints.geometry) {
       const pos = this.dustPoints.geometry.attributes.position.array;
+      const t = performance.now() * 0.0008;
       for (let i = 0; i < pos.length; i += 3) {
-        pos[i + 1] -= delta * 0.05;
-        pos[i] += Math.sin(pos[i + 1] * 2) * 0.01;
+        pos[i + 1] -= delta * 0.045;
+        pos[i] += Math.sin(t + pos[i + 1] * 1.5) * 0.008;
+        pos[i + 2] += Math.cos(t + pos[i] * 1.2) * 0.008;
         if (pos[i + 1] < 0.2) {
-          pos[i + 1] = 3.8;
+          pos[i + 1] = 3.7;
         }
       }
       this.dustPoints.geometry.attributes.position.needsUpdate = true;

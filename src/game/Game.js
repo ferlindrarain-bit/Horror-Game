@@ -215,7 +215,11 @@ export class Game {
       // Update computer terminal night context
       this.computer.setNight(nextNight.id);
 
+      // Dynamically update HUD night indicator immediately
+      this.hud.updateNight(nextNight.title, nextNight.subtitle);
+
       this.hud.playNightTransition(nextNight.title, nextNight.subtitle, () => {
+        this.hud.updateNight(nextNight.title, nextNight.subtitle);
         this._updateHUDObjective();
         this._saveGameState();
 
@@ -759,6 +763,16 @@ export class Game {
       // Dynamic Story Proximity Triggers
       const pos = this.player.getPosition();
       const currNight = this.story.getCurrentNight();
+
+      // Cinematic Vignette Breathing & Tension reaction
+      if (this.hud && this.hud.vignette) {
+        if (this.player.stamina < 25) {
+          const pulse = 0.82 + Math.sin(performance.now() * 0.008) * 0.18;
+          this.hud.vignette.style.opacity = pulse.toString();
+        } else {
+          this.hud.vignette.style.opacity = '1';
+        }
+      }
 
       // Dynamic Proximity to Shadow Observer Entity (Hallway Phantom Encounter)
       if (this.facility.entityMesh && this.facility.entityMesh.visible) {

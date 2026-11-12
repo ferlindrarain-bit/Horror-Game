@@ -3,7 +3,7 @@ import { NIGHTS } from '../data/missions.js';
 export class StoryManager {
   constructor() {
     this.currentNightIndex = 0;
-    this.currentNight = NIGHTS[0];
+    this.currentNight = JSON.parse(JSON.stringify(NIGHTS[0]));
     this.inventory = new Set();
     this.readDocuments = new Set();
     this.discoveredAnomalies = new Set();
@@ -28,7 +28,8 @@ export class StoryManager {
     if (!savedData) return;
     if (savedData.currentNightIndex !== undefined) {
       this.currentNightIndex = savedData.currentNightIndex;
-      this.currentNight = NIGHTS[this.currentNightIndex] || NIGHTS[0];
+      // Deep-copy so we never mutate the module-level NIGHTS constants
+      this.currentNight = JSON.parse(JSON.stringify(NIGHTS[this.currentNightIndex] || NIGHTS[0]));
     }
     if (savedData.inventory) {
       this.inventory = new Set(savedData.inventory);
@@ -67,7 +68,7 @@ export class StoryManager {
   }
 
   getCurrentNight() {
-    return this.currentNight;
+    return this.currentNight || NIGHTS[this.currentNightIndex] || NIGHTS[0];
   }
 
   completeObjective(objId) {

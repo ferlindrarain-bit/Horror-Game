@@ -7,16 +7,16 @@ export class Lighting {
     this.flickerLights = [];
     this.isEmergency = false;
 
-    // Ambient light - balanced for true horror atmosphere (darkened so flashlight is essential)
-    this.ambientLight = new THREE.AmbientLight(0x18202c, 0.65);
+    // Ambient light - balanced for true horror atmosphere (darkened for high-contrast shadows & flashlight depth)
+    this.ambientLight = new THREE.AmbientLight(0x10141e, 0.44);
     this.scene.add(this.ambientLight);
 
-    // Hemisphere light - subtle soft bounce between industrial ceiling and floor
-    this.hemiLight = new THREE.HemisphereLight(0x334155, 0x0f172a, 0.35);
+    // Hemisphere light - subtle soft bounce between industrial steel ceiling and cold concrete floor
+    this.hemiLight = new THREE.HemisphereLight(0x243242, 0x060910, 0.28);
     this.scene.add(this.hemiLight);
 
-    // Fog: deeper atmospheric cinematic darkness
-    this.scene.fog = new THREE.FogExp2(0x060910, 0.032);
+    // Fog: deeper atmospheric cinematic darkness (hides boundaries and adds oppressive underground depth)
+    this.scene.fog = new THREE.FogExp2(0x04060b, 0.038);
 
     this._createRoomLights();
   }
@@ -95,21 +95,21 @@ export class Lighting {
   setEmergencyMode(active = true) {
     this.isEmergency = active;
     if (active) {
-      this.ambientLight.color.setHex(0x450a0a);
-      this.ambientLight.intensity = 0.8;
-      this.hemiLight.color.setHex(0xdc2626);
-      this.hemiLight.intensity = 0.4;
-      this.scene.fog.color.setHex(0x200404);
+      this.ambientLight.color.setHex(0x380505);
+      this.ambientLight.intensity = 0.55;
+      this.hemiLight.color.setHex(0xb91c1c);
+      this.hemiLight.intensity = 0.35;
+      this.scene.fog.color.setHex(0x180303);
       this.lights.forEach(({ light }) => {
         light.color.setHex(0xdc2626);
-        light.intensity = 1.2;
+        light.intensity = 1.1;
       });
     } else {
-      this.ambientLight.color.setHex(0x18202c);
-      this.ambientLight.intensity = 0.65;
-      this.hemiLight.color.setHex(0x334155);
-      this.hemiLight.intensity = 0.35;
-      this.scene.fog.color.setHex(0x060910);
+      this.ambientLight.color.setHex(0x10141e);
+      this.ambientLight.intensity = 0.44;
+      this.hemiLight.color.setHex(0x243242);
+      this.hemiLight.intensity = 0.28;
+      this.scene.fog.color.setHex(0x04060b);
       this.lights.forEach(({ light, baseIntensity, baseColor }) => {
         light.color.setHex(baseColor);
         light.intensity = baseIntensity;
@@ -118,24 +118,30 @@ export class Lighting {
   }
 
   update(delta) {
-    // Flickering lights
+    // Flickering industrial lights with micro-jitter
     for (const item of this.flickerLights) {
       item.timer -= delta;
       if (item.timer <= 0) {
-        if (Math.random() < 0.28) {
-          item.light.intensity = item.baseIntensity * (Math.random() < 0.5 ? 0.2 : 1.6);
-          item.timer = 0.04 + Math.random() * 0.12;
+        if (Math.random() < 0.32) {
+          const jitter = Math.random() < 0.4 ? 0.08 : (Math.random() < 0.8 ? 0.35 : 1.5);
+          item.light.intensity = item.baseIntensity * jitter;
+          item.timer = 0.03 + Math.random() * 0.1;
         } else {
           item.light.intensity = item.baseIntensity;
-          item.timer = 1.2 + Math.random() * 3.5;
+          item.timer = 1.0 + Math.random() * 3.0;
         }
       }
     }
 
-    // Chamber core pulsation
+    // Chamber core pulsation with subtle color modulation
     if (this.chamberLight) {
       const time = performance.now() * 0.0035;
-      this.chamberLight.intensity = 3.2 + Math.sin(time) * 1.2;
+      this.chamberLight.intensity = 3.0 + Math.sin(time) * 1.4;
+      if (Math.sin(time * 0.5) > 0.5) {
+        this.chamberLight.color.setHex(0x0ea5e9);
+      } else {
+        this.chamberLight.color.setHex(0x38bdf8);
+      }
     }
   }
 }

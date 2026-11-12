@@ -76,8 +76,13 @@ export class FlashlightSystem {
       this.battery = Math.max(0, this.battery - this.drainRate * delta);
       if (this.onBatteryChange) this.onBatteryChange(this.battery);
 
-      // Low battery flicker
+      // Low battery color shift and flicker (realistic dying filament bulb)
       if (this.battery < 20) {
+        // Shift light color toward deep amber/orange
+        this.spotLight.color.setHex(0xf97316);
+        this.coreLight.color.setHex(0xfbbf24);
+        this.fillLight.color.setHex(0xea580c);
+
         if (Math.random() < 0.15) {
           this.spotLight.intensity = (this.battery / 20) * 4.0 * Math.random();
           this.coreLight.intensity = (this.battery / 20) * 3.0 * Math.random();
@@ -87,7 +92,18 @@ export class FlashlightSystem {
           this.coreLight.intensity = (this.battery / 20) * 4.0;
           this.fillLight.intensity = (this.battery / 20) * 1.5;
         }
+      } else if (this.battery < 40) {
+        // Slight warm tint shift as power reduces
+        this.spotLight.color.setHex(0xfde047);
+        this.coreLight.color.setHex(0xfef08a);
+        this.fillLight.color.setHex(0xf59e0b);
+        this.spotLight.intensity = 6.8;
+        this.coreLight.intensity = 4.8;
+        this.fillLight.intensity = 1.8;
       } else {
+        this.spotLight.color.setHex(0xfef08a);
+        this.coreLight.color.setHex(0xffffff);
+        this.fillLight.color.setHex(0xfef08a);
         this.spotLight.intensity = 7.0;
         this.coreLight.intensity = 5.0;
         this.fillLight.intensity = 2.0;

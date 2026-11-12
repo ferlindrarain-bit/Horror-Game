@@ -97,11 +97,16 @@ export class HUD {
     this.nightTitle = document.getElementById('hud-night-title');
     this.objectiveText = document.getElementById('hud-objective-text');
     this.interactPrompt = document.getElementById('hud-interact-prompt');
+    this.currentNightTitle = '';
+    this.currentNightSubtitle = '';
   }
 
   show() {
     this.hudContainer.classList.add('active');
     this.crosshair.classList.add('active');
+    if (this.currentNightTitle) {
+      this.updateNight(this.currentNightTitle, this.currentNightSubtitle);
+    }
   }
 
   hide() {
@@ -123,8 +128,17 @@ export class HUD {
   }
 
   updateNight(title, subtitle) {
-    if (this.nightTitle) {
-      this.nightTitle.textContent = `${title} : ${subtitle}`;
+    if (title) {
+      this.currentNightTitle = title;
+      this.currentNightSubtitle = subtitle || '';
+    }
+    if (!this.nightTitle) {
+      this.nightTitle = document.getElementById('hud-night-title');
+    }
+    if (this.nightTitle && this.currentNightTitle) {
+      this.nightTitle.textContent = this.currentNightSubtitle
+        ? `${this.currentNightTitle} : ${this.currentNightSubtitle}`
+        : this.currentNightTitle;
     }
   }
 
