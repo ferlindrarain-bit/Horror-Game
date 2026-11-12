@@ -14,8 +14,11 @@ export class SettingsUI {
       mouseSensitivity: 50,
       brightness: 100,
       subtitles: true,
-      reducedFlashing: false
+      reducedFlashing: false,
+      difficulty: 'normal'
     };
+
+    this.onDifficultyChange = null;
 
     this._loadSavedSettings();
     this._createDOM();
@@ -75,6 +78,15 @@ export class SettingsUI {
       </div>
 
       <div class="setting-row" style="margin-top: 15px;">
+        <label>Simulation Difficulty</label>
+        <select id="set-difficulty" style="background: #0f172a; border: 1px solid #38bdf8; color: #38bdf8; padding: 5px 8px; font-family: monospace; font-size: 0.78rem; cursor: pointer; border-radius: 2px;">
+          <option value="easy" ${this.settings.difficulty === 'easy' ? 'selected' : ''}>CASUAL / PENELITI (Mudah - Senter & Stamina 2x)</option>
+          <option value="normal" ${this.settings.difficulty === 'normal' || !this.settings.difficulty ? 'selected' : ''}>STANDARD / OPERATOR (Normal)</option>
+          <option value="nightmare" ${this.settings.difficulty === 'nightmare' ? 'selected' : ''}>NIGHTMARE / ANOMALI (Sulit - Kegelapan Ekstrem)</option>
+        </select>
+      </div>
+
+      <div class="setting-row" style="margin-top: 12px;">
         <label>Subtitles</label>
         <input type="checkbox" id="set-subs" ${this.settings.subtitles ? 'checked' : ''} />
       </div>
@@ -118,6 +130,13 @@ export class SettingsUI {
       this.settings.brightness = parseInt(e.target.value);
       document.body.style.filter = `brightness(${this.settings.brightness}%)`;
     });
+    const diffEl = document.getElementById('set-difficulty');
+    if (diffEl) {
+      diffEl.addEventListener('change', (e) => {
+        this.settings.difficulty = e.target.value;
+        if (this.onDifficultyChange) this.onDifficultyChange(this.settings.difficulty);
+      });
+    }
     document.getElementById('set-subs').addEventListener('change', (e) => {
       this.settings.subtitles = e.target.checked;
     });

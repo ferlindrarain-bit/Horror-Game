@@ -4,6 +4,9 @@ export class PauseMenu {
     this.onSettings = null;
     this.onCloudSave = null;
     this.onMainMenu = null;
+    this.onTutorial = null;
+    this.onCredits = null;
+    this.onMap = null;
 
     this.isOpen = false;
     this._createDOM();
@@ -16,8 +19,11 @@ export class PauseMenu {
       <h2>SIMULATION PAUSED</h2>
       <button id="btn-pause-resume">RESUME</button>
       <button id="btn-pause-objectives">OBJECTIVES</button>
+      <button id="btn-pause-map" style="border-color:#38bdf8; color:#38bdf8;">🗺 TACTICAL BLUEPRINT [M]</button>
+      <button id="btn-pause-tutorial" style="border-color:#f59e0b; color:#fbbf24;">📖 MANUAL / PANDUAN [H]</button>
       <button id="btn-pause-cloud" style="border-color:#38bdf8; color:#38bdf8;">☁ CLOUD SAVE</button>
       <button id="btn-pause-settings">SETTINGS</button>
+      <button id="btn-pause-credits">CREDITS</button>
       <button id="btn-pause-menu">MAIN MENU</button>
 
       <div id="objectives-panel">
@@ -30,8 +36,11 @@ export class PauseMenu {
 
     this.btnResume = document.getElementById('btn-pause-resume');
     this.btnObjectives = document.getElementById('btn-pause-objectives');
+    this.btnMap = document.getElementById('btn-pause-map');
+    this.btnTutorial = document.getElementById('btn-pause-tutorial');
     this.btnCloud = document.getElementById('btn-pause-cloud');
     this.btnSettings = document.getElementById('btn-pause-settings');
+    this.btnCredits = document.getElementById('btn-pause-credits');
     this.btnMainMenu = document.getElementById('btn-pause-menu');
     this.objPanel = document.getElementById('objectives-panel');
     this.objContainer = document.getElementById('obj-list-container');
@@ -46,8 +55,21 @@ export class PauseMenu {
       this.objPanel.classList.toggle('active');
     });
 
+    this.btnMap.addEventListener('click', () => {
+      this.hide();
+      if (this.onMap) this.onMap();
+    });
+
+    this.btnTutorial.addEventListener('click', () => {
+      if (this.onTutorial) this.onTutorial();
+    });
+
     this.btnCloud.addEventListener('click', () => {
       if (this.onCloudSave) this.onCloudSave();
+    });
+
+    this.btnCredits.addEventListener('click', () => {
+      if (this.onCredits) this.onCredits();
     });
 
     this.btnCloseObj.addEventListener('click', () => {

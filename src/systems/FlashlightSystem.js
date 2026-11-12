@@ -29,6 +29,16 @@ export class FlashlightSystem {
     this.onBatteryChange = null;
   }
 
+  setDifficulty(diff) {
+    if (diff === 'easy') {
+      this.drainRate = 0.22; // ~450s continuous battery life for Casual / Peneliti
+    } else if (diff === 'nightmare') {
+      this.drainRate = 0.85; // ~120s rapid drain for Nightmare mode
+    } else {
+      this.drainRate = 0.45; // ~220s balanced standard
+    }
+  }
+
   toggle() {
     if (this.battery <= 0 && !this.enabled) return false;
     this.enabled = !this.enabled;

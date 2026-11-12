@@ -178,6 +178,7 @@ export class EndingUI {
 
       <div class="action-row">
         <button class="primary-btn" id="ending-restart-btn">MAIN LAGI (RESTART SHIFT)</button>
+        <button class="secondary-btn" id="ending-credits-btn" style="border-color:#38bdf8; color:#38bdf8;">LIHAT CREDITS // TIM</button>
         <button class="secondary-btn" id="ending-menu-btn">MENU UTAMA</button>
       </div>
     `;
@@ -194,6 +195,14 @@ export class EndingUI {
       this.hide();
       if (this.onRestart) this.onRestart();
     });
+
+    const credBtn = document.getElementById('ending-credits-btn');
+    if (credBtn) {
+      credBtn.addEventListener('click', () => {
+        this.hide();
+        if (this.onCredits) this.onCredits();
+      });
+    }
 
     document.getElementById('ending-menu-btn').addEventListener('click', () => {
       this.hide();

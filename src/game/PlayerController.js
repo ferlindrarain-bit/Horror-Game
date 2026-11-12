@@ -13,6 +13,8 @@ export class PlayerController {
     // Stamina
     this.stamina = 100;
     this.maxStamina = 100;
+    this.staminaDrainRate = 22;
+    this.staminaRegenRate = 18;
     this.isSprinting = false;
     this.isCrouching = false;
 
@@ -56,6 +58,19 @@ export class PlayerController {
   setCollidables(list) {
     this.collidables = list || [];
     this._rebuildBoundingBoxes();
+  }
+
+  setDifficulty(diff) {
+    if (diff === 'easy') {
+      this.staminaDrainRate = 11;
+      this.staminaRegenRate = 26;
+    } else if (diff === 'nightmare') {
+      this.staminaDrainRate = 32;
+      this.staminaRegenRate = 12;
+    } else {
+      this.staminaDrainRate = 22;
+      this.staminaRegenRate = 18;
+    }
   }
 
   _rebuildBoundingBoxes() {
@@ -182,9 +197,9 @@ export class PlayerController {
 
     // Stamina calculation
     if (this.isSprinting && isMoving && !this.isCrouching && this.stamina > 0) {
-      this.stamina = Math.max(0, this.stamina - 22 * delta);
+      this.stamina = Math.max(0, this.stamina - this.staminaDrainRate * delta);
     } else {
-      this.stamina = Math.min(this.maxStamina, this.stamina + 18 * delta);
+      this.stamina = Math.min(this.maxStamina, this.stamina + this.staminaRegenRate * delta);
     }
 
     if (this.onStaminaChange) {

@@ -26,6 +26,8 @@ import { EndingUI } from '../ui/EndingUI.js';
 import { FacilityMapUI } from '../ui/FacilityMapUI.js';
 import { IntroCutscene } from '../ui/IntroCutscene.js';
 import { CloudSaveUI } from '../ui/CloudSaveUI.js';
+import { TutorialUI } from '../ui/TutorialUI.js';
+import { CreditsUI } from '../ui/CreditsUI.js';
 
 export class Game {
   constructor() {
@@ -34,6 +36,9 @@ export class Game {
     this.isPaused = false;
     this.pipeCreakTimer = 15;
     this.heartbeatTimer = 0;
+
+    const savedSettings = SaveManager.loadSettings();
+    this.difficulty = (savedSettings && savedSettings.difficulty) || 'normal';
 
     this._initThree();
     this._initSystems();
@@ -109,6 +114,8 @@ export class Game {
     this.mapUI = new FacilityMapUI(this.story, this.player);
     this.introCutscene = new IntroCutscene(this.audio);
     this.cloudSaveUI = new CloudSaveUI(this.audio, (saveData) => this._onCloudSaveLoaded(saveData));
+    this.tutorialUI = new TutorialUI();
+    this.creditsUI = new CreditsUI(this.audio);
 
     // Auto-resume pointer lock when any modal UI is closed
     const resumeLock = () => {
@@ -127,6 +134,8 @@ export class Game {
     this.settingsUI.onClose = resumeLock;
     this.cloudSaveUI.onClose = resumeLock;
     if (this.mapUI) this.mapUI.onClose = resumeLock;
+    if (this.tutorialUI) this.tutorialUI.onClose = resumeLock;
+    if (this.creditsUI) this.creditsUI.onClose = resumeLock;
 
     this.blocker = document.createElement('div');
     this.blocker.id = 'blocker';
@@ -251,6 +260,18 @@ export class Game {
       this.cloudSaveUI.show();
     };
 
+    this.mainMenu.onTutorial = () => {
+      this.tutorialUI.show();
+    };
+
+    this.mainMenu.onCredits = () => {
+      this.creditsUI.show();
+    };
+
+    this.mainMenu.onDifficultyChange = (diff) => {
+      this._applyDifficulty(diff);
+    };
+
     // Pause Menu events
     this.pauseMenu.onResume = () => {
       this.isPaused = false;
@@ -261,6 +282,18 @@ export class Game {
     };
     this.pauseMenu.onSettings = () => {
       this.settingsUI.show();
+    };
+    this.pauseMenu.onTutorial = () => {
+      this.player.unlock();
+      this.tutorialUI.show();
+    };
+    this.pauseMenu.onCredits = () => {
+      this.player.unlock();
+      this.creditsUI.show();
+    };
+    this.pauseMenu.onMap = () => {
+      this.player.unlock();
+      if (this.mapUI) this.mapUI.show();
     };
     this.pauseMenu.onMainMenu = () => {
       this._saveGameState();
@@ -275,9 +308,45 @@ export class Game {
     this.endingUI.onRestart = () => {
       this.startNewGame();
     };
+    this.endingUI.onCredits = () => {
+      this.creditsUI.show();
+    };
     this.endingUI.onMainMenu = () => {
       this.endingUI.hide();
       this.mainMenu.show();
+    };
+
+    // Settings UI difficulty change sync
+    this.settingsUI.onDifficultyChange = (diff) => {
+      this._applyDifficulty(diff);
+      if (this.mainMenu) this.mainMenu.setDifficulty(diff);
+    };
+
+    // HUD interactive button clicks
+    this.hud.onOpenMap = () => {
+      if (this.mapUI && this.mapUI.isOpen) {
+        this.mapUI.hide();
+        this.player.requestLock();
+      } else if (!this._isAnyUIOpen()) {
+        this.player.unlock();
+        if (this.mapUI) this.mapUI.show();
+      }
+    };
+
+    this.hud.onOpenTutorial = () => {
+      if (this.tutorialUI && this.tutorialUI.isOpen) {
+        this.tutorialUI.hide();
+        this.player.requestLock();
+      } else if (!this._isAnyUIOpen()) {
+        this.player.unlock();
+        if (this.tutorialUI) this.tutorialUI.show();
+      }
+    };
+
+    this.hud.onOpenObjectives = () => {
+      this.player.unlock();
+      const currNight = this.story.getCurrentNight();
+      this.pauseMenu.show(currNight ? currNight.objectives : []);
     };
 
     // Radio dialogue choice impact
@@ -333,6 +402,26 @@ export class Game {
         }
       }
 
+      if (e.code === 'KeyM') {
+        if (this.mapUI && this.mapUI.isOpen) {
+          this.mapUI.hide();
+          this.player.requestLock();
+        } else if (!this._isAnyUIOpen()) {
+          this.player.unlock();
+          if (this.mapUI) this.mapUI.show();
+        }
+      }
+
+      if (e.code === 'KeyH') {
+        if (this.tutorialUI && this.tutorialUI.isOpen) {
+          this.tutorialUI.hide();
+          this.player.requestLock();
+        } else if (!this._isAnyUIOpen()) {
+          this.player.unlock();
+          if (this.tutorialUI) this.tutorialUI.show();
+        }
+      }
+
       if (e.code === 'Escape') {
         if (this._isAnyUIOpen()) {
           this.terminalUI.hide();
@@ -343,6 +432,8 @@ export class Game {
           this.cloudSaveUI.hide();
           this.endingUI.hide();
           if (this.mapUI) this.mapUI.hide();
+          if (this.tutorialUI) this.tutorialUI.hide();
+          if (this.creditsUI) this.creditsUI.hide();
           this.pauseMenu.hide();
           this.player.requestLock();
         } else {
@@ -381,8 +472,23 @@ export class Game {
       (this.settingsUI && this.settingsUI.isOpen) ||
       (this.cloudSaveUI && this.cloudSaveUI.isOpen) ||
       (this.endingUI && this.endingUI.isOpen) ||
-      (this.mapUI && this.mapUI.isOpen)
+      (this.mapUI && this.mapUI.isOpen) ||
+      (this.tutorialUI && this.tutorialUI.isOpen) ||
+      (this.creditsUI && this.creditsUI.isOpen)
     );
+  }
+
+  _applyDifficulty(diff) {
+    this.difficulty = diff || 'normal';
+    if (this.flashlight && typeof this.flashlight.setDifficulty === 'function') {
+      this.flashlight.setDifficulty(this.difficulty);
+    }
+    if (this.player && typeof this.player.setDifficulty === 'function') {
+      this.player.setDifficulty(this.difficulty);
+    }
+    if (this.anomaly && typeof this.anomaly.setDifficulty === 'function') {
+      this.anomaly.setDifficulty(this.difficulty);
+    }
   }
 
   _handleInteraction(item) {
@@ -536,6 +642,9 @@ export class Game {
     this.isPaused = false;
     this.hud.show();
     this.player.requestLock();
+
+    // Apply active difficulty modifiers (flashlight drain, stamina, anomalies)
+    this._applyDifficulty(this.difficulty);
 
     const currNight = this.story.getCurrentNight();
     this.hud.updateNight(currNight.title, currNight.subtitle);

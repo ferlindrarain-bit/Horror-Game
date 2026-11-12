@@ -21,8 +21,10 @@ export class HUD {
           <div class="hud-label">STAMINA [SHIFT]</div>
           <div class="stamina-bar"><div class="fill" id="hud-stamina-fill" style="width: 100%;"></div></div>
         </div>
-        <div style="font-size: 0.65rem; color: #38bdf8; letter-spacing: 1.5px; margin-top: 4px; text-align: right;">
-          [M] TACTICAL MAP | [TAB] OBJECTIVES
+        <div style="font-size: 0.65rem; color: #38bdf8; letter-spacing: 1.2px; margin-top: 6px; text-align: right; display: flex; justify-content: flex-end; gap: 6px; pointer-events: auto;">
+          <span id="hud-btn-map" style="cursor: pointer; padding: 2px 6px; border: 1px solid rgba(56,189,248,0.45); background: rgba(3,7,18,0.7); border-radius: 2px; user-select: none;" title="Toggle Tactical Blueprint">[M] PETA</span>
+          <span id="hud-btn-tutorial" style="cursor: pointer; padding: 2px 6px; border: 1px solid rgba(245,158,11,0.45); color: #f59e0b; background: rgba(3,7,18,0.7); border-radius: 2px; user-select: none;" title="Buka Panduan & Tutorial">[H] TUTORIAL</span>
+          <span id="hud-btn-tab" style="cursor: pointer; padding: 2px 6px; border: 1px solid rgba(148,163,184,0.45); color: #94a3b8; background: rgba(3,7,18,0.7); border-radius: 2px; user-select: none;" title="Jeda & Daftar Objektif">[TAB] PAUSE</span>
         </div>
       </div>
       <div class="hud-objective" id="hud-objective-box">
@@ -32,6 +34,33 @@ export class HUD {
       <div class="interact-prompt" id="hud-interact-prompt">[E] Interact</div>
     `;
     document.body.appendChild(this.hudContainer);
+
+    this.onOpenMap = null;
+    this.onOpenTutorial = null;
+    this.onOpenObjectives = null;
+
+    const btnMap = document.getElementById('hud-btn-map');
+    const btnTut = document.getElementById('hud-btn-tutorial');
+    const btnTab = document.getElementById('hud-btn-tab');
+
+    if (btnMap) {
+      btnMap.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (this.onOpenMap) this.onOpenMap();
+      });
+    }
+    if (btnTut) {
+      btnTut.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (this.onOpenTutorial) this.onOpenTutorial();
+      });
+    }
+    if (btnTab) {
+      btnTab.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (this.onOpenObjectives) this.onOpenObjectives();
+      });
+    }
 
     // Crosshair dot
     this.crosshair = document.createElement('div');

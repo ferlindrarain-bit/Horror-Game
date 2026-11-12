@@ -418,6 +418,7 @@ export class Facility {
     this._addWallBox(-42, 12.5, T, 6);
     this._addWallBox(-39, 9.5, 6, T);
     this._addWallBox(-39, 15.5, 6, T);
+    this._addWallHeader(-36, 12.5, T, 5, 1.0); // Seal 1m open header above elevator gate
     const gateMesh = new THREE.Mesh(new THREE.BoxGeometry(0.2, 3.2, 5.0), this.matIndustrialSteel);
     gateMesh.position.set(-36, 1.6, 12.5);
     this.group.add(gateMesh);
@@ -426,12 +427,14 @@ export class Facility {
     // 11. Archive Approach Corridor Walls
     this._addWallBox(41, 3, T, 14);
     this._addWallBox(47, 3, T, 14);
+    this._addWallBox(47, 12.5, T, 5); // Seal the East corridor termination at X = 47, Z: 10..15
 
     // 12. Restricted Archive Room Walls & Security Door
     this._addWallBox(36, -11, T, 14);
     this._addWallBox(52, -11, T, 14);
-    this._addWallBox(38.5, -4, 5, T);
-    this._addWallBox(49.5, -4, 5, T);
+    // Seal approach corridor opening to door posts at X: 42.5 and X: 45.5 (eliminates 1.5m open gaps)
+    this._addWallBox(39.25, -4, 6.5, T);
+    this._addWallBox(48.75, -4, 6.5, T);
     this._addWallHeader(44, -4, 3, T, 1.2);
     this._buildSecurityDoor('archive_room_door', 44, -4, 3.0, 3.0, false, 'RESTRICTED ARCHIVE');
 
@@ -758,6 +761,7 @@ export class Facility {
     createTroffer(0, 4.2, 12.5, Math.PI / 2, 0x94a3b8);
     createTroffer(14, 4.2, 12.5, Math.PI / 2, 0xfef08a);
     createTroffer(28, 4.2, 12.5, Math.PI / 2, 0x67e8f9);
+    createTroffer(36, 4.2, 12.5, Math.PI / 2, 0x38bdf8); // Bulkhead 06 and archive approach entrance
 
     // Research Lab C
     createTroffer(0, 4.2, -23, 0, 0x67e8f9);
@@ -866,8 +870,8 @@ export class Facility {
     };
 
     // Wall Fire Hose Cabinets (placed cleanly on solid wall sections away from doors)
-    createHoseCabinet(-13.5, 1.2, 14.85, Math.PI);
-    createHoseCabinet(13.5, 1.2, 14.85, Math.PI);
+    createHoseCabinet(-6.0, 1.2, 14.85, Math.PI);
+    createHoseCabinet(6.0, 1.2, 14.85, Math.PI);
 
     // 4. Folding Yellow "CAUTION WET FLOOR" Signs
     const createCautionSign = (x, z, rotY = 0) => {

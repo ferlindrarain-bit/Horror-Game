@@ -192,6 +192,10 @@ export class FacilityMapUI {
 
     document.body.appendChild(this.container);
 
+    // Prevent map interactions from leaking to 3D canvas / pointer lock
+    this.container.addEventListener('click', (e) => e.stopPropagation());
+    this.container.addEventListener('mousedown', (e) => e.stopPropagation());
+
     this.canvas = document.getElementById('map-canvas');
     this.ctx = this.canvas.getContext('2d');
     this.closeBtn = document.getElementById('map-close-btn');
@@ -206,14 +210,8 @@ export class FacilityMapUI {
     });
 
     window.addEventListener('keydown', (e) => {
-      if (e.code === 'KeyM') {
-        this.toggle();
-      } else if (this.isOpen && e.code === 'Escape') {
-        e.preventDefault();
-        e.stopPropagation();
-        this.hide();
-      } else if (this.isOpen && e.code === 'KeyE') {
-        if (performance.now() - (this.openTimestamp || 0) < 280) return;
+      if (this.isOpen && (e.code === 'KeyM' || e.code === 'Escape' || e.code === 'KeyE')) {
+        if (e.code === 'KeyE' && performance.now() - (this.openTimestamp || 0) < 280) return;
         e.preventDefault();
         e.stopPropagation();
         this.hide();
@@ -222,8 +220,14 @@ export class FacilityMapUI {
   }
 
   _resizeCanvas() {
-    this.canvas.width = this.canvas.clientWidth;
-    this.canvas.height = this.canvas.clientHeight;
+    if (!this.canvas) return;
+    const rect = this.canvas.getBoundingClientRect();
+    const w = Math.floor(rect.width) || this.canvas.clientWidth || 800;
+    const h = Math.floor(rect.height) || this.canvas.clientHeight || 600;
+    if (this.canvas.width !== w || this.canvas.height !== h) {
+      this.canvas.width = w;
+      this.canvas.height = h;
+    }
   }
 
   toggle() {
@@ -235,8 +239,34 @@ export class FacilityMapUI {
     this.openTimestamp = performance.now();
     this.isOpen = true;
     this.container.style.display = 'flex';
-    this._resizeCanvas();
 
+    if (this.player && typeof this.player.unlock === 'function') {
+      this.player.unlock();
+    }
+    if (document.exitPointerLock) {
+      document.exitPointerLock();
+    }
+
+    // Update telemetry sidebar with real live story data
+    const nightEl = document.getElementById('map-night-val');
+    const objEl = document.getElementById('map-obj-val');
+    if (this.story) {
+      const curr = this.story.getCurrentNight();
+      if (curr && nightEl) {
+        nightEl.textContent = `NIGHT ${this.story.currentNight} : ${curr.title.toUpperCase()}`;
+      }
+      if (curr && objEl && curr.objectives) {
+        const active = curr.objectives.find(o => !o.completed) || curr.objectives[curr.objectives.length - 1];
+        if (active) objEl.textContent = active.text;
+      }
+    }
+
+    requestAnimationFrame(() => {
+      this._resizeCanvas();
+      this.render();
+    });
+
+    if (this.animFrameId) cancelAnimationFrame(this.animFrameId);
     const loop = () => {
       if (!this.isOpen) return;
       this.radarAngle += 0.025;
@@ -247,6 +277,7 @@ export class FacilityMapUI {
   }
 
   hide() {
+    if (!this.isOpen) return;
     this.isOpen = false;
     this.container.style.display = 'none';
     if (this.animFrameId) {

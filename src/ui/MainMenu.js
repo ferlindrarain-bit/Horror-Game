@@ -6,6 +6,24 @@ export class MainMenu {
     this.onContinue = null;
     this.onSettings = null;
     this.onCloudSave = null;
+    this.onTutorial = null;
+    this.onCredits = null;
+    this.onDifficultyChange = null;
+
+    this.difficulties = ['easy', 'normal', 'nightmare'];
+    this.difficultyLabels = {
+      easy: 'CASUAL / PENELITI',
+      normal: 'STANDARD / OPERATOR',
+      nightmare: 'NIGHTMARE / ANOMALI'
+    };
+    this.difficultyColors = {
+      easy: '#22c55e',
+      normal: '#38bdf8',
+      nightmare: '#ef4444'
+    };
+
+    const savedSettings = SaveManager.loadSettings();
+    this.currentDifficulty = (savedSettings && savedSettings.difficulty) || 'normal';
 
     this._createDOM();
   }
@@ -20,9 +38,13 @@ export class MainMenu {
       
       <button id="btn-new-game">NEW GAME</button>
       <button id="btn-continue">CONTINUE</button>
+      <button id="btn-difficulty" style="border-color: ${this.difficultyColors[this.currentDifficulty]}; color: ${this.difficultyColors[this.currentDifficulty]}; font-size: 0.8rem; letter-spacing: 1.5px;">
+        DIFFICULTY: ${this.difficultyLabels[this.currentDifficulty]} [GANTI]
+      </button>
+      <button id="btn-tutorial" style="border-color:#f59e0b; color:#fbbf24;">📖 TUTORIAL // PANDUAN BERMAIN</button>
       <button id="btn-cloud-save" style="border-color:#38bdf8; color:#38bdf8;">☁ CLOUD SAVE // SUPABASE</button>
       <button id="btn-settings">SETTINGS</button>
-      <button id="btn-credits">CREDITS</button>
+      <button id="btn-credits">CREDITS // TIM PENGEMBANG</button>
 
       <div style="margin-top: 2.5rem; font-size: 0.7rem; color: #444; letter-spacing: 1px;">
         SECTOR 09 EMERGENCY MONITORING DIVISION // VER 2049.5
@@ -32,6 +54,8 @@ export class MainMenu {
 
     this.btnNewGame = document.getElementById('btn-new-game');
     this.btnContinue = document.getElementById('btn-continue');
+    this.btnDifficulty = document.getElementById('btn-difficulty');
+    this.btnTutorial = document.getElementById('btn-tutorial');
     this.btnCloudSave = document.getElementById('btn-cloud-save');
     this.btnSettings = document.getElementById('btn-settings');
     this.btnCredits = document.getElementById('btn-credits');
@@ -44,6 +68,17 @@ export class MainMenu {
       if (this.onContinue) this.onContinue();
     });
 
+    this.btnDifficulty.addEventListener('click', () => {
+      const idx = this.difficulties.indexOf(this.currentDifficulty);
+      const nextIdx = (idx + 1) % this.difficulties.length;
+      this.setDifficulty(this.difficulties[nextIdx]);
+      if (this.onDifficultyChange) this.onDifficultyChange(this.currentDifficulty);
+    });
+
+    this.btnTutorial.addEventListener('click', () => {
+      if (this.onTutorial) this.onTutorial();
+    });
+
     this.btnCloudSave.addEventListener('click', () => {
       if (this.onCloudSave) this.onCloudSave();
     });
@@ -53,10 +88,23 @@ export class MainMenu {
     });
 
     this.btnCredits.addEventListener('click', () => {
-      alert(`THE LAST SIGNAL: REALITY ERROR\n\nDirected & Developed by: Antigravity Game Studio\nTechnology: Three.js, Web Audio API, Vite\nStory & Design: Sector 09 Research Division\n\nThank you for playing.`);
+      if (this.onCredits) this.onCredits();
     });
 
     this._refreshContinueButton();
+  }
+
+  setDifficulty(diff) {
+    if (!this.difficulties.includes(diff)) return;
+    this.currentDifficulty = diff;
+    if (this.btnDifficulty) {
+      this.btnDifficulty.style.borderColor = this.difficultyColors[diff];
+      this.btnDifficulty.style.color = this.difficultyColors[diff];
+      this.btnDifficulty.textContent = `DIFFICULTY: ${this.difficultyLabels[diff]} [GANTI]`;
+    }
+    const settings = SaveManager.loadSettings() || {};
+    settings.difficulty = diff;
+    SaveManager.saveSettings(settings);
   }
 
   _refreshContinueButton() {
