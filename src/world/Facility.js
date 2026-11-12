@@ -2815,6 +2815,43 @@ export class Facility {
     createBattery(-15.5, 1.25, 18.0, 'battery_storage');
     // 3. Medical Ward: On bedside nightstand
     createBattery(16.0, 0.74, 7.8, 'battery_med');
+
+    // 4. Medical Ward: Emergency First Aid Kit on medical table
+    const medKitGroup = new THREE.Group();
+    const mkBox = new THREE.Mesh(
+      new THREE.BoxGeometry(0.42, 0.28, 0.24),
+      new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.3 })
+    );
+    mkBox.position.y = 0.14;
+    medKitGroup.add(mkBox);
+
+    const mkCrossH = new THREE.Mesh(
+      new THREE.BoxGeometry(0.24, 0.07, 0.01),
+      new THREE.MeshBasicMaterial({ color: 0xef4444 })
+    );
+    mkCrossH.position.set(0, 0.14, 0.126);
+    medKitGroup.add(mkCrossH);
+    const mkCrossV = new THREE.Mesh(
+      new THREE.BoxGeometry(0.07, 0.24, 0.01),
+      new THREE.MeshBasicMaterial({ color: 0xef4444 })
+    );
+    mkCrossV.position.set(0, 0.14, 0.127);
+    medKitGroup.add(mkCrossV);
+
+    const mkLight = new THREE.PointLight(0x22c55e, 0.8, 2.5, 2.0);
+    mkLight.position.set(0, 0.3, 0);
+    medKitGroup.add(mkLight);
+
+    medKitGroup.position.set(24.5, 0.94, 2.0);
+    this.group.add(medKitGroup);
+
+    this.interactables.push({
+      mesh: medKitGroup,
+      type: 'first_aid',
+      id: 'first_aid_med',
+      prompt: '[E] Ambil Kotak Medis P3K (Pemulihan Stamina Penuh)',
+      data: { item: 'first_aid_kit' }
+    });
   }
 
   setLighting(lighting) {

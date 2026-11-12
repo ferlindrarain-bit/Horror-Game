@@ -30,6 +30,10 @@ export class PlayerController {
     this.bobTimer = 0;
     this.stepTimer = 0;
 
+    // Camera shake for jumpscares and horror impacts
+    this.shakeIntensity = 0;
+    this.shakeTimer = 0;
+
     // Camera rig: yawObject contains pitchObject, which contains camera
     this.pitchObject = new THREE.Object3D();
     this.yawObject = new THREE.Object3D();
@@ -87,6 +91,11 @@ export class PlayerController {
 
   setSensitivity(val) {
     this.sensitivity = val;
+  }
+
+  shake(intensity = 0.035, duration = 0.45) {
+    this.shakeIntensity = intensity;
+    this.shakeTimer = duration;
   }
 
   _initEvents() {
@@ -257,6 +266,16 @@ export class PlayerController {
       this.pitchObject.position.y = Math.sin(this.bobTimer) * (actualSprinting ? 0.04 : 0.02);
     } else {
       this.pitchObject.position.y = 0;
+    }
+
+    // Camera shake response
+    if (this.shakeTimer > 0) {
+      this.shakeTimer -= delta;
+      const sx = (Math.random() - 0.5) * this.shakeIntensity;
+      const sy = (Math.random() - 0.5) * this.shakeIntensity;
+      this.camera.position.set(sx, sy, 0);
+    } else {
+      this.camera.position.set(0, 0, 0);
     }
   }
 

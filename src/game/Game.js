@@ -99,6 +99,11 @@ export class Game {
 
     this.story = new StoryManager();
     this.anomaly = new AnomalyManager(this.facility, this.lighting, this.audio);
+    this.anomaly.onAnomalyDetected = () => {
+      if (this.player && typeof this.player.shake === 'function') {
+        this.player.shake(0.035, 0.45);
+      }
+    };
     this.achievements = new AchievementManager();
   }
 
@@ -578,6 +583,16 @@ export class Game {
         if (bIdx !== -1) this.facility.interactables.splice(bIdx, 1);
         break;
 
+      case 'first_aid':
+        this.player.stamina = 100;
+        this.hud.updateStamina(100);
+        this.hud.showNotification('💉 KOTAK MEDIS P3K DIGUNAKAN: Stamina Penuh!', 3500);
+        this.audio.playNotification();
+        this.facility.group.remove(item.mesh);
+        const fIdx = this.facility.interactables.indexOf(item);
+        if (fIdx !== -1) this.facility.interactables.splice(fIdx, 1);
+        break;
+
       case 'item':
         this.story.addItem(item.data.item);
         this.facility.group.remove(item.mesh);
@@ -744,6 +759,16 @@ export class Game {
       // Dynamic Story Proximity Triggers
       const pos = this.player.getPosition();
       const currNight = this.story.getCurrentNight();
+
+      // Dynamic Proximity to Shadow Observer Entity (Hallway Phantom Encounter)
+      if (this.facility.entityMesh && this.facility.entityMesh.visible) {
+        const entPos = this.facility.entityMesh.position;
+        if (pos.distanceTo(entPos) < 6.8) {
+          this.facility.setEntityPosition(null);
+          this.audio.playRadioStatic(0.7);
+          this.player.shake(0.04, 0.4);
+        }
+      }
 
       if (currNight) {
         // Night 4: Leaving Control Room detection

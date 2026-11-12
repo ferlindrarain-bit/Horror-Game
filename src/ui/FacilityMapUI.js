@@ -13,78 +13,78 @@ export class FacilityMapUI {
     // Architectural layout metadata for 2D Tactical Blueprint rendering
     this.roomDefs = {
       'control_room': {
-        name: 'SECURITY HUB',
+        name: 'RUANG KONTROL',
         code: 'SEC-01',
         x: 0, z: 0, w: 14, d: 14,
         color: '#38bdf8',
-        subtext: 'MAIN CONTROL / CCTV / RADIO'
+        subtext: 'TERMINAL UTAMA / CCTV / RADIO'
       },
       'corridor': {
-        name: 'TRANSIT SPINE CORRIDOR',
+        name: 'LORONG UTAMA TRANSIT',
         code: 'TRN-02',
         x: 4, z: 12.5, w: 80, d: 5,
         color: '#64748b',
-        subtext: 'MAIN INTERCONNECTING TUNNEL'
+        subtext: 'TEROWONGAN PENGHUBUNG BUNKER'
       },
       'research_lab': {
-        name: 'RESEARCH LAB C',
+        name: 'LABORATORIUM RISET C',
         code: 'LAB-03',
         x: 0, z: -23, w: 18, d: 16,
         color: '#06b6d4',
-        subtext: 'SPECIMEN CONTAINMENT & ANALYSIS'
+        subtext: 'ISOLASI SPESIMEN & ANALISIS'
       },
       'electrical_room': {
-        name: 'ELECTRICAL SUBSTATION',
+        name: 'SUBSTASI LISTRIK',
         code: 'PWR-04',
         x: -20, z: 4, w: 12, d: 12,
         color: '#f59e0b',
-        subtext: 'GENERATORS & BREAKER ARRAY'
+        subtext: 'GENERATOR DIESEL & SAKLAR UTAMA'
       },
       'medical_room': {
-        name: 'MEDICAL & QUARANTINE',
+        name: 'RUANG MEDIS & KARANTINA',
         code: 'MED-05',
         x: 20, z: 4, w: 12, d: 12,
         color: '#10b981',
-        subtext: 'SURGICAL TRAUMA & SUPPLIES'
+        subtext: 'RANJANG TRAUMA & REKAM MEDIS'
       },
       'storage_room': {
-        name: 'STORAGE BAY A',
+        name: 'STORAGE BAY A (GUDANG)',
         code: 'STR-06',
         x: -20, z: 21, w: 12, d: 12,
         color: '#d97706',
-        subtext: 'HEAVY CARGO & PARTS CACHE'
+        subtext: 'RAK LOGISTIK & KARTU AKSES'
       },
       'comm_room': {
-        name: 'COMMUNICATIONS ARRAY',
+        name: 'RUANG KOMUNIKASI RF',
         code: 'COM-07',
         x: 20, z: 21, w: 12, d: 12,
         color: '#facc15',
-        subtext: 'RF MONITORING & RECORDINGS'
+        subtext: 'PEMANCAR FREKUENSI 47.3 HZ'
       },
       'elevator': {
-        name: 'INDUSTRIAL ELEVATOR',
+        name: 'ELEVATOR PERMUKAAN',
         code: 'LIFT-08',
         x: -39, z: 12.5, w: 6, d: 6,
         color: '#ef4444',
-        subtext: 'SURFACE HOIST SHAFT (INOPERABLE)'
+        subtext: 'POROS HOIST DARURAT (TERKUNCI)'
       },
       'archive_room': {
-        name: 'RESTRICTED ARCHIVE',
+        name: 'RUANG ARSIP TERLARANG',
         code: 'ARC-09',
         x: 44, z: -11, w: 16, d: 14,
         color: '#3b82f6',
         locked: true,
         unlockKey: 'archive_keycard',
-        subtext: 'CLASSIFIED RESEARCH CLASSIFICATION'
+        subtext: 'DOKUMEN RAHASIA PROYEK ECHO'
       },
       'secret_chamber': {
-        name: 'PROJECT ECHO CORE',
+        name: 'RUANG REAKTOR ECHO',
         code: 'CORE-10',
         x: 44, z: -27, w: 18, d: 18,
         color: '#a855f7',
         locked: true,
         unlockKey: 'chamber_code',
-        subtext: 'RESONANCE TRANSMITTER APPARATUS'
+        subtext: 'KONSOL PEMANCAR KESADARAN'
       }
     };
 
@@ -112,12 +112,12 @@ export class FacilityMapUI {
     this.container.innerHTML = `
       <div style="padding: 10px 18px; background: #0b1329; border-bottom: 2px solid #1e293b; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
         <div style="display:flex; align-items:center; gap:14px;">
-          <span style="color: #38bdf8; font-weight: bold; font-size: 0.95rem; letter-spacing: 2px;">SECTOR 09 // TACTICAL ARCHITECTURAL BLUEPRINT</span>
-          <span style="font-size: 0.7rem; color: #22c55e; background: #062312; border: 1px solid #166534; padding: 2px 8px; border-radius: 2px;">● LIVE RADAR SWEEP ACTIVE</span>
+          <span style="color: #38bdf8; font-weight: bold; font-size: 0.95rem; letter-spacing: 2px;">SEKTOR 09 // CETAK BIRU TAKTIS FASILITAS</span>
+          <span style="font-size: 0.7rem; color: #22c55e; background: #062312; border: 1px solid #166534; padding: 2px 8px; border-radius: 2px;">● RADAR PEMANTAU AKTIF</span>
         </div>
         <div style="display:flex; gap:12px; align-items:center;">
-          <span style="font-size: 0.72rem; color: #94a3b8;">PRESS [M], [ESC] OR [E] TO EXIT</span>
-          <button id="map-close-btn" style="background: #450a0a; border: 1px solid #ef4444; color: #fca5a5; padding: 4px 14px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 0.75rem; font-weight: bold;">[ ✖ CLOSE (ESC/E) ]</button>
+          <span style="font-size: 0.72rem; color: #94a3b8;">TEKAN [M], [ESC] ATAU [E] UNTUK KELUAR</span>
+          <button id="map-close-btn" style="background: #450a0a; border: 1px solid #ef4444; color: #fca5a5; padding: 4px 14px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 0.75rem; font-weight: bold;">[ ✖ TUTUP (ESC/E) ]</button>
         </div>
       </div>
 
@@ -126,20 +126,20 @@ export class FacilityMapUI {
 
         <div style="width: 320px; background: rgba(11,19,41,0.96); border-left: 2px solid #1e293b; padding: 18px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; flex-shrink: 0;">
           <div style="font-size: 0.8rem; color: #38bdf8; font-weight: bold; border-bottom: 1px solid #334155; padding-bottom: 6px;">
-            MISSION TELEMETRY
+            TELEMETRI MISI
           </div>
           <div style="font-size: 0.75rem; color: #94a3b8;">
-            CURRENT SHIFT: <span id="map-night-val" style="color: #f59e0b; font-weight: bold;">NIGHT 1 : THE ARRIVAL</span>
+            GILIRAN JAGA: <span id="map-night-val" style="color: #f59e0b; font-weight: bold;">MALAM 1 : KEDATANGAN</span>
           </div>
           <div style="font-size: 0.75rem; color: #94a3b8;">
-            ACTIVE DIRECTIVE:
+            TARGET UTAMA:
             <div id="map-obj-val" style="color: #e2e8f0; margin-top: 6px; font-size: 0.72rem; line-height: 1.5; border-left: 3px solid #ef4444; padding-left: 10px; background: rgba(239,68,68,0.06); padding-top: 4px; padding-bottom: 4px;">
-              Restore facility main power.
+              Pulihkan listrik fasilitas.
             </div>
           </div>
 
           <div style="font-size: 0.8rem; color: #38bdf8; font-weight: bold; border-bottom: 1px solid #334155; padding-bottom: 6px; margin-top: 8px;">
-            FACILITY SURVEILLANCE
+            PENGAWASAN KAMERA CCTV
           </div>
           <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.72rem;">
             <div style="display:flex; justify-content:space-between; color:#94a3b8;">
@@ -157,26 +157,26 @@ export class FacilityMapUI {
           </div>
 
           <div style="font-size: 0.8rem; color: #38bdf8; font-weight: bold; border-bottom: 1px solid #334155; padding-bottom: 6px; margin-top: 8px;">
-            BLUEPRINT LEGEND
+            LEGENDA CETAK BIRU
           </div>
           <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.72rem; color: #cbd5e1;">
             <div style="display:flex; align-items:center; gap:8px;">
-              <span style="color:#ef4444; font-size:1.1rem; line-height:1;">▲</span> <span>PLAYER LOCATION & HEADING</span>
+              <span style="color:#ef4444; font-size:1.1rem; line-height:1;">▲</span> <span>LOKASI & ARAH PANDANG PEMAIN</span>
             </div>
             <div style="display:flex; align-items:center; gap:8px;">
-              <span style="color:#38bdf8; font-size:1rem; line-height:1;">◉</span> <span>CCTV SURVEILLANCE CAMERA</span>
+              <span style="color:#38bdf8; font-size:1rem; line-height:1;">◉</span> <span>TITIK KAMERA PENGAWAS CCTV</span>
             </div>
             <div style="display:flex; align-items:center; gap:8px;">
-              <span style="display:inline-block; width:12px; height:12px; background:rgba(56,189,248,0.25); border:1px solid #38bdf8;"></span> <span>EXPLORED / ACTIVE AREA</span>
+              <span style="display:inline-block; width:12px; height:12px; background:rgba(56,189,248,0.25); border:1px solid #38bdf8;"></span> <span>AREA SUDAH DIJELAJAHI</span>
             </div>
             <div style="display:flex; align-items:center; gap:8px;">
-              <span style="display:inline-block; width:12px; height:12px; background:rgba(15,23,42,0.6); border:1px dashed #64748b;"></span> <span>UNEXPLORED BLUEPRINT SECTOR</span>
+              <span style="display:inline-block; width:12px; height:12px; background:rgba(15,23,42,0.6); border:1px dashed #64748b;"></span> <span>SEKTOR BELUM DIJELAJAHI</span>
             </div>
             <div style="display:flex; align-items:center; gap:8px;">
-              <span style="color:#ef4444; font-weight:bold;">[LOCKED]</span> <span>SECURITY ACCESS GATE</span>
+              <span style="color:#ef4444; font-weight:bold;">[TERKUNCI]</span> <span>PINTU AKSES KEAMANAN</span>
             </div>
             <div style="display:flex; align-items:center; gap:8px;">
-              <span style="color:#22c55e; font-weight:bold;">[OPEN]</span> <span>SECURITY OVERRIDE UNLOCKED</span>
+              <span style="color:#22c55e; font-weight:bold;">[TERBUKA]</span> <span>PINTU BERHASIL DIBUKA</span>
             </div>
           </div>
 
