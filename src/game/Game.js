@@ -856,13 +856,30 @@ export class Game {
         }
       }
 
-      // Dynamic Proximity to Shadow Observer Entity (Hallway Phantom Encounter)
+      // Dynamic Proximity to Shadow Observer Entity (Black Anomaly Jumpscare Encounter)
       if (this.facility.entityMesh && this.facility.entityMesh.visible) {
         const entPos = this.facility.entityMesh.position;
         if (pos.distanceTo(entPos) < 6.8) {
           this.facility.setEntityPosition(null);
-          this.audio.playRadioStatic(0.7);
-          this.player.shake(0.04, 0.4);
+          this.audio.playJumpscare();
+          this.player.shake(0.14, 1.2);
+          if (this.hud && typeof this.hud.triggerJumpscare === 'function') {
+            this.hud.triggerJumpscare(1200);
+          }
+          if (this.player) {
+            this.player.stamina = Math.max(5, this.player.stamina - 40);
+          }
+          // Paranormal electromagnetic surge: Flashlight flickers out and reboots
+          const wasFlashlightOn = this.flashlight && this.flashlight.isOn();
+          if (wasFlashlightOn) {
+            this.flashlight.setPower(false);
+            setTimeout(() => {
+              if (this.isRunning && this.flashlight) {
+                this.audio.playFlashlightClick();
+                this.flashlight.setPower(true);
+              }
+            }, 2000);
+          }
         }
       }
 

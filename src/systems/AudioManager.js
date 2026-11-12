@@ -226,16 +226,30 @@ export class AudioManager {
   playJumpscare() {
     if (!this.ctx) return;
     const t = this.ctx.currentTime;
-    const freqs = [320, 339, 440, 466, 622];
+
+    // 1. Massive Sub-Bass Impact Boom (chest-thumping low-end slam)
+    const sub = this.ctx.createOscillator();
+    const subGain = this.ctx.createGain();
+    sub.type = 'sine';
+    sub.frequency.setValueAtTime(140, t);
+    sub.frequency.exponentialRampToValueAtTime(22, t + 0.55);
+    subGain.gain.setValueAtTime(0.9, t);
+    subGain.gain.exponentialRampToValueAtTime(0.001, t + 0.9);
+    sub.connect(subGain);
+    subGain.connect(this.sfxGain);
+    sub.start(t);
+    sub.stop(t + 0.9);
+
+    // 2. Horrific Screeching Discordant Stinger
+    const freqs = [311.1, 329.6, 440.0, 466.1, 622.2, 880.0, 1174.6];
     freqs.forEach(f => {
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
-
       osc.type = 'sawtooth';
-      osc.frequency.setValueAtTime(f * 0.8, t);
-      osc.frequency.exponentialRampToValueAtTime(f * 2.2, t + 0.6);
+      osc.frequency.setValueAtTime(f * 0.7, t);
+      osc.frequency.exponentialRampToValueAtTime(f * 2.8, t + 0.35);
 
-      gain.gain.setValueAtTime(0.25, t);
+      gain.gain.setValueAtTime(0.35, t);
       gain.gain.exponentialRampToValueAtTime(0.001, t + 0.85);
 
       osc.connect(gain);
@@ -244,6 +258,36 @@ export class AudioManager {
       osc.start(t);
       osc.stop(t + 0.85);
     });
+
+    // 3. Harsh Guttural Noise Screamer Burst
+    const noiseBuf = this.ctx.createBuffer(1, this.ctx.sampleRate * 0.7, this.ctx.sampleRate);
+    const data = noiseBuf.getChannelData(0);
+    for (let i = 0; i < data.length; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.25));
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = noiseBuf;
+
+    const noiseFilter = this.ctx.createBiquadFilter();
+    noiseFilter.type = 'highpass';
+    noiseFilter.frequency.setValueAtTime(1200, t);
+    noiseFilter.frequency.exponentialRampToValueAtTime(3200, t + 0.4);
+
+    const noiseGain = this.ctx.createGain();
+    noiseGain.gain.setValueAtTime(0.45, t);
+    noiseGain.gain.exponentialRampToValueAtTime(0.001, t + 0.7);
+
+    noise.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(this.sfxGain);
+    noise.start(t);
+
+    // 4. Follow-up panic heartbeats
+    setTimeout(() => {
+      this.playHeartbeat();
+      setTimeout(() => this.playHeartbeat(), 320);
+      setTimeout(() => this.playHeartbeat(), 680);
+    }, 450);
   }
 
   playHeartbeat() {
@@ -841,24 +885,39 @@ export class AudioManager {
     windGain.connect(this.musicGain);
     windSrc.start(t);
 
-    // Layer 4: Very low sub-bass pulse (heartbeat-like throb)
+    // Layer 4: Very low sub-bass pulse (heartbeat-like infrasound throb)
     const subOsc = this.ctx.createOscillator();
     subOsc.type = 'sine';
-    subOsc.frequency.setValueAtTime(30, t);
+    subOsc.frequency.setValueAtTime(28, t);
     const subLfo = this.ctx.createOscillator();
-    subLfo.frequency.setValueAtTime(0.4, t); // slow throb
+    subLfo.frequency.setValueAtTime(0.35, t); // slow sinister pulse
     const subLfoGain = this.ctx.createGain();
-    subLfoGain.gain.setValueAtTime(0.08, t);
+    subLfoGain.gain.setValueAtTime(0.09, t);
     subLfo.connect(subLfoGain);
     const subGain = this.ctx.createGain();
-    subGain.gain.setValueAtTime(0.08, t);
+    subGain.gain.setValueAtTime(0.09, t);
     subLfoGain.connect(subGain.gain);
     subOsc.connect(subGain);
     subGain.connect(this.musicGain);
     subOsc.start(t);
     subLfo.start(t);
 
-    this.horrorNodes = [drone1, drone2, droneLfo, chord1, chord2, chordLfo, windSrc, windLfo, subOsc, subLfo];
+    // Layer 5: Haunting high tension pitch (tinnitus of the void: 2960Hz & 3120Hz tritone beat)
+    const eerieHigh1 = this.ctx.createOscillator();
+    eerieHigh1.type = 'sine';
+    eerieHigh1.frequency.setValueAtTime(2960, t);
+    const eerieHigh2 = this.ctx.createOscillator();
+    eerieHigh2.type = 'sine';
+    eerieHigh2.frequency.setValueAtTime(3120, t); // Binaural dissonance
+    const highGain = this.ctx.createGain();
+    highGain.gain.setValueAtTime(0.015, t);
+    eerieHigh1.connect(highGain);
+    eerieHigh2.connect(highGain);
+    highGain.connect(this.musicGain);
+    eerieHigh1.start(t);
+    eerieHigh2.start(t);
+
+    this.horrorNodes = [drone1, drone2, droneLfo, chord1, chord2, chordLfo, windSrc, windLfo, subOsc, subLfo, eerieHigh1, eerieHigh2];
   }
 
   /** Stop horror ambient music */

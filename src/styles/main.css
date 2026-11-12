@@ -768,3 +768,90 @@ canvas { display: block; }
   animation: fadeIn 0.2s ease;
 }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===== BLACK ANOMALY JUMPSCARE OVERLAY ===== */
+#jumpscare-overlay {
+  position: fixed; inset: 0; z-index: 25000;
+  display: none; pointer-events: none;
+  background: #000000;
+  overflow: hidden;
+}
+#jumpscare-overlay.active {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  animation: jumpscareStrobe 0.06s infinite alternate;
+}
+@keyframes jumpscareStrobe {
+  0% { background: #000000; filter: contrast(200%) brightness(100%); }
+  50% { background: #2b0000; filter: contrast(300%) invert(20%); }
+  100% { background: #0a0000; filter: contrast(250%) brightness(80%); }
+}
+
+.jumpscare-vignette {
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at center, transparent 30%, rgba(185, 28, 28, 0.7) 70%, #000 100%);
+  pointer-events: none;
+}
+.jumpscare-noise {
+  position: absolute; inset: 0;
+  background-image: repeating-linear-gradient(0deg, rgba(255,255,255,0.08) 0px, rgba(255,255,255,0.08) 1px, transparent 1px, transparent 2px);
+  pointer-events: none;
+}
+.jumpscare-face {
+  position: relative; width: 340px; height: 440px;
+  background: radial-gradient(ellipse at center 40%, #030305 60%, rgba(0,0,0,0) 80%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  animation: jumpscareLunge 0.15s ease-out forwards;
+  filter: drop-shadow(0 0 40px #ef4444);
+}
+@keyframes jumpscareLunge {
+  0% { transform: scale(0.6) translateY(40px); }
+  60% { transform: scale(1.35) translateY(-10px); }
+  100% { transform: scale(1.2) translateY(0); }
+}
+
+.jumpscare-eyes {
+  display: flex; gap: 70px; margin-top: -40px;
+}
+.jumpscare-eyes .eye {
+  width: 32px; height: 32px; background: #ffffff;
+  border-radius: 50%; box-shadow: 0 0 25px #ffffff, 0 0 60px #ef4444;
+  animation: eyeTwitch 0.05s infinite alternate;
+}
+@keyframes eyeTwitch {
+  0% { transform: scale(1) translate(0, 0); }
+  100% { transform: scale(1.15) translate(2px, -1px); }
+}
+
+.jumpscare-mouth {
+  width: 90px; height: 130px; background: #000000;
+  border-radius: 50% 50% 45% 45% / 30% 30% 70% 70%;
+  margin-top: 35px; border: 3px solid #7f1d1d;
+  box-shadow: inset 0 0 30px #450a0a, 0 0 30px rgba(239,68,68,0.5);
+  animation: mouthScream 0.08s infinite alternate;
+}
+@keyframes mouthScream {
+  0% { transform: scaleY(1); }
+  100% { transform: scaleY(1.2) scaleX(0.95); }
+}
+
+.jumpscare-glitch-text {
+  margin-top: 30px; font-size: 1.25rem; font-weight: bold;
+  color: #ef4444; letter-spacing: 6px; text-transform: uppercase;
+  text-shadow: 2px 2px #000, -2px -2px #38bdf8, 0 0 20px #dc2626;
+  animation: textGlitch 0.08s infinite alternate;
+}
+@keyframes textGlitch {
+  0% { transform: translate(1px, -1px); }
+  100% { transform: translate(-2px, 2px); }
+}
+
+body.jumpscare-shaking {
+  animation: screenVibrate 0.04s infinite;
+}
+@keyframes screenVibrate {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-8px, 6px); }
+  50% { transform: translate(6px, -7px); }
+  75% { transform: translate(-6px, -5px); }
+  100% { transform: translate(7px, 6px); }
+}

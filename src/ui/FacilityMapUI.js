@@ -339,8 +339,54 @@ export class FacilityMapUI {
     ctx.strokeRect(toScreenX(-46), toScreenY(-37), 104 * scale, 68 * scale);
     ctx.setLineDash([]);
 
-    // Draw Rooms & Corridors
+    // ── 1. RENDER INTERCONNECTING ARCHITECTURAL CORRIDORS ──
+    const drawCorridor = (x1, z1, x2, z2, width = 4.5) => {
+      const sx = toScreenX(Math.min(x1, x2) - width / 2);
+      const sy = toScreenY(Math.min(z1, z2) - width / 2);
+      const sw = (Math.abs(x2 - x1) || width) * scale;
+      const sh = (Math.abs(z2 - z1) || width) * scale;
+
+      // Floor
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.75)';
+      ctx.fillRect(sx, sy, sw, sh);
+
+      // Floor tiles center guide line
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.18)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(toScreenX(x1), toScreenY(z1));
+      ctx.lineTo(toScreenX(x2), toScreenY(z2));
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Walls
+      ctx.strokeStyle = '#475569';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(sx, sy, sw, sh);
+    };
+
+    // Main East-West Transit Highway
+    drawCorridor(-38, 12.5, 32, 12.5, 4.8);
+    // North Hub Corridor to Lab
+    drawCorridor(0, -7, 0, -15, 4.0);
+    // South Hub Connector to Main Corridor
+    drawCorridor(0, 7, 0, 12.5, 4.0);
+    // West Wing Corridors to Electrical & Storage
+    drawCorridor(-20, 10, -20, 12.5, 4.0);
+    drawCorridor(-20, 12.5, -20, 15, 4.0);
+    // East Wing Corridors to Medical & Comms
+    drawCorridor(20, 10, 20, 12.5, 4.0);
+    drawCorridor(20, 12.5, 20, 15, 4.0);
+    // Far East Approach to Archive & Secret Chamber
+    drawCorridor(30, 12.5, 44, 12.5, 4.0);
+    drawCorridor(44, 12.5, 44, -4, 4.2);
+    // Secret Chamber Catwalk Corridor
+    drawCorridor(44, -18, 44, -20, 3.6);
+
+    // ── 2. RENDER ROOMS WITH REAL ARCHITECTURAL SCHEMATICS ──
     for (const [id, def] of Object.entries(this.roomDefs)) {
+      if (id === 'corridor') continue; // Handled by detailed corridor renderer
       const isDiscovered = this.discoveredRooms.has(id);
       const rx = toScreenX(def.x - def.w / 2);
       const ry = toScreenY(def.z - def.d / 2);
@@ -348,37 +394,55 @@ export class FacilityMapUI {
       const rd = def.d * scale;
 
       if (isDiscovered) {
-        // Explored room: Bright high-tech architectural floor
-        ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
+        // Explored room: High-tech architectural blueprint floor
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
         ctx.fillRect(rx, ry, rw, rd);
 
-        // Architectural wall boundary
+        // Internal room sub-grid (2-meter tile lines)
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.08)';
+        ctx.lineWidth = 0.8;
+        const tileStep = 3 * scale;
+        for (let gx = rx + tileStep; gx < rx + rw; gx += tileStep) {
+          ctx.beginPath(); ctx.moveTo(gx, ry); ctx.lineTo(gx, ry + rd); ctx.stroke();
+        }
+        for (let gy = ry + tileStep; gy < ry + rd; gy += tileStep) {
+          ctx.beginPath(); ctx.moveTo(rx, gy); ctx.lineTo(rx + rw, gy); ctx.stroke();
+        }
+
+        // Reinforced double concrete walls
         ctx.strokeStyle = def.color || '#38bdf8';
         ctx.lineWidth = 2.5;
         ctx.strokeRect(rx, ry, rw, rd);
 
-        // Corner structural brackets
-        const bSize = Math.min(6, scale * 0.8);
+        ctx.strokeStyle = 'rgba(15, 23, 42, 0.6)';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(rx + 2, ry + 2, rw - 4, rd - 4);
+
+        // Corner structural reinforced pillars
+        const bSize = Math.min(6, scale * 0.9);
         ctx.fillStyle = def.color || '#38bdf8';
         ctx.fillRect(rx, ry, bSize, bSize);
         ctx.fillRect(rx + rw - bSize, ry, bSize, bSize);
         ctx.fillRect(rx, ry + rd - bSize, bSize, bSize);
         ctx.fillRect(rx + rw - bSize, ry + rd - bSize, bSize);
 
+        // ── 3. INTERNAL ARCHITECTURAL FURNITURE & MACHINERY SCHEMATICS ──
+        this._drawInternalSchematics(ctx, id, rx, ry, rw, rd, scale, toScreenX, toScreenY);
+
         // Room Header & Code
         ctx.fillStyle = def.color || '#38bdf8';
-        ctx.font = `bold ${Math.max(10, Math.floor(scale * 1.6))}px monospace`;
+        ctx.font = `bold ${Math.max(10, Math.floor(scale * 1.5))}px monospace`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(def.name, rx + rw / 2, ry + rd / 2 - 6);
+        ctx.fillText(def.name, rx + rw / 2, ry + 12);
 
         // Subtext / Room Code
         ctx.fillStyle = '#94a3b8';
-        ctx.font = `${Math.max(8, Math.floor(scale * 1.1))}px monospace`;
-        ctx.fillText(def.code + ' // ' + (def.subtext || ''), rx + rw / 2, ry + rd / 2 + 10);
+        ctx.font = `${Math.max(7.5, Math.floor(scale * 1.05))}px monospace`;
+        ctx.fillText(def.code + ' // ' + (def.subtext || ''), rx + rw / 2, ry + 24);
       } else {
-        // Unexplored room: Visible blueprint blueprint schematic with diagonal crosshatch
-        ctx.fillStyle = 'rgba(11, 19, 41, 0.5)';
+        // Unexplored room: Blueprint schematic with diagonal crosshatch
+        ctx.fillStyle = 'rgba(11, 19, 41, 0.55)';
         ctx.fillRect(rx, ry, rw, rd);
 
         ctx.strokeStyle = 'rgba(56, 189, 248, 0.35)';
@@ -396,7 +460,7 @@ export class FacilityMapUI {
 
         ctx.fillStyle = 'rgba(100, 116, 139, 0.6)';
         ctx.font = `${Math.max(7, Math.floor(scale * 0.95))}px monospace`;
-        ctx.fillText(def.code + ' [UNEXPLORED]', rx + rw / 2, ry + rd / 2 + 10);
+        ctx.fillText(def.code + ' [BELUM DIJELAJAHI]', rx + rw / 2, ry + rd / 2 + 10);
       }
 
       // Security access badge
@@ -406,33 +470,51 @@ export class FacilityMapUI {
         const open = isUnlocked || isChamberOpen;
 
         ctx.fillStyle = open ? '#22c55e' : '#ef4444';
-        ctx.font = 'bold 9px monospace';
+        ctx.font = 'bold 8.5px monospace';
         ctx.textAlign = 'center';
-        ctx.fillText(open ? '[SECURITY OVERRIDE: OPEN]' : '[RESTRICTED: KEYCARD REQUIRED]', rx + rw / 2, ry + rd - 8);
+        ctx.fillText(open ? '🔓 [OTORISASI TERBUKA]' : '🔒 [AKSES TERKUNCI: BUTUH KUNCI/KODE]', rx + rw / 2, ry + rd - 9);
       }
     }
 
-    // Render Corridor Interconnections & Door Openings
-    ctx.fillStyle = '#22c55e';
-    ctx.font = 'bold 8px monospace';
-    ctx.textAlign = 'center';
+    // ── 4. RENDER ARCHITECTURAL DOORWAYS & SWING ARCS ──
+    const drawDoorArc = (x, z, width = 3.2, isVertical = false, swingDir = 1) => {
+      const dx = toScreenX(x);
+      const dy = toScreenY(z);
+      const dw = width * scale;
 
-    // North Hub Door
-    ctx.fillRect(toScreenX(-1.5), toScreenY(-7.2), 3 * scale, 2);
-    // South Hub Door
-    ctx.fillRect(toScreenX(-1.5), toScreenY(6.8), 3 * scale, 2);
-    // Lab Door
-    ctx.fillRect(toScreenX(-1.5), toScreenY(-15.2), 3 * scale, 2);
-    // Electrical Door
-    ctx.fillRect(toScreenX(-20.5), toScreenY(9.8), 3 * scale, 2);
-    // Medical Door
-    ctx.fillRect(toScreenX(18.5), toScreenY(9.8), 3 * scale, 2);
-    // Storage Door
-    ctx.fillRect(toScreenX(-20.5), toScreenY(14.8), 3 * scale, 2);
-    // Comm Door
-    ctx.fillRect(toScreenX(18.5), toScreenY(14.8), 3 * scale, 2);
+      // Door opening frame
+      ctx.fillStyle = '#22c55e';
+      if (isVertical) {
+        ctx.fillRect(dx - 2, dy - dw / 2, 4, dw);
+      } else {
+        ctx.fillRect(dx - dw / 2, dy - 2, dw, 4);
+      }
 
-    // Render CCTV Camera Icons with animated Scanning FOV Cones
+      // Door swing dashed arc (classic architectural CAD symbol)
+      ctx.strokeStyle = 'rgba(34, 197, 94, 0.4)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([2, 2]);
+      ctx.beginPath();
+      if (isVertical) {
+        ctx.arc(dx, dy - dw / 2, dw, 0, Math.PI / 2 * swingDir);
+      } else {
+        ctx.arc(dx - dw / 2, dy, dw, 0, Math.PI / 2 * swingDir);
+      }
+      ctx.stroke();
+      ctx.setLineDash([]);
+    };
+
+    drawDoorArc(0, -7.0, 3.2, false, 1);   // Control North Door
+    drawDoorArc(0, 7.0, 3.2, false, -1);   // Control South Door
+    drawDoorArc(0, -15.0, 3.2, false, 1);  // Lab C Entrance Door
+    drawDoorArc(-20, 10.0, 3.2, false, 1); // Electrical Door
+    drawDoorArc(-20, 15.0, 3.2, false, -1);// Storage Bay A Door
+    drawDoorArc(20, 10.0, 3.2, false, 1);  // Medical Ward Door
+    drawDoorArc(20, 15.0, 3.2, false, -1); // Comm Room Door
+    drawDoorArc(44, -4.0, 3.2, false, 1);  // Archive Vault Door
+    drawDoorArc(44, -18.0, 3.2, false, 1); // Secret Chamber Door
+
+    // ── 5. RENDER CCTV CAMERA SCAN CONES ──
     this.cameras.forEach((cam, i) => {
       const cx = toScreenX(cam.x);
       const cy = toScreenY(cam.z);
@@ -440,7 +522,7 @@ export class FacilityMapUI {
       // Camera base icon
       ctx.fillStyle = '#38bdf8';
       ctx.beginPath();
-      ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+      ctx.arc(cx, cy, 3.5, 0, Math.PI * 2);
       ctx.fill();
 
       // Sweeping vision cone
@@ -450,15 +532,15 @@ export class FacilityMapUI {
       ctx.fillStyle = 'rgba(56, 189, 248, 0.12)';
       ctx.beginPath();
       ctx.moveTo(cx, cy);
-      ctx.arc(cx, cy, 28 * scale * 0.6, fovAngle - 0.45, fovAngle + 0.45);
+      ctx.arc(cx, cy, 26 * scale * 0.6, fovAngle - 0.45, fovAngle + 0.45);
       ctx.closePath();
       ctx.fill();
 
       // Camera label
       ctx.fillStyle = '#38bdf8';
-      ctx.font = 'bold 8px monospace';
+      ctx.font = 'bold 7.5px monospace';
       ctx.textAlign = 'center';
-      ctx.fillText(cam.id, cx, cy - 7);
+      ctx.fillText(cam.id, cx, cy - 6);
     });
 
     // Radar Sweep Line across entire map
@@ -634,5 +716,260 @@ export class FacilityMapUI {
     };
 
     return targets[active.id] || null;
+  }
+
+  _drawInternalSchematics(ctx, id, rx, ry, rw, rd, scale, toScreenX, toScreenY) {
+    ctx.save();
+    switch (id) {
+      case 'control_room': {
+        // Center Horseshoe Security Command Desk
+        const dw = 7.5 * scale;
+        const dd = 4.2 * scale;
+        const dx = rx + (rw - dw) / 2;
+        const dy = ry + (rd - dd) / 2 + 3 * scale;
+
+        ctx.fillStyle = 'rgba(30, 41, 59, 0.9)';
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 1.2;
+        ctx.fillRect(dx, dy, dw, dd);
+        ctx.strokeRect(dx, dy, dw, dd);
+
+        // Screens: Terminal (left), Radio (center), CCTV (right)
+        ctx.fillStyle = '#22c55e';
+        ctx.fillRect(dx + 4, dy + 3, dw * 0.25, 4);
+        ctx.fillStyle = '#f59e0b';
+        ctx.fillRect(dx + dw * 0.38, dy + 2, dw * 0.24, 4);
+        ctx.fillStyle = '#38bdf8';
+        ctx.fillRect(dx + dw * 0.7, dy + 3, dw * 0.25, 4);
+
+        // Server Racks on North Wall
+        ctx.fillStyle = '#1e293b';
+        ctx.strokeStyle = '#64748b';
+        ctx.lineWidth = 1;
+        ctx.fillRect(rx + 8, ry + 32, rw - 16, 5 * scale);
+        ctx.strokeRect(rx + 8, ry + 32, rw - 16, 5 * scale);
+
+        // Operator Chair
+        ctx.strokeStyle = '#94a3b8';
+        ctx.beginPath();
+        ctx.arc(dx + dw / 2, dy + dd + 6, 4, 0, Math.PI * 2);
+        ctx.stroke();
+        break;
+      }
+
+      case 'electrical_room': {
+        // Dual Heavy Industrial Generator Turbines
+        const tRadius = 2.2 * scale;
+        const cy = ry + rd / 2 + 5;
+
+        // Turbine 1
+        const cx1 = rx + rw * 0.32;
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(cx1, cy, tRadius, 0, Math.PI * 2); ctx.stroke();
+        ctx.beginPath(); ctx.arc(cx1, cy, tRadius * 0.4, 0, Math.PI * 2); ctx.stroke();
+        ctx.fillStyle = '#f59e0b';
+        ctx.font = 'bold 7px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('GEN-A', cx1, cy + 2);
+
+        // Turbine 2
+        const cx2 = rx + rw * 0.68;
+        ctx.beginPath(); ctx.arc(cx2, cy, tRadius, 0, Math.PI * 2); ctx.stroke();
+        ctx.beginPath(); ctx.arc(cx2, cy, tRadius * 0.4, 0, Math.PI * 2); ctx.stroke();
+        ctx.fillText('GEN-B', cx2, cy + 2);
+
+        // Breaker Switch Panel on North Wall with lightning bolt ⚡
+        ctx.fillStyle = 'rgba(239, 68, 68, 0.25)';
+        ctx.strokeStyle = '#ef4444';
+        ctx.fillRect(rx + rw * 0.25, ry + 32, rw * 0.5, 4);
+        ctx.strokeRect(rx + rw * 0.25, ry + 32, rw * 0.5, 4);
+        ctx.fillStyle = '#ef4444';
+        ctx.fillText('⚡ SAKLAR UTAMA ⚡', rx + rw / 2, ry + 44);
+        break;
+      }
+
+      case 'medical_room': {
+        // 3 Hospital Trauma Beds
+        const bedW = 2.2 * scale;
+        const bedD = 4.2 * scale;
+        const bedY = ry + rd / 2 - 2;
+
+        for (let i = 0; i < 3; i++) {
+          const bx = rx + rw * 0.22 + i * (rw * 0.28);
+          ctx.fillStyle = 'rgba(30, 41, 59, 0.8)';
+          ctx.strokeStyle = '#10b981';
+          ctx.lineWidth = 1;
+          ctx.fillRect(bx, bedY, bedW, bedD);
+          ctx.strokeRect(bx, bedY, bedW, bedD);
+
+          // Pillow
+          ctx.fillStyle = '#e2e8f0';
+          ctx.fillRect(bx + 2, bedY + 2, bedW - 4, 3);
+        }
+
+        // Quarantine Partition Line
+        ctx.strokeStyle = 'rgba(16, 185, 129, 0.35)';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([3, 3]);
+        ctx.beginPath();
+        ctx.moveTo(rx + 6, ry + rd - 18);
+        ctx.lineTo(rx + rw - 6, ry + rd - 18);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Medical Cross Symbol ✚
+        ctx.fillStyle = '#10b981';
+        ctx.font = 'bold 9px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('✚ KARANTINA MEDIS', rx + rw / 2, ry + rd - 24);
+        break;
+      }
+
+      case 'storage_room': {
+        // 3 Industrial Warehouse Pallet Storage Racks
+        const rackW = rw * 0.75;
+        const rackH = 2.5 * scale;
+        const startX = rx + (rw - rackW) / 2;
+
+        for (let i = 0; i < 3; i++) {
+          const sy = ry + 34 + i * (rackH + 7);
+          ctx.fillStyle = 'rgba(217, 119, 6, 0.15)';
+          ctx.strokeStyle = '#d97706';
+          ctx.lineWidth = 1;
+          ctx.fillRect(startX, sy, rackW, rackH);
+          ctx.strokeRect(startX, sy, rackW, rackH);
+
+          // Box cargo slots inside rack
+          for (let b = 0; b < 4; b++) {
+            ctx.strokeRect(startX + 4 + b * (rackW / 4.4), sy + 2, rackW / 6, rackH - 4);
+          }
+        }
+
+        // Keycard Desk Table Indicator
+        ctx.fillStyle = '#f59e0b';
+        ctx.font = 'bold 7.5px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('💳 MEJA KARTU AKSES', rx + rw / 2, ry + rd - 20);
+        break;
+      }
+
+      case 'comm_room': {
+        // Long Communications Terminal Console
+        const cw = rw * 0.8;
+        const cd = 3.2 * scale;
+        const cx = rx + (rw - cw) / 2;
+        const cy = ry + rd / 2 + 2;
+
+        ctx.fillStyle = 'rgba(250, 204, 21, 0.12)';
+        ctx.strokeStyle = '#facc15';
+        ctx.lineWidth = 1.2;
+        ctx.fillRect(cx, cy, cw, cd);
+        ctx.strokeRect(cx, cy, cw, cd);
+
+        // RF Frequency Dial 47.3 MHz
+        ctx.fillStyle = '#facc15';
+        ctx.font = 'bold 7px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('〰 FREKUENSI RF 47.3 MHz 〰', cx + cw / 2, cy + cd / 2 + 2);
+
+        // Antenna Racks
+        ctx.strokeRect(rx + 6, ry + 32, 6, rd * 0.4);
+        ctx.strokeRect(rx + rw - 12, ry + 32, 6, rd * 0.4);
+        break;
+      }
+
+      case 'archive_room': {
+        // 4 Parallel High-Density Archive Bookshelf Stacks
+        const shelfW = rw * 0.8;
+        const shelfH = 2.0 * scale;
+        const sx = rx + (rw - shelfW) / 2;
+
+        for (let i = 0; i < 4; i++) {
+          const sy = ry + 34 + i * (shelfH + 6);
+          ctx.fillStyle = 'rgba(59, 130, 246, 0.15)';
+          ctx.strokeStyle = '#3b82f6';
+          ctx.lineWidth = 1;
+          ctx.fillRect(sx, sy, shelfW, shelfH);
+          ctx.strokeRect(sx, sy, shelfW, shelfH);
+
+          // Filing dividers
+          ctx.setLineDash([2, 2]);
+          ctx.beginPath();
+          ctx.moveTo(sx + shelfW * 0.33, sy); ctx.lineTo(sx + shelfW * 0.33, sy + shelfH);
+          ctx.moveTo(sx + shelfW * 0.66, sy); ctx.lineTo(sx + shelfW * 0.66, sy + shelfH);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+
+        ctx.fillStyle = '#60a5fa';
+        ctx.font = '7px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('DOKUMEN RAHASIA SUBJEK 12', rx + rw / 2, ry + rd - 20);
+        break;
+      }
+
+      case 'secret_chamber': {
+        // Colossal Circular Quantum Accelerator Core
+        const coreX = rx + rw / 2;
+        const coreY = ry + rd / 2 + 4;
+        const r1 = rw * 0.32;
+        const r2 = rw * 0.20;
+        const r3 = rw * 0.08;
+
+        // Outer Containment Ring
+        ctx.strokeStyle = '#a855f7';
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(coreX, coreY, r1, 0, Math.PI * 2); ctx.stroke();
+
+        // Magnetic Guide Ring with animated dashed rotation
+        ctx.strokeStyle = 'rgba(168, 85, 247, 0.6)';
+        ctx.lineWidth = 1.2;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath(); ctx.arc(coreX, coreY, r2, 0, Math.PI * 2); ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Pulsating Core Singularity
+        const corePulse = 2 + Math.sin(performance.now() * 0.005) * 1.5;
+        ctx.fillStyle = '#c084fc';
+        ctx.beginPath(); ctx.arc(coreX, coreY, r3 + corePulse, 0, Math.PI * 2); ctx.fill();
+
+        // Suspended Catwalk Bridge
+        ctx.strokeStyle = '#f1f5f9';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(coreX, ry + rd);
+        ctx.lineTo(coreX, coreY + r2);
+        ctx.stroke();
+
+        // Final Console
+        ctx.fillStyle = '#ef4444';
+        ctx.fillRect(coreX - 5, coreY + r2 - 3, 10, 6);
+        ctx.font = 'bold 7px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('⚡ KONSOL REAKTOR ⚡', coreX, coreY - r1 - 4);
+        break;
+      }
+
+      case 'research_lab': {
+        // Specimen Tube in Center
+        const lx = rx + rw / 2;
+        const ly = ry + rd / 2 + 6;
+        const sRadius = 2.8 * scale;
+
+        ctx.fillStyle = 'rgba(6, 182, 212, 0.15)';
+        ctx.strokeStyle = '#06b6d4';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(lx, ly, sRadius, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        ctx.strokeRect(lx - sRadius * 1.3, ly - sRadius * 1.3, sRadius * 2.6, sRadius * 2.6);
+
+        ctx.fillStyle = '#06b6d4';
+        ctx.font = 'bold 7px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('TABUNG SPESIMEN', lx, ly + 2);
+        break;
+      }
+    }
+    ctx.restore();
   }
 }

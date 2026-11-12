@@ -39,12 +39,12 @@ export class AnomalyManager {
 
       case 'shadow_hallway':
       case 'entity_sighting':
-        // Observer in corridor
-        this.facility.setEntityPosition(new THREE.Vector3(15, 0, 10), new THREE.Vector3(0, 0, 10));
-        if (this.audio) this.audio.playJumpscare();
+        // Observer in corridor right at the main transit junction
+        this.facility.setEntityPosition(new THREE.Vector3(0, 0, 11), new THREE.Vector3(0, 0, 0));
+        if (this.audio) this.audio.playTensionStinger();
         setTimeout(() => {
           this.facility.setEntityPosition(null);
-        }, 6000);
+        }, 10000);
         break;
 
       case 'light_flicker':

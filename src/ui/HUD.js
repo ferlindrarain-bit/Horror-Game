@@ -95,6 +95,23 @@ export class HUD {
     document.body.appendChild(vignette);
     this.vignette = vignette;
 
+    // Jumpscare Overlay (Black Anomaly Horror Event)
+    this.jumpscareOverlay = document.createElement('div');
+    this.jumpscareOverlay.id = 'jumpscare-overlay';
+    this.jumpscareOverlay.innerHTML = `
+      <div class="jumpscare-vignette"></div>
+      <div class="jumpscare-noise"></div>
+      <div class="jumpscare-face">
+        <div class="jumpscare-eyes">
+          <div class="eye eye-left"></div>
+          <div class="eye eye-right"></div>
+        </div>
+        <div class="jumpscare-mouth"></div>
+      </div>
+      <div class="jumpscare-glitch-text">ANOMALI HITAM // JANGAN BERBALIK</div>
+    `;
+    document.body.appendChild(this.jumpscareOverlay);
+
     // Cache elements
     this.batteryFill = document.getElementById('hud-battery-fill');
     this.staminaFill = document.getElementById('hud-stamina-fill');
@@ -201,5 +218,17 @@ export class HUD {
       this.nightOverlay.classList.remove('active');
       if (onComplete) onComplete();
     }, 2800);
+  }
+
+  triggerJumpscare(duration = 1100, onComplete) {
+    if (!this.jumpscareOverlay) return;
+    this.jumpscareOverlay.classList.add('active');
+    document.body.classList.add('jumpscare-shaking');
+
+    setTimeout(() => {
+      this.jumpscareOverlay.classList.remove('active');
+      document.body.classList.remove('jumpscare-shaking');
+      if (onComplete) onComplete();
+    }, duration);
   }
 }

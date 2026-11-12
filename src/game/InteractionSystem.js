@@ -13,11 +13,20 @@ export class InteractionSystem {
     this.onFocus = null; // () => {} callback when targeting something
     this.enabled = true;
 
+    // Zero-GC Pre-allocated Vectors for 60FPS interaction raycasting
+    this._camPos = new THREE.Vector3();
+    this._camDir = new THREE.Vector3();
+    this._itemPos = new THREE.Vector3();
+    this._toItem = new THREE.Vector3();
+    this._centerNDC = { x: 0, y: 0 };
+    this._cachedMeshes = [];
+
     this._initInput();
   }
 
   setInteractables(list) {
     this.interactables = list || [];
+    this._cachedMeshes = this.interactables.map(i => i.mesh).filter(m => !!m);
   }
 
   _initInput() {
@@ -36,17 +45,16 @@ export class InteractionSystem {
     }
 
     // Cast ray from center of screen (0, 0 in NDC)
-    this.raycaster.setFromCamera({ x: 0, y: 0 }, this.camera);
+    this.raycaster.setFromCamera(this._centerNDC, this.camera);
 
-    const meshes = this.interactables.map(i => i.mesh).filter(m => m && m.visible);
-    const intersects = this.raycaster.intersectObjects(meshes, true);
+    const activeMeshes = this._cachedMeshes.filter(m => m.visible);
+    const intersects = this.raycaster.intersectObjects(activeMeshes, true);
 
     if (intersects.length > 0 && intersects[0].distance <= this.maxDistance) {
       const hitMesh = intersects[0].object;
       // Find corresponding interactable item
       const found = this.interactables.find(item => {
         if (item.mesh === hitMesh) return true;
-        // Check if hitMesh is a child of item.mesh
         let parent = hitMesh.parent;
         while (parent) {
           if (parent === item.mesh) return true;
@@ -61,26 +69,24 @@ export class InteractionSystem {
       }
     }
 
-    // Proximity + angle fallback: if player is within 3.2m looking directly towards an interactable
-    const camPos = new THREE.Vector3();
-    const camDir = new THREE.Vector3();
-    this.camera.getWorldPosition(camPos);
-    this.camera.getWorldDirection(camDir);
+    // Proximity + angle fallback: zero-allocation cone check
+    this.camera.getWorldPosition(this._camPos);
+    this.camera.getWorldDirection(this._camDir);
 
     let closestItem = null;
     let closestDist = 3.2;
 
-    for (const item of this.interactables) {
+    for (let i = 0; i < this.interactables.length; i++) {
+      const item = this.interactables[i];
       if (!item.mesh || !item.mesh.visible) continue;
-      const itemPos = new THREE.Vector3();
-      item.mesh.getWorldPosition(itemPos);
 
-      const toItem = itemPos.clone().sub(camPos);
-      const dist = toItem.length();
+      item.mesh.getWorldPosition(this._itemPos);
+      this._toItem.copy(this._itemPos).sub(this._camPos);
+      const dist = this._toItem.length();
 
       if (dist < closestDist) {
-        toItem.normalize();
-        const dot = camDir.dot(toItem);
+        this._toItem.normalize();
+        const dot = this._camDir.dot(this._toItem);
         // Generous cone angle (~35 degrees)
         if (dot > 0.82) {
           closestDist = dist;

@@ -56,6 +56,17 @@ export class PlayerController {
     this.onFootstep = null;
     this.onStaminaChange = null;
 
+    // Performance optimization: Pre-allocated reusable vectors and Box3 for 0-GC 60FPS loop
+    this._vMove = new THREE.Vector3();
+    this._vForward = new THREE.Vector3();
+    this._vRight = new THREE.Vector3();
+    this._vDelta = new THREE.Vector3();
+    this._vNext = new THREE.Vector3();
+    this._vUp = new THREE.Vector3(0, 1, 0);
+    this._vMin = new THREE.Vector3();
+    this._vMax = new THREE.Vector3();
+    this._playerBox = new THREE.Box3();
+
     this._initEvents();
   }
 
@@ -220,35 +231,35 @@ export class PlayerController {
     if (this.isCrouching) speed = this.crouchSpeed;
     else if (actualSprinting) speed = this.sprintSpeed;
 
-    const moveVector = new THREE.Vector3();
-    if (this.moveForward) moveVector.z -= 1;
-    if (this.moveBackward) moveVector.z += 1;
-    if (this.moveLeft) moveVector.x -= 1;
-    if (this.moveRight) moveVector.x += 1;
+    this._vMove.set(0, 0, 0);
+    if (this.moveForward) this._vMove.z -= 1;
+    if (this.moveBackward) this._vMove.z += 1;
+    if (this.moveLeft) this._vMove.x -= 1;
+    if (this.moveRight) this._vMove.x += 1;
 
-    if (moveVector.lengthSq() > 0) {
-      moveVector.normalize();
+    if (this._vMove.lengthSq() > 0) {
+      this._vMove.normalize();
 
-      const forward = new THREE.Vector3(0, 0, -1).applyAxisAngle(new THREE.Vector3(0, 1, 0), this.yawObject.rotation.y);
-      const right = new THREE.Vector3(1, 0, 0).applyAxisAngle(new THREE.Vector3(0, 1, 0), this.yawObject.rotation.y);
+      this._vForward.set(0, 0, -1).applyAxisAngle(this._vUp, this.yawObject.rotation.y);
+      this._vRight.set(1, 0, 0).applyAxisAngle(this._vUp, this.yawObject.rotation.y);
 
-      const deltaMove = forward.clone().multiplyScalar(-moveVector.z * speed * delta)
-        .add(right.clone().multiplyScalar(moveVector.x * speed * delta));
+      this._vDelta.copy(this._vForward).multiplyScalar(-this._vMove.z * speed * delta)
+        .addScaledVector(this._vRight, this._vMove.x * speed * delta);
 
       // Attempt full move
-      const nextPos = this.yawObject.position.clone().add(deltaMove);
-      if (!this._checkCollision(nextPos)) {
-        this.yawObject.position.copy(nextPos);
+      this._vNext.copy(this.yawObject.position).add(this._vDelta);
+      if (!this._checkCollision(this._vNext)) {
+        this.yawObject.position.copy(this._vNext);
       } else {
         // Try slide along X
-        const nextPosX = this.yawObject.position.clone().add(new THREE.Vector3(deltaMove.x, 0, 0));
-        if (!this._checkCollision(nextPosX)) {
-          this.yawObject.position.copy(nextPosX);
+        this._vNext.set(this.yawObject.position.x + this._vDelta.x, this.yawObject.position.y, this.yawObject.position.z);
+        if (!this._checkCollision(this._vNext)) {
+          this.yawObject.position.copy(this._vNext);
         } else {
           // Try slide along Z
-          const nextPosZ = this.yawObject.position.clone().add(new THREE.Vector3(0, 0, deltaMove.z));
-          if (!this._checkCollision(nextPosZ)) {
-            this.yawObject.position.copy(nextPosZ);
+          this._vNext.set(this.yawObject.position.x, this.yawObject.position.y, this.yawObject.position.z + this._vDelta.z);
+          if (!this._checkCollision(this._vNext)) {
+            this.yawObject.position.copy(this._vNext);
           }
         }
       }
@@ -282,19 +293,18 @@ export class PlayerController {
   _checkCollision(pos) {
     if (!this.cachedBoxes || this.cachedBoxes.length === 0) return false;
 
-    // Compact player capsule AABB
+    // Compact player capsule AABB without allocations
     const r = 0.45;
-    const playerBox = new THREE.Box3(
-      new THREE.Vector3(pos.x - r, pos.y - 1.2, pos.z - r),
-      new THREE.Vector3(pos.x + r, pos.y + 0.4, pos.z + r)
-    );
+    this._vMin.set(pos.x - r, pos.y - 1.2, pos.z - r);
+    this._vMax.set(pos.x + r, pos.y + 0.4, pos.z + r);
+    this._playerBox.set(this._vMin, this._vMax);
 
     for (let i = 0; i < this.cachedBoxes.length; i++) {
       const item = this.cachedBoxes[i];
       // Skip if mesh was removed or door was unlocked
       if (!item.mesh.parent || !item.mesh.visible) continue;
 
-      if (playerBox.intersectsBox(item.box)) {
+      if (this._playerBox.intersectsBox(item.box)) {
         return true;
       }
     }

@@ -50,8 +50,21 @@ export class CreditsUI {
             </div>
           </div>
 
+          <!-- LEAD CREATORS: RAIN & DAVE -->
+          <div style="display: flex; flex-direction: column; gap: 8px; padding: 18px; background: rgba(56,189,248,0.06); border: 1px solid rgba(56,189,248,0.3); border-radius: 4px;">
+            <div style="font-size: 0.8rem; color: #38bdf8; letter-spacing: 3px; font-weight: bold;">CREATOR & LEAD DEVELOPER // PEMBUAT UTAMA</div>
+            <div style="font-size: 1.7rem; color: #f8fafc; font-weight: bold; letter-spacing: 3px; text-shadow: 0 0 16px rgba(56,189,248,0.7);">RAIN</div>
+            <div style="font-size: 0.82rem; color: #94a3b8;">Game Vision, Lead Architecture, Direction & World Building</div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px; padding: 18px; background: rgba(245,158,11,0.06); border: 1px solid rgba(245,158,11,0.3); border-radius: 4px;">
+            <div style="font-size: 0.8rem; color: #f59e0b; letter-spacing: 3px; font-weight: bold;">CO-CREATOR & GAME DESIGNER // PEMBUAT & DESAIN GAME</div>
+            <div style="font-size: 1.7rem; color: #f8fafc; font-weight: bold; letter-spacing: 3px; text-shadow: 0 0 16px rgba(245,158,11,0.7);">DAVE</div>
+            <div style="font-size: 0.82rem; color: #94a3b8;">Co-Creator, Game Systems, Mechanics & Level Design</div>
+          </div>
+
           <div style="display: flex; flex-direction: column; gap: 6px;">
-            <div style="font-size: 0.75rem; color: #f59e0b; letter-spacing: 3px; font-weight: bold;">DIRECTED & DEVELOPED BY</div>
+            <div style="font-size: 0.75rem; color: #f59e0b; letter-spacing: 3px; font-weight: bold;">ENGINEERING & TECHNICAL ARCHITECTURE</div>
             <div style="font-size: 1.15rem; color: #f8fafc; font-weight: bold;">Antigravity Pair Programming Engineering</div>
             <div style="font-size: 0.8rem; color: #94a3b8;">Google DeepMind Advanced Agentic Coding</div>
           </div>
