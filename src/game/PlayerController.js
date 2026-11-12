@@ -215,6 +215,11 @@ export class PlayerController {
 
     const isMoving = this.moveForward || this.moveBackward || this.moveLeft || this.moveRight;
 
+    // Stop sprinting if not moving to prevent momentum/stuck states
+    if (!isMoving && this.isSprinting) {
+      this.isSprinting = false;
+    }
+
     // Stamina calculation
     if (this.isSprinting && isMoving && !this.isCrouching && this.stamina > 0) {
       this.stamina = Math.max(0, this.stamina - this.staminaDrainRate * delta);
@@ -226,7 +231,7 @@ export class PlayerController {
       this.onStaminaChange(Math.round(this.stamina));
     }
 
-    const actualSprinting = this.isSprinting && this.stamina > 5 && !this.isCrouching;
+    const actualSprinting = this.isSprinting && isMoving && this.stamina > 5 && !this.isCrouching;
     let speed = this.walkSpeed;
     if (this.isCrouching) speed = this.crouchSpeed;
     else if (actualSprinting) speed = this.sprintSpeed;
