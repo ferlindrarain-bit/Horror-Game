@@ -9,15 +9,20 @@ export class FlashlightSystem {
     this.maxBattery = 100;
     this.drainRate = 0.45; // ~220 seconds of continuous illumination (balanced for dark exploration)
 
-    // Main flashlight cone (cinematic warm beam - enhanced throw)
-    this.spotLight = new THREE.SpotLight(0xfef08a, 4.8, 38, Math.PI / 6.0, 0.4, 1.5);
+    // Main flashlight cone (cinematic warm beam - enhanced throw & brightness)
+    this.spotLight = new THREE.SpotLight(0xfef08a, 8.5, 55, Math.PI / 5.0, 0.35, 1.3);
     this.spotLight.visible = false;
     this.scene.add(this.spotLight);
 
-    // Inner brighter core
-    this.coreLight = new THREE.SpotLight(0xffffff, 3.2, 26, Math.PI / 11, 0.2, 1.3);
+    // Inner brighter core (tighter, whiter hotspot)
+    this.coreLight = new THREE.SpotLight(0xffffff, 6.0, 40, Math.PI / 9, 0.15, 1.1);
     this.coreLight.visible = false;
     this.scene.add(this.coreLight);
+
+    // Near-field fill light (illuminates surfaces close to player)
+    this.fillLight = new THREE.PointLight(0xfef08a, 2.0, 8, 2.0);
+    this.fillLight.visible = false;
+    this.scene.add(this.fillLight);
 
     // Spotlight target dummy
     this.target = new THREE.Object3D();
@@ -58,6 +63,7 @@ export class FlashlightSystem {
   _updateVisibility() {
     this.spotLight.visible = this.enabled;
     this.coreLight.visible = this.enabled;
+    this.fillLight.visible = this.enabled;
   }
 
   recharge(amount = 50) {
@@ -73,15 +79,18 @@ export class FlashlightSystem {
       // Low battery flicker
       if (this.battery < 20) {
         if (Math.random() < 0.15) {
-          this.spotLight.intensity = (this.battery / 20) * 1.5 * Math.random();
-          this.coreLight.intensity = (this.battery / 20) * 1.0 * Math.random();
+          this.spotLight.intensity = (this.battery / 20) * 4.0 * Math.random();
+          this.coreLight.intensity = (this.battery / 20) * 3.0 * Math.random();
+          this.fillLight.intensity = (this.battery / 20) * 1.0 * Math.random();
         } else {
-          this.spotLight.intensity = (this.battery / 20) * 2.0;
-          this.coreLight.intensity = (this.battery / 20) * 1.4;
+          this.spotLight.intensity = (this.battery / 20) * 5.5;
+          this.coreLight.intensity = (this.battery / 20) * 4.0;
+          this.fillLight.intensity = (this.battery / 20) * 1.5;
         }
       } else {
-        this.spotLight.intensity = 2.5;
-        this.coreLight.intensity = 1.8;
+        this.spotLight.intensity = 7.0;
+        this.coreLight.intensity = 5.0;
+        this.fillLight.intensity = 2.0;
       }
 
       if (this.battery <= 0) {
@@ -103,6 +112,7 @@ export class FlashlightSystem {
 
     this.spotLight.position.copy(lightPos);
     this.coreLight.position.copy(lightPos);
+    this.fillLight.position.copy(lightPos);
 
     this.target.position.copy(camPos).add(camDir.multiplyScalar(10));
   }

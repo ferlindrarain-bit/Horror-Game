@@ -36,6 +36,7 @@ export class Game {
     this.isPaused = false;
     this.pipeCreakTimer = 15;
     this.heartbeatTimer = 0;
+    this.horrorSfxTimer = 8;
 
     const savedSettings = SaveManager.loadSettings();
     this.difficulty = (savedSettings && savedSettings.difficulty) || 'normal';
@@ -301,6 +302,7 @@ export class Game {
       this.isRunning = false;
       this.hud.hide();
       this.player.unlock();
+      if (this.audio) this.audio.stopHorrorMusic();
       this.mainMenu.show();
     };
 
@@ -313,6 +315,7 @@ export class Game {
     };
     this.endingUI.onMainMenu = () => {
       this.endingUI.hide();
+      if (this.audio) this.audio.stopHorrorMusic();
       this.mainMenu.show();
     };
 
@@ -643,6 +646,13 @@ export class Game {
     this.hud.show();
     this.player.requestLock();
 
+    // Start dark horror ambient music & soundscape
+    if (this.audio) {
+      this.audio.init();
+      this.audio.resume();
+      this.audio.startHorrorMusic();
+    }
+
     // Apply active difficulty modifiers (flashlight drain, stamina, anomalies)
     this._applyDifficulty(this.difficulty);
 
@@ -707,6 +717,14 @@ export class Game {
       if (this.pipeCreakTimer <= 0) {
         this.pipeCreakTimer = 22 + Math.random() * 25;
         this.audio.playPipeCreak();
+      }
+
+      // Periodic horror ambient sound effects (metal groan, distant scream, water drip, wind howl, etc.)
+      this.horrorSfxTimer -= delta;
+      if (this.horrorSfxTimer <= 0) {
+        const interval = this.difficulty === 'nightmare' ? (7 + Math.random() * 9) : (14 + Math.random() * 16);
+        this.horrorSfxTimer = interval;
+        this.audio.playRandomHorrorSFX();
       }
 
       // Dynamic Story Proximity Triggers

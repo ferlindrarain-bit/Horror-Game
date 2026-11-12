@@ -29,6 +29,9 @@ export class AnomalyManager {
       case 'cctv_figure_behind':
         // Place observer entity directly behind control room desk for 8 seconds
         this.facility.setEntityPosition(new THREE.Vector3(0, 0, 3), new THREE.Vector3(0, 0, 0));
+        if (this.audio && typeof this.audio.playTensionStinger === 'function') {
+          this.audio.playTensionStinger();
+        }
         setTimeout(() => {
           this.facility.setEntityPosition(null);
         }, 8000);
