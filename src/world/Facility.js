@@ -1495,14 +1495,12 @@ export class Facility {
     pud3.position.set(-22, 0.01, 12.2);
     this.group.add(pud3);
 
-    // Industrial Chemical / Hazard Drums along transit corridor
+    // Industrial Chemical / Hazard Drums along transit corridor (spaced, minimal overlap)
     const barrelPositions = [
-      { x: -33, z: 14.2, r: 0, mat: this.matHazard },
-      { x: -32, z: 14.1, r: 0.3, mat: this.matDarkMetal },
-      { x: -14, z: 10.8, r: 0, mat: this.matHazard },
-      { x: 13, z: 14.2, r: -0.4, mat: this.matDarkMetal },
-      { x: 35, z: 10.9, r: 0, mat: this.matHazard },
-      { x: 42, z: 1.5, r: 0.2, mat: this.matDarkMetal }
+      { x: -33, z: 14.1, r: 0, mat: this.matHazard },
+      { x: -13, z: 10.9, r: 0.2, mat: this.matDarkMetal },
+      { x: 13, z: 14.1, r: -0.3, mat: this.matDarkMetal },
+      { x: 35, z: 10.9, r: 0.1, mat: this.matHazard }
     ];
     barrelPositions.forEach(bp => {
       const bMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.38, 0.95, 12), bp.mat);
@@ -1512,11 +1510,11 @@ export class Facility {
       this.collidables.push(bMesh);
     });
 
-    // Knocked-over Leaking Barrel at X: -14.8
+    // Knocked-over Leaking Barrel moved aside
     const fallenBarrel = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.38, 0.95, 12), this.matHazard);
     fallenBarrel.rotation.z = Math.PI / 2;
     fallenBarrel.rotation.y = 0.4;
-    fallenBarrel.position.set(-14.8, 0.38, 11.2);
+    fallenBarrel.position.set(-14.8, 0.38, 10.7);
     this.group.add(fallenBarrel);
     this.collidables.push(fallenBarrel);
 
@@ -1533,7 +1531,7 @@ export class Facility {
       this.group.add(cone);
     });
 
-    // Wheeled Emergency Medical Stretcher in Transit Corridor near Medical Door (X: 16.5, Z: 11)
+    // Wheeled Emergency Medical Stretcher moved against wall
     const gurney = new THREE.Group();
     const gFrame = new THREE.Mesh(new THREE.BoxGeometry(2.1, 0.08, 0.8), this.matIndustrialSteel);
     gFrame.position.set(0, 0.75, 0);
@@ -1548,12 +1546,12 @@ export class Facility {
         gurney.add(leg);
       }
     }
-    gurney.position.set(16.5, 0, 11.0);
-    gurney.rotation.y = 0.15;
+    gurney.position.set(16.8, 0, 10.6);
+    gurney.rotation.y = 0.05;
     this.group.add(gurney);
     this.collidables.push(gFrame);
 
-    // Mobile Janitorial Cart with mop and bucket in corridor (X: -2.8, Z: 14.1)
+    // Mobile Janitorial Cart with mop and bucket in corridor
     const janitorCart = new THREE.Group();
     // 4 Caster Wheels to floor
     for (const wx of [-0.35, 0.35]) {
@@ -1574,7 +1572,7 @@ export class Facility {
     cHandle.rotation.z = -0.3;
     cHandle.position.set(-0.1, 1.3, 0);
     janitorCart.add(cHandle);
-    janitorCart.position.set(-2.8, 0, 14.1);
+    janitorCart.position.set(-3.2, 0, 14.3);
     this.group.add(janitorCart);
     this.collidables.push(cBase);
 

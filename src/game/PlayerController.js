@@ -244,6 +244,7 @@ export class PlayerController {
 
     if (this._vMove.lengthSq() > 0) {
       this._vMove.normalize();
+      this.bobTimer += delta;
 
       this._vForward.set(0, 0, -1).applyAxisAngle(this._vUp, this.yawObject.rotation.y);
       this._vRight.set(1, 0, 0).applyAxisAngle(this._vUp, this.yawObject.rotation.y);
@@ -251,22 +252,40 @@ export class PlayerController {
       this._vDelta.copy(this._vForward).multiplyScalar(-this._vMove.z * speed * delta)
         .addScaledVector(this._vRight, this._vMove.x * speed * delta);
 
-      // Attempt full move
-      this._vNext.copy(this.yawObject.position).add(this._vDelta);
-      if (!this._checkCollision(this._vNext)) {
-        this.yawObject.position.copy(this._vNext);
-      } else {
-        // Try slide along X
-        this._vNext.set(this.yawObject.position.x + this._vDelta.x, this.yawObject.position.y, this.yawObject.position.z);
+      // Subdivide movement to prevent tunneling through walls when sprinting or on frame spikes
+      const maxStep = 0.12;
+      const totalDist = this._vDelta.length();
+      const steps = Math.max(1, Math.ceil(totalDist / maxStep));
+      const stepX = this._vDelta.x / steps;
+      const stepZ = this._vDelta.z / steps;
+
+      for (let i = 0; i < steps; i++) {
+        // Attempt full step
+        this._vNext.set(this.yawObject.position.x + stepX, this.yawObject.position.y, this.yawObject.position.z + stepZ);
         if (!this._checkCollision(this._vNext)) {
           this.yawObject.position.copy(this._vNext);
-        } else {
-          // Try slide along Z
-          this._vNext.set(this.yawObject.position.x, this.yawObject.position.y, this.yawObject.position.z + this._vDelta.z);
-          if (!this._checkCollision(this._vNext)) {
-            this.yawObject.position.copy(this._vNext);
-          }
+          continue;
         }
+        // Try slide along X
+        this._vNext.set(this.yawObject.position.x + stepX, this.yawObject.position.y, this.yawObject.position.z);
+        if (!this._checkCollision(this._vNext)) {
+          this.yawObject.position.copy(this._vNext);
+          continue;
+        }
+        // Try slide along Z
+        this._vNext.set(this.yawObject.position.x, this.yawObject.position.y, this.yawObject.position.z + stepZ);
+        if (!this._checkCollision(this._vNext)) {
+          this.yawObject.position.copy(this._vNext);
+          continue;
+        }
+        // Blocked on all axes for this step
+        break;
+      }
+
+      // Depenetration safety: if somehow inside a collider, nudge back toward last safe-ish direction
+      if (this._checkCollision(this.yawObject.position)) {
+        this.yawObject.position.x -= stepX * 2;
+        this.yawObject.position.z -= stepZ * 2;
       }
 
       // Footstep cadence
@@ -277,9 +296,11 @@ export class PlayerController {
         if (this.onFootstep) this.onFootstep(actualSprinting);
       }
 
-      // Apply slight vertical dip when running out of stamina (fatigue feedback)
+      // Fatigue feedback (set, not accumulate)
       if (actualSprinting && this.stamina < 30) {
-        this.pitchObject.position.y += Math.sin(this.bobTimer * 0.5) * 0.01 - 0.02;
+        this.pitchObject.position.y = Math.sin(this.bobTimer * 6) * 0.01 - 0.015;
+      } else {
+        this.pitchObject.position.y = 0;
       }
     } else {
       this.pitchObject.position.y = 0;
