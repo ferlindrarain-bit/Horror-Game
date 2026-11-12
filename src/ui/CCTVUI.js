@@ -23,11 +23,11 @@ export class CCTVUI {
       <div class="cctv-header">
         <div style="display:flex; align-items:center; gap:12px;">
           <span id="cctv-header-title">JARINGAN PENGAWAS CCTV // 4 KAMERA AKTIF</span>
-          <span style="font-size:0.7rem; color:#22c55e; background:#062312; border:1px solid #166534; padding:2px 6px; border-radius:2px;">● SIARAN LANGSUNG</span>
+          <span style="font-size:0.7rem; color:#8a8f98; background:#111827; border:1px solid #374151; padding:2px 6px; border-radius:2px;">● SIARAN LANGSUNG</span>
         </div>
         <div style="display:flex; gap:10px; align-items:center;">
-          <button id="cctv-header-grid-btn" style="background:#1e293b; border:1px solid #38bdf8; color:#38bdf8; cursor:pointer; padding:5px 12px; font-family:'Courier New',monospace; font-size:0.75rem; font-weight:bold;">[ ⛶ KISI 2x2 ]</button>
-          <button id="cctv-close-btn" style="background:#450a0a; border:1px solid #ef4444; color:#fca5a5; cursor:pointer; padding:5px 14px; font-family:'Courier New',monospace; font-size:0.75rem; font-weight:bold;">[ ✖ TUTUP (ESC/E) ]</button>
+          <button id="cctv-header-grid-btn" style="background:#1e293b; border:1px solid #9aa0aa; color:#9aa0aa; cursor:pointer; padding:5px 12px; font-family:'Courier New',monospace; font-size:0.75rem; font-weight:bold;">[ ⛶ KISI 2x2 ]</button>
+          <button id="cctv-close-btn" style="background:#2a0f12; border:1px solid #b71c1c; color:#c7ccd4; cursor:pointer; padding:5px 14px; font-family:'Courier New',monospace; font-size:0.75rem; font-weight:bold;">[ ✖ TUTUP (ESC/E) ]</button>
         </div>
       </div>
       
@@ -35,7 +35,7 @@ export class CCTVUI {
       
       <div class="cctv-controls">
         <div style="display:flex; gap:6px;">
-          <button id="cctv-btn-all" class="active" style="border-color:#38bdf8; color:#38bdf8;">SEMUA (2x2)</button>
+          <button id="cctv-btn-all" class="active" style="border-color:#9aa0aa; color:#9aa0aa;">SEMUA (2x2)</button>
           <button id="cctv-btn-cam1">KAM 01: PUSAT</button>
           <button id="cctv-btn-cam2">KAM 02: LAB</button>
           <button id="cctv-btn-cam3">KAM 03: LORONG</button>
@@ -43,7 +43,7 @@ export class CCTVUI {
         </div>
         
         <div style="display:flex; gap:8px; align-items:center;">
-          <select id="cctv-anomaly-select" style="background:#111; color:#da4; border:1px solid #444; padding:5px 8px; font-family:'Courier New',monospace; font-size:0.75rem;">
+          <select id="cctv-anomaly-select" style="background:#111; color:#a3aab5 border:1px solid #444; padding:5px 8px; font-family:'Courier New',monospace; font-size:0.75rem;">
             <option value="">-- PILIH ANOMALI YANG TERLIHAT --</option>
             <option value="figure">Sosok Bayangan / Manusia Misterius</option>
             <option value="object_moved">Pergeseran Posisi Benda / Alat</option>
@@ -52,11 +52,11 @@ export class CCTVUI {
             <option value="writing_wall">Tulisan / Noda Darah di Dinding</option>
             <option value="light_flicker">Kedipan Lampu / Anomali Listrik</option>
           </select>
-          <button id="cctv-report-submit-btn" style="border-color:#ef4444; color:#ef4444; font-weight:bold; cursor:pointer; padding:5px 14px; font-family:'Courier New',monospace;">[ 📢 KIRIM LAPORAN ]</button>
+          <button id="cctv-report-submit-btn" style="border-color:#b71c1c; color:#b71c1c; font-weight:bold; cursor:pointer; padding:5px 14px; font-family:'Courier New',monospace;">[ 📢 KIRIM LAPORAN ]</button>
         </div>
       </div>
       
-      <div id="cctv-report-feedback" style="display:none; padding:8px 14px; background:#0c1a12; border-top:1px solid #166534; color:#4ade80; font-size:0.75rem; letter-spacing:1px;"></div>
+      <div id="cctv-report-feedback" style="display:none; padding:8px 14px; background:#0c1a12; border-top:1px solid #374151; color:#b0b6bf; font-size:0.75rem; letter-spacing:1px;"></div>
     `;
     document.body.appendChild(this.container);
 
@@ -72,8 +72,8 @@ export class CCTVUI {
         <div class="scanlines"></div>
         <div class="feed-label">${feed.id} : ${feed.name}</div>
         <div class="feed-time" id="feed-time-${idx}">00:00:00</div>
-        <div class="feed-overlay-btn" id="feed-overlay-btn-${idx}" style="display:none; position:absolute; top:12px; left:12px; z-index:25; background:rgba(15,23,42,0.95); border:1px solid #38bdf8; color:#38bdf8; font-size:0.75rem; padding:8px 16px; cursor:pointer; font-weight:bold; font-family:'Courier New',monospace; box-shadow:0 0 12px rgba(0,0,0,0.9);">◀ RETURN TO 4-CAM GRID (ESC)</div>
-        <div class="feed-overlay-exit" id="feed-overlay-exit-${idx}" style="display:none; position:absolute; top:12px; right:12px; z-index:25; background:rgba(153,27,27,0.95); border:1px solid #ef4444; color:#fff; font-size:0.75rem; padding:8px 16px; cursor:pointer; font-weight:bold; font-family:'Courier New',monospace; box-shadow:0 0 12px rgba(0,0,0,0.9);">✖ CLOSE SURVEILLANCE (E)</div>
+        <div class="feed-overlay-btn" id="feed-overlay-btn-${idx}" style="display:none; position:absolute; top:12px; left:12px; z-index:25; background:rgba(15,23,42,0.95); border:1px solid #9aa0aa; color:#9aa0aa; font-size:0.75rem; padding:8px 16px; cursor:pointer; font-weight:bold; font-family:'Courier New',monospace; box-shadow:0 0 12px rgba(0,0,0,0.9);">◀ RETURN TO 4-CAM GRID (ESC)</div>
+        <div class="feed-overlay-exit" id="feed-overlay-exit-${idx}" style="display:none; position:absolute; top:12px; right:12px; z-index:25; background:rgba(153,27,27,0.95); border:1px solid #b71c1c; color:#fff; font-size:0.75rem; padding:8px 16px; cursor:pointer; font-weight:bold; font-family:'Courier New',monospace; box-shadow:0 0 12px rgba(0,0,0,0.9);">✖ CLOSE SURVEILLANCE (E)</div>
       `;
 
       // Direct listeners on overlay buttons for 100% reliable clicks
@@ -126,13 +126,13 @@ export class CCTVUI {
       const select = document.getElementById('cctv-anomaly-select');
       const val = select.value;
       if (!val) {
-        this._showFeedback('PLEASE SELECT AN ANOMALY CATEGORY FROM THE DROPDOWN.', '#fbbf24');
+        this._showFeedback('PLEASE SELECT AN ANOMALY CATEGORY FROM THE DROPDOWN.', '#a3aab5');
         return;
       }
 
       if (this.anomalyManager) {
         const res = this.anomalyManager.reportAnomaly(val);
-        this._showFeedback(res.text, res.correct ? '#4ade80' : '#f87171');
+        this._showFeedback(res.text, res.correct ? '#b0b6bf' : '#c27b7b');
         if (this.audio) {
           if (res.correct) this.audio.playNotification();
           else this.audio.playRadioStatic(0.5);
@@ -185,13 +185,13 @@ export class CCTVUI {
 
     // Update bottom button highlights
     const btnIds = ['cctv-btn-cam1', 'cctv-btn-cam2', 'cctv-btn-cam3', 'cctv-btn-cam4'];
-    document.getElementById('cctv-btn-all').style.borderColor = (idx === -1) ? '#38bdf8' : '#334155';
-    document.getElementById('cctv-btn-all').style.color = (idx === -1) ? '#38bdf8' : '#94a3b8';
+    document.getElementById('cctv-btn-all').style.borderColor = (idx === -1) ? '#9aa0aa' : '#334155';
+    document.getElementById('cctv-btn-all').style.color = (idx === -1) ? '#9aa0aa' : '#94a3b8';
     btnIds.forEach((id, i) => {
       const btn = document.getElementById(id);
       if (btn) {
-        btn.style.borderColor = (idx === i) ? '#38bdf8' : '#334155';
-        btn.style.color = (idx === i) ? '#38bdf8' : '#94a3b8';
+        btn.style.borderColor = (idx === i) ? '#9aa0aa' : '#334155';
+        btn.style.color = (idx === i) ? '#9aa0aa' : '#94a3b8';
       }
     });
 

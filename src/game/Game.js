@@ -55,15 +55,22 @@ export class Game {
   _initThree() {
     this.renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    this.renderer.toneMappingExposure = 1.05;
+    this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+    this.renderer.domElement.style.position = 'fixed';
+    this.renderer.domElement.style.inset = '0';
+    this.renderer.domElement.style.zIndex = '0';
     document.body.appendChild(this.renderer.domElement);
 
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x06080c);
+    this.scene.background = new THREE.Color(0x05070b);
+    this.scene.fog = new THREE.FogExp2(0x05070b, 0.038);
 
-    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    this.camera = new THREE.PerspectiveCamera(72, window.innerWidth / window.innerHeight, 0.1, 1000);
 
     window.addEventListener('resize', () => {
       this.camera.aspect = window.innerWidth / window.innerHeight;
@@ -123,6 +130,8 @@ export class Game {
     this.tutorialUI = new TutorialUI();
     this.creditsUI = new CreditsUI(this.audio);
 
+    this._initBackgroundState();
+
     // Auto-resume pointer lock when any modal UI is closed
     const resumeLock = () => {
       if (this.interaction) this.interaction.enabled = true;
@@ -174,8 +183,20 @@ export class Game {
 
     this.flashlight.onToggle = (on) => {
       this.audio.playFlashlightClick();
+      if (!on && this.flashlight.getBatteryLevel() <= 0) {
+        this.hud.showNotification('SENTER MATI: Baterai habis. Cari baterai cadangan!', 4000);
+      }
     };
-    this.flashlight.onBatteryChange = (batt) => this.hud.updateBattery(batt);
+    this.flashlight.onBatteryChange = (batt) => {
+      this.hud.updateBattery(batt);
+      if (batt <= 20 && batt > 0 && !this._lowBatteryWarned) {
+        this._lowBatteryWarned = true;
+        this.hud.showNotification('PERINGATAN: Baterai senter rendah (<20%). Hemat penggunaan!', 3500);
+        this.audio.playNotification();
+      } else if (batt > 25) {
+        this._lowBatteryWarned = false;
+      }
+    };
 
     this.interaction.onFocus = () => {
       this.audio.playInteractFocus();
@@ -189,17 +210,17 @@ export class Game {
       this._handleInteraction(item);
     };
 
-    this.achievements.onUnlock = (ach) => {
-      this.hud.showNotification(`🏆 PENCAPAIAN TERBUKA: ${ach.icon} ${ach.name} - ${ach.description}`, 4500);
-      this.audio.playNotification();
-    };
+      this.achievements.onUnlock = (ach) => {
+        this.hud.showNotification(`PENCAPAIAN TERBUKA: ${ach.icon} ${ach.name} - ${ach.description}`, 4500);
+        this.audio.playNotification();
+      };
 
-    this.story.onObjectiveComplete = (obj) => {
-      this.hud.showNotification(`✅ TARGET SELESAI: ${obj.text}`, 3500);
-      this.audio.playNotification();
-      this._updateHUDObjective();
-      this._saveGameState();
-    };
+      this.story.onObjectiveComplete = (obj) => {
+        this.hud.showNotification(`TARGET SELESAI: ${obj.text}`, 3500);
+        this.audio.playNotification();
+        this._updateHUDObjective();
+        this._saveGameState();
+      };
 
     SaveManager.onCloudSync = (res) => {
       if (res && res.success && this.isRunning) {
@@ -313,6 +334,7 @@ export class Game {
       this.player.unlock();
       if (this.audio) this.audio.stopHorrorMusic();
       this.mainMenu.show();
+      this.menuShotElapsed = 0;
     };
 
     // Ending UI events
@@ -326,6 +348,7 @@ export class Game {
       this.endingUI.hide();
       if (this.audio) this.audio.stopHorrorMusic();
       this.mainMenu.show();
+      this.menuShotElapsed = 0;
     };
 
     // Settings UI difficulty change sync
@@ -358,7 +381,10 @@ export class Game {
     this.hud.onOpenObjectives = () => {
       this.player.unlock();
       const currNight = this.story.getCurrentNight();
-      this.pauseMenu.show(currNight ? currNight.objectives : []);
+      const done = currNight ? currNight.objectives.filter(o => o.completed).length : 0;
+      const total = currNight ? currNight.objectives.length : 0;
+      const nightLabel = currNight ? `${currNight.title}: ${currNight.subtitle}` : '';
+      this.pauseMenu.show(currNight ? currNight.objectives : [], nightLabel, total ? `Progres ${done}/${total}` : '');
     };
 
     // Radio dialogue choice impact
@@ -453,7 +479,10 @@ export class Game {
           if (this.isPaused) {
             this.player.unlock();
             const currNight = this.story.getCurrentNight();
-            this.pauseMenu.show(currNight ? currNight.objectives : []);
+            const done = currNight ? currNight.objectives.filter(o => o.completed).length : 0;
+            const total = currNight ? currNight.objectives.length : 0;
+            const nightLabel = currNight ? `${currNight.title}: ${currNight.subtitle}` : '';
+            this.pauseMenu.show(currNight ? currNight.objectives : [], nightLabel, total ? `Progres ${done}/${total}` : '');
           } else {
             this.pauseMenu.hide();
             this.player.requestLock();
@@ -469,7 +498,10 @@ export class Game {
           this.player.requestLock();
         } else {
           this.player.unlock();
-          this.pauseMenu.show(currNight ? currNight.objectives : []);
+          const done = currNight ? currNight.objectives.filter(o => o.completed).length : 0;
+          const total = currNight ? currNight.objectives.length : 0;
+          const nightLabel = currNight ? `${currNight.title}: ${currNight.subtitle}` : '';
+          this.pauseMenu.show(currNight ? currNight.objectives : [], nightLabel, total ? `Progres ${done}/${total}` : '');
         }
       }
     });
@@ -579,7 +611,8 @@ export class Game {
 
       case 'battery':
         this.flashlight.recharge(item.data.amount || 50);
-        this.hud.showNotification('🔋 BATERAI CADANGAN DIPEROLEH (+50%)', 3000);
+        this._lowBatteryWarned = false;
+        this.hud.showNotification('BATERAI CADANGAN DIPEROLEH (+50%)', 3000);
         this.audio.playItemPickup();
         this.facility.group.remove(item.mesh);
         const bIdx = this.facility.interactables.indexOf(item);
@@ -589,7 +622,7 @@ export class Game {
       case 'first_aid':
         this.player.stamina = 100;
         this.hud.updateStamina(100);
-        this.hud.showNotification('💉 KOTAK MEDIS P3K DIGUNAKAN: Stamina Penuh!', 3500);
+        this.hud.showNotification('KOTAK MEDIS P3K DIGUNAKAN: Stamina Penuh!', 3500);
         this.audio.playNotification();
         this.facility.group.remove(item.mesh);
         const fIdx = this.facility.interactables.indexOf(item);
@@ -665,6 +698,92 @@ export class Game {
     });
   }
 
+  _initMenuBackground() {
+    this.menuShots = [
+      { label: 'SECURITY HUB // RUANG KONTROL', pos: { x: 0.2, y: 1.62, z: 2.8 }, yaw: 3.05, pitch: -0.07, pan: 0.09, dolly: 0.18, fov: 68 },
+      { label: 'MAIN CORRIDOR // LORONG UTAMA', pos: { x: -8, y: 1.62, z: 12.5 }, yaw: 1.55, pitch: -0.05, pan: 0.11, dolly: 0.22, fov: 70 },
+      { label: 'RESEARCH LAB C // LABORATORIUM', pos: { x: 0, y: 1.62, z: -17.5 }, yaw: 3.14, pitch: -0.06, pan: 0.08, dolly: 0.16, fov: 66 },
+      { label: 'MEDICAL WARD // RUANG MEDIS', pos: { x: 20, y: 1.62, z: 7.2 }, yaw: 0.0, pitch: -0.06, pan: 0.1, dolly: 0.18, fov: 67 },
+      { label: 'ELECTRICAL // SUBSTASI LISTRIK', pos: { x: -20, y: 1.62, z: 7.0 }, yaw: 0.0, pitch: -0.05, pan: 0.09, dolly: 0.16, fov: 67 },
+      { label: 'COMMUNICATIONS // RUANG RF', pos: { x: 20, y: 1.62, z: 17.5 }, yaw: 3.14, pitch: -0.06, pan: 0.09, dolly: 0.16, fov: 67 },
+      { label: 'RESTRICTED ARCHIVE // ARSIP', pos: { x: 44, y: 1.62, z: -7.5 }, yaw: 3.14, pitch: -0.05, pan: 0.08, dolly: 0.14, fov: 65 },
+      { label: 'ECHO CORE // RUANG REAKTOR', pos: { x: 44, y: 1.68, z: -22.0 }, yaw: 3.14, pitch: -0.04, pan: 0.07, dolly: 0.12, fov: 64 }
+    ];
+    this.menuShotIndex = 0;
+    this.menuShotElapsed = 0;
+    this.menuShotDuration = 9.0;
+    this.menuShotTransitioning = false;
+    this._applyMenuShot(this.menuShots[0], true);
+  }
+
+  _initBackgroundState() {
+    this._initMenuBackground();
+  }
+
+  _isMenuBackgroundActive() {
+    return !this.isRunning && this.mainMenu && this.mainMenu.container && this.mainMenu.container.style.display !== 'none';
+  }
+
+  _applyMenuShot(shot, immediate = false) {
+    if (!shot) return;
+    this.menuShotBaseYaw = shot.yaw;
+    this.menuShotBasePitch = shot.pitch;
+    this.menuShotBaseFov = shot.fov || 70;
+    this.menuShotBasePos = { x: shot.pos.x, y: shot.pos.y, z: shot.pos.z };
+    this.player.yawObject.position.set(shot.pos.x, shot.pos.y, shot.pos.z);
+    this.player.yawObject.rotation.y = shot.yaw;
+    this.player.pitchObject.rotation.x = shot.pitch;
+    this.camera.position.set(0, 0, 0);
+    this.camera.rotation.set(0, 0, 0);
+    this.camera.fov = this.menuShotBaseFov;
+    this.camera.updateProjectionMatrix();
+    if (this.mainMenu && typeof this.mainMenu.setLocationLabel === 'function') {
+      this.mainMenu.setLocationLabel(`LIVE FEED // ${shot.label}`);
+    }
+  }
+
+  _advanceMenuShot() {
+    if (this.menuShotTransitioning || !this.menuShots || this.menuShots.length === 0) return;
+    this.menuShotTransitioning = true;
+    this.menuShotIndex = (this.menuShotIndex + 1) % this.menuShots.length;
+    const shot = this.menuShots[this.menuShotIndex];
+    const doApply = () => this._applyMenuShot(shot);
+    if (this.mainMenu && typeof this.mainMenu.transitionShot === 'function') {
+      this.mainMenu.transitionShot(`LIVE FEED // ${shot.label}`, doApply).finally(() => {
+        this.menuShotTransitioning = false;
+        this.menuShotElapsed = 0;
+      });
+    } else {
+      doApply();
+      this.menuShotTransitioning = false;
+      this.menuShotElapsed = 0;
+    }
+  }
+
+  _updateMenuCamera(delta) {
+    const shot = this.menuShots[this.menuShotIndex];
+    if (!shot || !this.menuShotBasePos) return;
+    this.menuShotElapsed += delta;
+    const t = this.menuShotElapsed;
+    const pan = shot.pan || 0.08;
+    const dolly = shot.dolly || 0.15;
+    this.player.yawObject.rotation.y = this.menuShotBaseYaw + Math.sin(t * 0.16) * pan;
+    this.player.pitchObject.rotation.x = this.menuShotBasePitch + Math.sin(t * 0.12) * 0.018;
+    const forwardX = -Math.sin(this.menuShotBaseYaw);
+    const forwardZ = -Math.cos(this.menuShotBaseYaw);
+    const drift = Math.sin(t * 0.08) * dolly;
+    this.player.yawObject.position.set(
+      this.menuShotBasePos.x + forwardX * drift,
+      this.menuShotBasePos.y + Math.sin(t * 0.1) * 0.02,
+      this.menuShotBasePos.z + forwardZ * drift
+    );
+    this.camera.fov = (this.menuShotBaseFov || 70) + Math.sin(t * 0.09) * 0.5;
+    this.camera.updateProjectionMatrix();
+    if (this.menuShotElapsed >= this.menuShotDuration) {
+      this._advanceMenuShot();
+    }
+  }
+
   startNewGame() {
     this.story = new StoryManager();
     this.computer.setNight(1);
@@ -676,6 +795,11 @@ export class Game {
     this.isRunning = true;
     this.isPaused = false;
     this.hud.show();
+    this.camera.fov = 72;
+    this.camera.updateProjectionMatrix();
+    this.player.yawObject.position.set(0, this.player.standHeight, 0);
+    this.player.yawObject.rotation.set(0, 0, 0);
+    this.player.pitchObject.rotation.set(0, 0, 0);
     this.player.requestLock();
 
     // Start dark horror ambient music & soundscape
@@ -694,7 +818,7 @@ export class Game {
 
     // Helpful controls reminder notification on start
     setTimeout(() => {
-      this.hud.showNotification('💡 KONTROL: [W,A,S,D] Bergerak • [F] Senter • [E] Interaksi • [M] Buka Peta Bunker', 6000);
+      this.hud.showNotification('KONTROL: [W,A,S,D] Bergerak | [Shift] Lari | [F] Senter | [E] Interaksi | [M] Peta | [H] Tutorial', 7000);
     }, 1200);
 
     if (!this.flashlight.isOn()) {
@@ -757,7 +881,7 @@ export class Game {
 
     let dirText = '';
     if (dist <= 3.6) {
-      dirText = '🎯 ANDA DI LOKASI! Dekati objek dan tekan [E]';
+      dirText = `ANDA DI LOKASI: ${target.name} - dekati objek dan tekan [E]`;
     } else {
       let direction = '';
       if (Math.abs(dx) > Math.abs(dz)) {
@@ -765,7 +889,7 @@ export class Game {
       } else {
         direction = dz > 0 ? 'arah Selatan (Lurus)' : 'arah Utara (Mundur)';
       }
-      dirText = `📍 TUJUAN: ${target.name} • ${Math.round(dist)}m (${direction})`;
+      dirText = `TUJUAN: ${target.name} - ${Math.round(dist)}m (${direction})`;
     }
 
     this.hud.updateGuidance(dirText);
@@ -775,6 +899,11 @@ export class Game {
     const currNight = this.story.getCurrentNight();
     if (!currNight) return;
     const pending = currNight.objectives.find(o => !o.completed);
+    const done = currNight.objectives.filter(o => o.completed).length;
+    const total = currNight.objectives.length;
+    if (this.hud && typeof this.hud.updateObjectiveProgress === 'function') {
+      this.hud.updateObjectiveProgress(done, total);
+    }
     if (pending) {
       this.hud.updateObjective(pending.text);
     } else {
@@ -811,6 +940,10 @@ export class Game {
     requestAnimationFrame(this.animate);
 
     const delta = Math.min(this.clock.getDelta(), 0.1);
+
+    if (this._isMenuBackgroundActive()) {
+      this._updateMenuCamera(delta);
+    }
 
     if (this.isRunning && !this.isPaused && !this._isAnyUIOpen()) {
       this.player.update(delta);

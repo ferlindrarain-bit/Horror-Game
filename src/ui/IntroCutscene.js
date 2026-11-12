@@ -150,7 +150,7 @@ export class IntroCutscene {
     this.container.innerHTML = `
       <div class="cutscene-content" id="cutscene-content"></div>
       <div class="cutscene-skip" id="cutscene-skip">
-        TEKAN <span style="color:#38bdf8;">ENTER</span> ATAU <span style="color:#38bdf8;">KLIK</span> UNTUK SKIP
+        TEKAN <span style="color:#9aa0aa;">ENTER</span> ATAU <span style="color:#9aa0aa;">KLIK</span> UNTUK SKIP
       </div>
       <div class="cutscene-scanlines"></div>
     `;

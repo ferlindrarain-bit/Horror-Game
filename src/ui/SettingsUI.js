@@ -43,6 +43,7 @@ export class SettingsUI {
       const sens = 0.0008 + (this.settings.mouseSensitivity / 100) * 0.0037;
       this.player.setSensitivity(sens);
     }
+    document.body.style.filter = `brightness(${this.settings.brightness}%)`;
   }
 
   _createDOM() {
@@ -79,7 +80,7 @@ export class SettingsUI {
 
       <div class="setting-row" style="margin-top: 15px;">
         <label>Simulation Difficulty</label>
-        <select id="set-difficulty" style="background: #0f172a; border: 1px solid #38bdf8; color: #38bdf8; padding: 5px 8px; font-family: monospace; font-size: 0.78rem; cursor: pointer; border-radius: 2px;">
+        <select id="set-difficulty" style="background: #0f172a; border: 1px solid #9aa0aa; color: #9aa0aa; padding: 5px 8px; font-family: monospace; font-size: 0.78rem; cursor: pointer; border-radius: 2px;">
           <option value="easy" ${this.settings.difficulty === 'easy' ? 'selected' : ''}>CASUAL / PENELITI (Mudah - Senter & Stamina 2x)</option>
           <option value="normal" ${this.settings.difficulty === 'normal' || !this.settings.difficulty ? 'selected' : ''}>STANDARD / OPERATOR (Normal)</option>
           <option value="nightmare" ${this.settings.difficulty === 'nightmare' ? 'selected' : ''}>NIGHTMARE / ANOMALI (Sulit - Kegelapan Ekstrem)</option>

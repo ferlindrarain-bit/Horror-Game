@@ -71,7 +71,7 @@ export class Facility {
     wctx.fillRect(0, 0, 512, 512);
     wctx.fillStyle = '#15181e';
     wctx.fillRect(0, 440, 512, 72);
-    wctx.fillStyle = '#b45309';
+    wctx.fillStyle = '#4b5563';
     wctx.fillRect(0, 432, 512, 8);
     wctx.strokeStyle = '#1d2128';
     wctx.lineWidth = 4;
@@ -133,7 +133,7 @@ export class Facility {
     const hazardCanvas = document.createElement('canvas');
     hazardCanvas.width = 256; hazardCanvas.height = 256;
     const hctx = hazardCanvas.getContext('2d');
-    hctx.fillStyle = '#eab308';
+    hctx.fillStyle = '#8a8f98';
     hctx.fillRect(0, 0, 256, 256);
     hctx.fillStyle = '#0f172a';
     for (let i = -256; i < 512; i += 64) {
@@ -174,10 +174,10 @@ export class Facility {
     const wbctx = wbCanvas.getContext('2d');
     wbctx.fillStyle = '#f8fafc';
     wbctx.fillRect(0, 0, 512, 256);
-    wbctx.strokeStyle = '#0284c7';
+    wbctx.strokeStyle = '#6b7280';
     wbctx.lineWidth = 3;
     wbctx.strokeRect(6, 6, 500, 244);
-    wbctx.fillStyle = '#dc2626';
+    wbctx.fillStyle = '#6b1111';
     wbctx.font = 'bold 22px monospace';
     wbctx.fillText('PROJECT ECHO // COGNITIVE RESONANCE', 20, 36);
     wbctx.fillStyle = '#1e293b';
@@ -201,9 +201,9 @@ export class Facility {
     const cardCanvas = document.createElement('canvas');
     cardCanvas.width = 128; cardCanvas.height = 128;
     const cctx = cardCanvas.getContext('2d');
-    cctx.fillStyle = '#b45309';
+    cctx.fillStyle = '#4b5563';
     cctx.fillRect(0, 0, 128, 128);
-    cctx.strokeStyle = '#78350f';
+    cctx.strokeStyle = '#374151';
     cctx.lineWidth = 4;
     cctx.strokeRect(4, 4, 120, 120);
     cctx.fillStyle = '#1e293b';
@@ -250,7 +250,7 @@ export class Facility {
     oscctx.lineWidth = 1;
     for (let x = 0; x < 256; x += 16) { oscctx.beginPath(); oscctx.moveTo(x, 0); oscctx.lineTo(x, 128); oscctx.stroke(); }
     for (let y = 0; y < 128; y += 16) { oscctx.beginPath(); oscctx.moveTo(0, y); oscctx.lineTo(256, y); oscctx.stroke(); }
-    oscctx.strokeStyle = '#4ade80';
+    oscctx.strokeStyle = '#b0b6bf';
     oscctx.lineWidth = 2.5;
     oscctx.beginPath();
     for (let x = 0; x < 256; x++) {
@@ -497,10 +497,10 @@ export class Facility {
       const ctx = canvas.getContext('2d');
       ctx.fillStyle = '#0f172a';
       ctx.fillRect(0, 0, 512, 128);
-      ctx.strokeStyle = '#38bdf8';
+      ctx.strokeStyle = '#9aa0aa';
       ctx.lineWidth = 5;
       ctx.strokeRect(6, 6, 500, 116);
-      ctx.fillStyle = '#38bdf8';
+      ctx.fillStyle = '#9aa0aa';
       ctx.font = 'bold 32px monospace';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
@@ -627,10 +627,10 @@ export class Facility {
       const pctx = plaqueCanvas.getContext('2d');
       pctx.fillStyle = '#0f172a';
       pctx.fillRect(0, 0, 256, 64);
-      pctx.strokeStyle = '#eab308';
+      pctx.strokeStyle = '#8a8f98';
       pctx.lineWidth = 3;
       pctx.strokeRect(3, 3, 250, 58);
-      pctx.fillStyle = '#eab308';
+      pctx.fillStyle = '#8a8f98';
       pctx.font = 'bold 20px monospace';
       pctx.textAlign = 'center';
       pctx.textBaseline = 'middle';
@@ -2675,7 +2675,7 @@ export class Facility {
     createPuddle(36, 12.5, 1.3);  // Approach to Archive
 
     // 3. Creepy Environmental Storytelling Wall Graffiti
-    const makeWallGraffiti = (text, x, y, z, rotY = 0, color = '#ef4444') => {
+    const makeWallGraffiti = (text, x, y, z, rotY = 0, color = '#b71c1c') => {
       const canvas = document.createElement('canvas');
       canvas.width = 512; canvas.height = 128;
       const ctx = canvas.getContext('2d');
@@ -2693,11 +2693,11 @@ export class Facility {
       this.group.add(mesh);
     };
 
-    makeWallGraffiti('THE SIGNAL IS ALIVE', -35.0, 2.4, 10.92, 0, '#dc2626');
-    makeWallGraffiti("DON'T TRUST THE SCREENS", 32.0, 2.4, 10.92, 0, '#ef4444');
-    makeWallGraffiti('LOOP 47 // IT NEVER ENDS', 42.45, 2.4, 0.0, Math.PI / 2, '#b91c1c');
-    makeWallGraffiti('STAY IN THE LIGHT', 42.45, 2.4, -14.0, Math.PI / 2, '#f59e0b');
-    makeWallGraffiti('CAN YOU HEAR IT?', -2.2, 2.4, 12.45, Math.PI, '#dc2626');
+    makeWallGraffiti('THE SIGNAL IS ALIVE', -35.0, 2.4, 10.92, 0, '#6b1111');
+    makeWallGraffiti("DON'T TRUST THE SCREENS", 32.0, 2.4, 10.92, 0, '#b71c1c');
+    makeWallGraffiti('LOOP 47 // IT NEVER ENDS', 42.45, 2.4, 0.0, Math.PI / 2, '#6b1111');
+    makeWallGraffiti('STAY IN THE LIGHT', 42.45, 2.4, -14.0, Math.PI / 2, '#8a8f98');
+    makeWallGraffiti('CAN YOU HEAR IT?', -2.2, 2.4, 12.45, Math.PI, '#6b1111');
 
     // 4. Physical CCTV Surveillance Cameras with Blinking Red LEDs
     const createCCTVCamera = (x, y, z, rotY = 0, pitch = 0.3) => {

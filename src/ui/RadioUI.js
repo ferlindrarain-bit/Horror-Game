@@ -63,11 +63,11 @@ export class RadioUI {
     const msgDiv = document.createElement('div');
     msgDiv.className = 'radio-message';
 
-    let senderColor = '#38bdf8';
-    if (sender === 'CONTROL') senderColor = '#eab308';
-    else if (sender === 'UNKNOWN') senderColor = '#ef4444';
-    else if (sender === 'ECHO') senderColor = '#a855f7';
-    else if (sender === 'DOCTOR') senderColor = '#22c55e';
+    let senderColor = '#9aa0aa';
+    if (sender === 'CONTROL') senderColor = '#8a8f98';
+    else if (sender === 'UNKNOWN') senderColor = '#b71c1c';
+    else if (sender === 'ECHO') senderColor = '#7a808a';
+    else if (sender === 'DOCTOR') senderColor = '#8a8f98';
 
     msgDiv.innerHTML = `
       <div class="sender" style="color: ${senderColor};">[${sender}]</div>

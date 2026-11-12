@@ -19,9 +19,9 @@ export class PauseMenu {
       <h2>GAME DIJEDA</h2>
       <button id="btn-pause-resume">LANJUTKAN PERMAINAN</button>
       <button id="btn-pause-objectives">DAFTAR TARGET MISI</button>
-      <button id="btn-pause-map" style="border-color:#38bdf8; color:#38bdf8;">🗺 PETA FASILITAS [M]</button>
-      <button id="btn-pause-tutorial" style="border-color:#f59e0b; color:#fbbf24;">📖 PANDUAN & CARA MAIN [H]</button>
-      <button id="btn-pause-cloud" style="border-color:#38bdf8; color:#38bdf8;">☁ PENYIMPANAN CLOUD</button>
+      <button id="btn-pause-map">PETA FASILITAS [M]</button>
+      <button id="btn-pause-tutorial">PANDUAN & CARA MAIN [H]</button>
+      <button id="btn-pause-cloud">PENYIMPANAN CLOUD</button>
       <button id="btn-pause-settings">PENGATURAN</button>
       <button id="btn-pause-credits">KREDIT & PENGEMBANG</button>
       <button id="btn-pause-menu">KEMBALI KE MENU UTAMA</button>
@@ -92,14 +92,19 @@ export class PauseMenu {
     (objectivesList || []).forEach(obj => {
       const item = document.createElement('div');
       item.className = `obj-item ${obj.completed ? 'completed' : ''}`;
-      item.textContent = `${obj.completed ? '[✓]' : '[ ]'} ${obj.text}`;
+      item.textContent = `${obj.completed ? '[OK]' : '[  ]'} ${obj.text}`;
       this.objContainer.appendChild(item);
     });
   }
 
-  show(objectives) {
+  show(objectives, nightTitle = '', progressText = '') {
     this.isOpen = true;
     if (objectives) this.setObjectives(objectives);
+    const header = this.container.querySelector('h2');
+    if (header) {
+      const extra = [nightTitle, progressText].filter(Boolean).join(' | ');
+      header.textContent = extra ? `GAME DIJEDA - ${extra}` : 'GAME DIJEDA';
+    }
     this.container.classList.add('active');
   }
 

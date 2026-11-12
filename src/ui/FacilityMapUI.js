@@ -16,7 +16,7 @@ export class FacilityMapUI {
         name: 'RUANG KONTROL',
         code: 'SEC-01',
         x: 0, z: 0, w: 14, d: 14,
-        color: '#38bdf8',
+        color: '#9aa0aa',
         subtext: 'TERMINAL UTAMA / CCTV / RADIO'
       },
       'corridor': {
@@ -30,49 +30,49 @@ export class FacilityMapUI {
         name: 'LABORATORIUM RISET C',
         code: 'LAB-03',
         x: 0, z: -23, w: 18, d: 16,
-        color: '#06b6d4',
+        color: '#7a808a',
         subtext: 'ISOLASI SPESIMEN & ANALISIS'
       },
       'electrical_room': {
         name: 'SUBSTASI LISTRIK',
         code: 'PWR-04',
         x: -20, z: 4, w: 12, d: 12,
-        color: '#f59e0b',
+        color: '#8a8f98',
         subtext: 'GENERATOR DIESEL & SAKLAR UTAMA'
       },
       'medical_room': {
         name: 'RUANG MEDIS & KARANTINA',
         code: 'MED-05',
         x: 20, z: 4, w: 12, d: 12,
-        color: '#10b981',
+        color: '#7a808a',
         subtext: 'RANJANG TRAUMA & REKAM MEDIS'
       },
       'storage_room': {
         name: 'STORAGE BAY A (GUDANG)',
         code: 'STR-06',
         x: -20, z: 21, w: 12, d: 12,
-        color: '#d97706',
+        color: '#6b7280',
         subtext: 'RAK LOGISTIK & KARTU AKSES'
       },
       'comm_room': {
         name: 'RUANG KOMUNIKASI RF',
         code: 'COM-07',
         x: 20, z: 21, w: 12, d: 12,
-        color: '#facc15',
+        color: '#a3aab5',
         subtext: 'PEMANCAR FREKUENSI 47.3 HZ'
       },
       'elevator': {
         name: 'ELEVATOR PERMUKAAN',
         code: 'LIFT-08',
         x: -39, z: 12.5, w: 6, d: 6,
-        color: '#ef4444',
+        color: '#b71c1c',
         subtext: 'POROS HOIST DARURAT (TERKUNCI)'
       },
       'archive_room': {
         name: 'RUANG ARSIP TERLARANG',
         code: 'ARC-09',
         x: 44, z: -11, w: 16, d: 14,
-        color: '#3b82f6',
+        color: '#6b7280',
         locked: true,
         unlockKey: 'archive_keycard',
         subtext: 'DOKUMEN RAHASIA PROYEK ECHO'
@@ -81,7 +81,7 @@ export class FacilityMapUI {
         name: 'RUANG REAKTOR ECHO',
         code: 'CORE-10',
         x: 44, z: -27, w: 18, d: 18,
-        color: '#a855f7',
+        color: '#7a808a',
         locked: true,
         unlockKey: 'chamber_code',
         subtext: 'KONSOL PEMANCAR KESADARAN'
@@ -104,7 +104,7 @@ export class FacilityMapUI {
     this.container.id = 'facility-map-ui';
     this.container.style.cssText = `
       position: fixed; inset: 24px; z-index: 14000; background: rgba(3, 7, 18, 0.98);
-      border: 2px solid #38bdf8; display: none; flex-direction: column;
+      border: 2px solid #9aa0aa; display: none; flex-direction: column;
       font-family: 'Courier New', monospace; box-shadow: 0 0 60px rgba(56,189,248,0.3);
       backdrop-filter: blur(12px); overflow: hidden;
     `;
@@ -112,12 +112,12 @@ export class FacilityMapUI {
     this.container.innerHTML = `
       <div style="padding: 10px 18px; background: #0b1329; border-bottom: 2px solid #1e293b; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
         <div style="display:flex; align-items:center; gap:14px;">
-          <span style="color: #38bdf8; font-weight: bold; font-size: 0.95rem; letter-spacing: 2px;">SEKTOR 09 // CETAK BIRU TAKTIS FASILITAS</span>
-          <span style="font-size: 0.7rem; color: #22c55e; background: #062312; border: 1px solid #166534; padding: 2px 8px; border-radius: 2px;">● RADAR PEMANTAU AKTIF</span>
+          <span style="color: #9aa0aa; font-weight: bold; font-size: 0.95rem; letter-spacing: 2px;">SEKTOR 09 // CETAK BIRU TAKTIS FASILITAS</span>
+          <span style="font-size: 0.7rem; color: #8a8f98; background: #111827; border: 1px solid #374151; padding: 2px 8px; border-radius: 2px;">● RADAR PEMANTAU AKTIF</span>
         </div>
         <div style="display:flex; gap:12px; align-items:center;">
           <span style="font-size: 0.72rem; color: #94a3b8;">TEKAN [M], [ESC] ATAU [E] UNTUK KELUAR</span>
-          <button id="map-close-btn" style="background: #450a0a; border: 1px solid #ef4444; color: #fca5a5; padding: 4px 14px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 0.75rem; font-weight: bold;">[ ✖ TUTUP (ESC/E) ]</button>
+          <button id="map-close-btn" style="background: #2a0f12; border: 1px solid #b71c1c; color: #c7ccd4; padding: 4px 14px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 0.75rem; font-weight: bold;">[ ✖ TUTUP (ESC/E) ]</button>
         </div>
       </div>
 
@@ -125,58 +125,58 @@ export class FacilityMapUI {
         <canvas id="map-canvas" style="flex: 1; width: 100%; height: 100%; display: block; background: #020610;"></canvas>
 
         <div style="width: 320px; background: rgba(11,19,41,0.96); border-left: 2px solid #1e293b; padding: 18px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; flex-shrink: 0;">
-          <div style="font-size: 0.8rem; color: #38bdf8; font-weight: bold; border-bottom: 1px solid #334155; padding-bottom: 6px;">
+          <div style="font-size: 0.8rem; color: #9aa0aa; font-weight: bold; border-bottom: 1px solid #334155; padding-bottom: 6px;">
             TELEMETRI MISI
           </div>
           <div style="font-size: 0.75rem; color: #94a3b8;">
-            GILIRAN JAGA: <span id="map-night-val" style="color: #f59e0b; font-weight: bold;">MALAM 1 : KEDATANGAN</span>
+            GILIRAN JAGA: <span id="map-night-val" style="color: #8a8f98; font-weight: bold;">MALAM 1 : KEDATANGAN</span>
           </div>
           <div style="font-size: 0.75rem; color: #94a3b8;">
             TARGET UTAMA:
-            <div id="map-obj-val" style="color: #e2e8f0; margin-top: 6px; font-size: 0.72rem; line-height: 1.5; border-left: 3px solid #ef4444; padding-left: 10px; background: rgba(239,68,68,0.06); padding-top: 4px; padding-bottom: 4px;">
+            <div id="map-obj-val" style="color: #e2e8f0; margin-top: 6px; font-size: 0.72rem; line-height: 1.5; border-left: 3px solid #b71c1c; padding-left: 10px; background: rgba(239,68,68,0.06); padding-top: 4px; padding-bottom: 4px;">
               Pulihkan listrik fasilitas.
             </div>
           </div>
 
-          <div style="font-size: 0.8rem; color: #38bdf8; font-weight: bold; border-bottom: 1px solid #334155; padding-bottom: 6px; margin-top: 8px;">
+          <div style="font-size: 0.8rem; color: #9aa0aa; font-weight: bold; border-bottom: 1px solid #334155; padding-bottom: 6px; margin-top: 8px;">
             PENGAWASAN KAMERA CCTV
           </div>
           <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.72rem;">
             <div style="display:flex; justify-content:space-between; color:#94a3b8;">
-              <span>CAM 01: SECURITY HUB</span> <span style="color:#22c55e;">[ONLINE]</span>
+              <span>CAM 01: SECURITY HUB</span> <span style="color:#8a8f98;">[ONLINE]</span>
             </div>
             <div style="display:flex; justify-content:space-between; color:#94a3b8;">
-              <span>CAM 02: RESEARCH LAB</span> <span style="color:#22c55e;">[ONLINE]</span>
+              <span>CAM 02: RESEARCH LAB</span> <span style="color:#8a8f98;">[ONLINE]</span>
             </div>
             <div style="display:flex; justify-content:space-between; color:#94a3b8;">
-              <span>CAM 03: TRANSIT HALL</span> <span style="color:#22c55e;">[ONLINE]</span>
+              <span>CAM 03: TRANSIT HALL</span> <span style="color:#8a8f98;">[ONLINE]</span>
             </div>
             <div style="display:flex; justify-content:space-between; color:#94a3b8;">
-              <span>CAM 04: ECHO CORE</span> <span style="color:#f59e0b;">[ANOMALOUS]</span>
+              <span>CAM 04: ECHO CORE</span> <span style="color:#8a8f98;">[ANOMALOUS]</span>
             </div>
           </div>
 
-          <div style="font-size: 0.8rem; color: #38bdf8; font-weight: bold; border-bottom: 1px solid #334155; padding-bottom: 6px; margin-top: 8px;">
+          <div style="font-size: 0.8rem; color: #9aa0aa; font-weight: bold; border-bottom: 1px solid #334155; padding-bottom: 6px; margin-top: 8px;">
             LEGENDA CETAK BIRU
           </div>
           <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.72rem; color: #cbd5e1;">
             <div style="display:flex; align-items:center; gap:8px;">
-              <span style="color:#ef4444; font-size:1.1rem; line-height:1;">▲</span> <span>LOKASI & ARAH PANDANG PEMAIN</span>
+              <span style="color:#b71c1c; font-size:1.1rem; line-height:1;">▲</span> <span>LOKASI & ARAH PANDANG PEMAIN</span>
             </div>
             <div style="display:flex; align-items:center; gap:8px;">
-              <span style="color:#38bdf8; font-size:1rem; line-height:1;">◉</span> <span>TITIK KAMERA PENGAWAS CCTV</span>
+              <span style="color:#9aa0aa; font-size:1rem; line-height:1;">◉</span> <span>TITIK KAMERA PENGAWAS CCTV</span>
             </div>
             <div style="display:flex; align-items:center; gap:8px;">
-              <span style="display:inline-block; width:12px; height:12px; background:rgba(56,189,248,0.25); border:1px solid #38bdf8;"></span> <span>AREA SUDAH DIJELAJAHI</span>
+              <span style="display:inline-block; width:12px; height:12px; background:rgba(56,189,248,0.25); border:1px solid #9aa0aa;"></span> <span>AREA SUDAH DIJELAJAHI</span>
             </div>
             <div style="display:flex; align-items:center; gap:8px;">
               <span style="display:inline-block; width:12px; height:12px; background:rgba(15,23,42,0.6); border:1px dashed #64748b;"></span> <span>SEKTOR BELUM DIJELAJAHI</span>
             </div>
             <div style="display:flex; align-items:center; gap:8px;">
-              <span style="color:#ef4444; font-weight:bold;">[TERKUNCI]</span> <span>PINTU AKSES KEAMANAN</span>
+              <span style="color:#b71c1c; font-weight:bold;">[TERKUNCI]</span> <span>PINTU AKSES KEAMANAN</span>
             </div>
             <div style="display:flex; align-items:center; gap:8px;">
-              <span style="color:#22c55e; font-weight:bold;">[TERBUKA]</span> <span>PINTU BERHASIL DIBUKA</span>
+              <span style="color:#8a8f98; font-weight:bold;">[TERBUKA]</span> <span>PINTU BERHASIL DIBUKA</span>
             </div>
           </div>
 
@@ -410,7 +410,7 @@ export class FacilityMapUI {
         }
 
         // Reinforced double concrete walls
-        ctx.strokeStyle = def.color || '#38bdf8';
+        ctx.strokeStyle = def.color || '#9aa0aa';
         ctx.lineWidth = 2.5;
         ctx.strokeRect(rx, ry, rw, rd);
 
@@ -420,7 +420,7 @@ export class FacilityMapUI {
 
         // Corner structural reinforced pillars
         const bSize = Math.min(6, scale * 0.9);
-        ctx.fillStyle = def.color || '#38bdf8';
+        ctx.fillStyle = def.color || '#9aa0aa';
         ctx.fillRect(rx, ry, bSize, bSize);
         ctx.fillRect(rx + rw - bSize, ry, bSize, bSize);
         ctx.fillRect(rx, ry + rd - bSize, bSize, bSize);
@@ -430,7 +430,7 @@ export class FacilityMapUI {
         this._drawInternalSchematics(ctx, id, rx, ry, rw, rd, scale, toScreenX, toScreenY);
 
         // Room Header & Code
-        ctx.fillStyle = def.color || '#38bdf8';
+        ctx.fillStyle = def.color || '#9aa0aa';
         ctx.font = `bold ${Math.max(10, Math.floor(scale * 1.5))}px monospace`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
@@ -469,7 +469,7 @@ export class FacilityMapUI {
         const isChamberOpen = this.story && this.story.currentNightIndex >= 4;
         const open = isUnlocked || isChamberOpen;
 
-        ctx.fillStyle = open ? '#22c55e' : '#ef4444';
+        ctx.fillStyle = open ? '#8a8f98' : '#b71c1c';
         ctx.font = 'bold 8.5px monospace';
         ctx.textAlign = 'center';
         ctx.fillText(open ? '🔓 [OTORISASI TERBUKA]' : '🔒 [AKSES TERKUNCI: BUTUH KUNCI/KODE]', rx + rw / 2, ry + rd - 9);
@@ -483,7 +483,7 @@ export class FacilityMapUI {
       const dw = width * scale;
 
       // Door opening frame
-      ctx.fillStyle = '#22c55e';
+      ctx.fillStyle = '#8a8f98';
       if (isVertical) {
         ctx.fillRect(dx - 2, dy - dw / 2, 4, dw);
       } else {
@@ -520,7 +520,7 @@ export class FacilityMapUI {
       const cy = toScreenY(cam.z);
 
       // Camera base icon
-      ctx.fillStyle = '#38bdf8';
+      ctx.fillStyle = '#9aa0aa';
       ctx.beginPath();
       ctx.arc(cx, cy, 3.5, 0, Math.PI * 2);
       ctx.fill();
@@ -537,7 +537,7 @@ export class FacilityMapUI {
       ctx.fill();
 
       // Camera label
-      ctx.fillStyle = '#38bdf8';
+      ctx.fillStyle = '#9aa0aa';
       ctx.font = 'bold 7.5px monospace';
       ctx.textAlign = 'center';
       ctx.fillText(cam.id, cx, cy - 6);
@@ -599,7 +599,7 @@ export class FacilityMapUI {
       ctx.fill();
 
       // Red Player triangle
-      ctx.fillStyle = '#ef4444';
+      ctx.fillStyle = '#b71c1c';
       ctx.strokeStyle = '#ffffff';
       ctx.lineWidth = 1;
       ctx.beginPath();
@@ -613,7 +613,7 @@ export class FacilityMapUI {
       ctx.restore();
 
       // Player coordinates display below marker
-      ctx.fillStyle = '#fca5a5';
+      ctx.fillStyle = '#c7ccd4';
       ctx.font = 'bold 8px monospace';
       ctx.textAlign = 'center';
       ctx.fillText(`YOU [X:${pos.x.toFixed(1)} Z:${pos.z.toFixed(1)}]`, px, py + 18);
@@ -629,7 +629,7 @@ export class FacilityMapUI {
       const pulseR = 12 + Math.sin(time * 2) * 5;
 
       // Pulsing golden ring
-      ctx.strokeStyle = '#f59e0b';
+      ctx.strokeStyle = '#8a8f98';
       ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.arc(tx, ty, pulseR, 0, Math.PI * 2);
@@ -660,7 +660,7 @@ export class FacilityMapUI {
       ctx.font = 'bold 9px monospace';
       ctx.textAlign = 'center';
       ctx.fillText(`🎯 ${targetLoc.name}`, tx, ty - pulseR - 6);
-      ctx.fillStyle = '#f59e0b';
+      ctx.fillStyle = '#8a8f98';
       ctx.font = '7.5px monospace';
       ctx.fillText(`[${targetLoc.hint}]`, tx, ty + pulseR + 10);
     }
@@ -729,17 +729,17 @@ export class FacilityMapUI {
         const dy = ry + (rd - dd) / 2 + 3 * scale;
 
         ctx.fillStyle = 'rgba(30, 41, 59, 0.9)';
-        ctx.strokeStyle = '#38bdf8';
+        ctx.strokeStyle = '#9aa0aa';
         ctx.lineWidth = 1.2;
         ctx.fillRect(dx, dy, dw, dd);
         ctx.strokeRect(dx, dy, dw, dd);
 
         // Screens: Terminal (left), Radio (center), CCTV (right)
-        ctx.fillStyle = '#22c55e';
+        ctx.fillStyle = '#8a8f98';
         ctx.fillRect(dx + 4, dy + 3, dw * 0.25, 4);
-        ctx.fillStyle = '#f59e0b';
+        ctx.fillStyle = '#8a8f98';
         ctx.fillRect(dx + dw * 0.38, dy + 2, dw * 0.24, 4);
-        ctx.fillStyle = '#38bdf8';
+        ctx.fillStyle = '#9aa0aa';
         ctx.fillRect(dx + dw * 0.7, dy + 3, dw * 0.25, 4);
 
         // Server Racks on North Wall
@@ -764,11 +764,11 @@ export class FacilityMapUI {
 
         // Turbine 1
         const cx1 = rx + rw * 0.32;
-        ctx.strokeStyle = '#f59e0b';
+        ctx.strokeStyle = '#8a8f98';
         ctx.lineWidth = 1.5;
         ctx.beginPath(); ctx.arc(cx1, cy, tRadius, 0, Math.PI * 2); ctx.stroke();
         ctx.beginPath(); ctx.arc(cx1, cy, tRadius * 0.4, 0, Math.PI * 2); ctx.stroke();
-        ctx.fillStyle = '#f59e0b';
+        ctx.fillStyle = '#8a8f98';
         ctx.font = 'bold 7px monospace';
         ctx.textAlign = 'center';
         ctx.fillText('GEN-A', cx1, cy + 2);
@@ -781,10 +781,10 @@ export class FacilityMapUI {
 
         // Breaker Switch Panel on North Wall with lightning bolt ⚡
         ctx.fillStyle = 'rgba(239, 68, 68, 0.25)';
-        ctx.strokeStyle = '#ef4444';
+        ctx.strokeStyle = '#b71c1c';
         ctx.fillRect(rx + rw * 0.25, ry + 32, rw * 0.5, 4);
         ctx.strokeRect(rx + rw * 0.25, ry + 32, rw * 0.5, 4);
-        ctx.fillStyle = '#ef4444';
+        ctx.fillStyle = '#b71c1c';
         ctx.fillText('⚡ SAKLAR UTAMA ⚡', rx + rw / 2, ry + 44);
         break;
       }
@@ -798,7 +798,7 @@ export class FacilityMapUI {
         for (let i = 0; i < 3; i++) {
           const bx = rx + rw * 0.22 + i * (rw * 0.28);
           ctx.fillStyle = 'rgba(30, 41, 59, 0.8)';
-          ctx.strokeStyle = '#10b981';
+          ctx.strokeStyle = '#7a808a';
           ctx.lineWidth = 1;
           ctx.fillRect(bx, bedY, bedW, bedD);
           ctx.strokeRect(bx, bedY, bedW, bedD);
@@ -819,7 +819,7 @@ export class FacilityMapUI {
         ctx.setLineDash([]);
 
         // Medical Cross Symbol ✚
-        ctx.fillStyle = '#10b981';
+        ctx.fillStyle = '#7a808a';
         ctx.font = 'bold 9px monospace';
         ctx.textAlign = 'center';
         ctx.fillText('✚ KARANTINA MEDIS', rx + rw / 2, ry + rd - 24);
@@ -835,7 +835,7 @@ export class FacilityMapUI {
         for (let i = 0; i < 3; i++) {
           const sy = ry + 34 + i * (rackH + 7);
           ctx.fillStyle = 'rgba(217, 119, 6, 0.15)';
-          ctx.strokeStyle = '#d97706';
+          ctx.strokeStyle = '#6b7280';
           ctx.lineWidth = 1;
           ctx.fillRect(startX, sy, rackW, rackH);
           ctx.strokeRect(startX, sy, rackW, rackH);
@@ -847,7 +847,7 @@ export class FacilityMapUI {
         }
 
         // Keycard Desk Table Indicator
-        ctx.fillStyle = '#f59e0b';
+        ctx.fillStyle = '#8a8f98';
         ctx.font = 'bold 7.5px monospace';
         ctx.textAlign = 'center';
         ctx.fillText('💳 MEJA KARTU AKSES', rx + rw / 2, ry + rd - 20);
@@ -862,13 +862,13 @@ export class FacilityMapUI {
         const cy = ry + rd / 2 + 2;
 
         ctx.fillStyle = 'rgba(250, 204, 21, 0.12)';
-        ctx.strokeStyle = '#facc15';
+        ctx.strokeStyle = '#a3aab5';
         ctx.lineWidth = 1.2;
         ctx.fillRect(cx, cy, cw, cd);
         ctx.strokeRect(cx, cy, cw, cd);
 
         // RF Frequency Dial 47.3 MHz
-        ctx.fillStyle = '#facc15';
+        ctx.fillStyle = '#a3aab5';
         ctx.font = 'bold 7px monospace';
         ctx.textAlign = 'center';
         ctx.fillText('〰 FREKUENSI RF 47.3 MHz 〰', cx + cw / 2, cy + cd / 2 + 2);
@@ -888,7 +888,7 @@ export class FacilityMapUI {
         for (let i = 0; i < 4; i++) {
           const sy = ry + 34 + i * (shelfH + 6);
           ctx.fillStyle = 'rgba(59, 130, 246, 0.15)';
-          ctx.strokeStyle = '#3b82f6';
+          ctx.strokeStyle = '#6b7280';
           ctx.lineWidth = 1;
           ctx.fillRect(sx, sy, shelfW, shelfH);
           ctx.strokeRect(sx, sy, shelfW, shelfH);
@@ -918,7 +918,7 @@ export class FacilityMapUI {
         const r3 = rw * 0.08;
 
         // Outer Containment Ring
-        ctx.strokeStyle = '#a855f7';
+        ctx.strokeStyle = '#7a808a';
         ctx.lineWidth = 2;
         ctx.beginPath(); ctx.arc(coreX, coreY, r1, 0, Math.PI * 2); ctx.stroke();
 
@@ -931,7 +931,7 @@ export class FacilityMapUI {
 
         // Pulsating Core Singularity
         const corePulse = 2 + Math.sin(performance.now() * 0.005) * 1.5;
-        ctx.fillStyle = '#c084fc';
+        ctx.fillStyle = '#9aa0aa';
         ctx.beginPath(); ctx.arc(coreX, coreY, r3 + corePulse, 0, Math.PI * 2); ctx.fill();
 
         // Suspended Catwalk Bridge
@@ -943,7 +943,7 @@ export class FacilityMapUI {
         ctx.stroke();
 
         // Final Console
-        ctx.fillStyle = '#ef4444';
+        ctx.fillStyle = '#b71c1c';
         ctx.fillRect(coreX - 5, coreY + r2 - 3, 10, 6);
         ctx.font = 'bold 7px monospace';
         ctx.textAlign = 'center';
@@ -958,12 +958,12 @@ export class FacilityMapUI {
         const sRadius = 2.8 * scale;
 
         ctx.fillStyle = 'rgba(6, 182, 212, 0.15)';
-        ctx.strokeStyle = '#06b6d4';
+        ctx.strokeStyle = '#7a808a';
         ctx.lineWidth = 1.5;
         ctx.beginPath(); ctx.arc(lx, ly, sRadius, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
         ctx.strokeRect(lx - sRadius * 1.3, ly - sRadius * 1.3, sRadius * 2.6, sRadius * 2.6);
 
-        ctx.fillStyle = '#06b6d4';
+        ctx.fillStyle = '#7a808a';
         ctx.font = 'bold 7px monospace';
         ctx.textAlign = 'center';
         ctx.fillText('TABUNG SPESIMEN', lx, ly + 2);

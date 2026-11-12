@@ -25,12 +25,12 @@ export class CreditsUI {
       
       <!-- Top Bar -->
       <div style="position: absolute; top: 0; left: 0; right: 0; padding: 14px 24px; background: linear-gradient(180deg, rgba(3,7,18,0.95) 0%, transparent 100%); display: flex; justify-content: space-between; align-items: center; z-index: 20;">
-        <div style="font-size: 0.85rem; color: #38bdf8; font-weight: bold; letter-spacing: 2px;">
+        <div style="font-size: 0.85rem; color: #9aa0aa; font-weight: bold; letter-spacing: 2px;">
           THE LAST SIGNAL &bull; TRANSMISSION ARCHIVE CREDITS
         </div>
         <div style="display: flex; gap: 12px; align-items: center;">
           <button id="cred-toggle-scroll" style="background: rgba(30,41,59,0.8); border: 1px solid #64748b; color: #94a3b8; padding: 5px 12px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 0.72rem;">[ AUTO-SCROLL: ON ]</button>
-          <button id="cred-close-btn" style="background: #450a0a; border: 1px solid #ef4444; color: #fca5a5; padding: 5px 16px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 0.75rem; font-weight: bold;">[ ✖ KEMBALI ]</button>
+          <button id="cred-close-btn" style="background: #2a0f12; border: 1px solid #b71c1c; color: #c7ccd4; padding: 5px 16px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 0.75rem; font-weight: bold;">[ ✖ KEMBALI ]</button>
         </div>
       </div>
 
@@ -39,10 +39,10 @@ export class CreditsUI {
         <div id="cred-scroll-content" style="max-width: 680px; width: 100%; padding: 120px 24px 180px; text-align: center; display: flex; flex-direction: column; gap: 42px;">
           
           <div style="margin-bottom: 24px;">
-            <div style="font-size: 2.4rem; font-weight: bold; color: #38bdf8; letter-spacing: 8px; text-shadow: 0 0 20px rgba(56,189,248,0.5);">
+            <div style="font-size: 2.4rem; font-weight: bold; color: #9aa0aa; letter-spacing: 8px; text-shadow: 0 0 20px rgba(56,189,248,0.5);">
               THE LAST SIGNAL
             </div>
-            <div style="font-size: 1.1rem; color: #ef4444; letter-spacing: 4px; margin-top: 6px;">
+            <div style="font-size: 1.1rem; color: #b71c1c; letter-spacing: 4px; margin-top: 6px;">
               REALITY ERROR // DIRECTOR'S CUT
             </div>
             <div style="font-size: 0.78rem; color: #64748b; margin-top: 10px; letter-spacing: 2px;">
@@ -52,52 +52,52 @@ export class CreditsUI {
 
           <!-- LEAD CREATORS: RAIN & DAVE -->
           <div style="display: flex; flex-direction: column; gap: 8px; padding: 18px; background: rgba(56,189,248,0.06); border: 1px solid rgba(56,189,248,0.3); border-radius: 4px;">
-            <div style="font-size: 0.8rem; color: #38bdf8; letter-spacing: 3px; font-weight: bold;">CREATOR & LEAD DEVELOPER // PEMBUAT UTAMA</div>
+            <div style="font-size: 0.8rem; color: #9aa0aa; letter-spacing: 3px; font-weight: bold;">CREATOR & LEAD DEVELOPER // PEMBUAT UTAMA</div>
             <div style="font-size: 1.7rem; color: #f8fafc; font-weight: bold; letter-spacing: 3px; text-shadow: 0 0 16px rgba(56,189,248,0.7);">RAIN</div>
             <div style="font-size: 0.82rem; color: #94a3b8;">Game Vision, Lead Architecture, Direction & World Building</div>
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 8px; padding: 18px; background: rgba(245,158,11,0.06); border: 1px solid rgba(245,158,11,0.3); border-radius: 4px;">
-            <div style="font-size: 0.8rem; color: #f59e0b; letter-spacing: 3px; font-weight: bold;">CO-CREATOR & GAME DESIGNER // PEMBUAT & DESAIN GAME</div>
+            <div style="font-size: 0.8rem; color: #8a8f98; letter-spacing: 3px; font-weight: bold;">CO-CREATOR & GAME DESIGNER // PEMBUAT & DESAIN GAME</div>
             <div style="font-size: 1.7rem; color: #f8fafc; font-weight: bold; letter-spacing: 3px; text-shadow: 0 0 16px rgba(245,158,11,0.7);">DAVE</div>
             <div style="font-size: 0.82rem; color: #94a3b8;">Co-Creator, Game Systems, Mechanics & Level Design</div>
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 6px;">
-            <div style="font-size: 0.75rem; color: #f59e0b; letter-spacing: 3px; font-weight: bold;">ENGINEERING & TECHNICAL ARCHITECTURE</div>
+            <div style="font-size: 0.75rem; color: #8a8f98; letter-spacing: 3px; font-weight: bold;">ENGINEERING & TECHNICAL ARCHITECTURE</div>
             <div style="font-size: 1.15rem; color: #f8fafc; font-weight: bold;">Antigravity Pair Programming Engineering</div>
             <div style="font-size: 0.8rem; color: #94a3b8;">Google DeepMind Advanced Agentic Coding</div>
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 6px;">
-            <div style="font-size: 0.75rem; color: #f59e0b; letter-spacing: 3px; font-weight: bold;">CORE 3D GRAPHICS & SIMULATION ENGINE</div>
+            <div style="font-size: 0.75rem; color: #8a8f98; letter-spacing: 3px; font-weight: bold;">CORE 3D GRAPHICS & SIMULATION ENGINE</div>
             <div style="font-size: 1.05rem; color: #f8fafc; font-weight: bold;">Three.js WebGL Architecture</div>
             <div style="font-size: 0.8rem; color: #94a3b8;">Physically-Based Shading, Volumetric Fog & Dynamic Lighting</div>
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 6px;">
-            <div style="font-size: 0.75rem; color: #f59e0b; letter-spacing: 3px; font-weight: bold;">PROCEDURAL SOUNDSCAPES & AUDIO SYNTHESIS</div>
+            <div style="font-size: 0.75rem; color: #8a8f98; letter-spacing: 3px; font-weight: bold;">PROCEDURAL SOUNDSCAPES & AUDIO SYNTHESIS</div>
             <div style="font-size: 1.05rem; color: #f8fafc; font-weight: bold;">HTML5 Web Audio API</div>
             <div style="font-size: 0.8rem; color: #94a3b8;">Frequency Oscillators, Spatial Panning & Distortion Filters</div>
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 6px;">
-            <div style="font-size: 0.75rem; color: #f59e0b; letter-spacing: 3px; font-weight: bold;">CLOUD INFRASTRUCTURE & CROSS-DEVICE SAVE</div>
+            <div style="font-size: 0.75rem; color: #8a8f98; letter-spacing: 3px; font-weight: bold;">CLOUD INFRASTRUCTURE & CROSS-DEVICE SAVE</div>
             <div style="font-size: 1.05rem; color: #f8fafc; font-weight: bold;">Supabase PostgreSQL Backend</div>
             <div style="font-size: 0.8rem; color: #94a3b8;">Real-time Telemetry, Shift State & Achievement Tracking</div>
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 6px;">
-            <div style="font-size: 0.75rem; color: #f59e0b; letter-spacing: 3px; font-weight: bold;">NARRATIVE DESIGN & COGNITIVE LORE</div>
+            <div style="font-size: 0.75rem; color: #8a8f98; letter-spacing: 3px; font-weight: bold;">NARRATIVE DESIGN & COGNITIVE LORE</div>
             <div style="font-size: 1.05rem; color: #f8fafc; font-weight: bold;">Project Echo Research Group</div>
             <div style="font-size: 0.8rem; color: #94a3b8;">Simulated Reality Theory & Psychological Horror Storyline</div>
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 6px;">
-            <div style="font-size: 0.75rem; color: #f59e0b; letter-spacing: 3px; font-weight: bold;">SPECIAL THANKS</div>
+            <div style="font-size: 0.75rem; color: #8a8f98; letter-spacing: 3px; font-weight: bold;">SPECIAL THANKS</div>
             <div style="font-size: 0.95rem; color: #f8fafc;">To all brave operators who descended into Sector 09,</div>
             <div style="font-size: 0.85rem; color: #cbd5e1;">faced the echoes of forgotten transmissions,</div>
-            <div style="font-size: 0.85rem; color: #38bdf8;">and sought the truth behind the screens.</div>
+            <div style="font-size: 0.85rem; color: #9aa0aa;">and sought the truth behind the screens.</div>
           </div>
 
           <div style="border-top: 1px solid #1e293b; padding-top: 28px; margin-top: 18px;">
@@ -110,7 +110,7 @@ export class CreditsUI {
           </div>
 
           <div style="margin-top: 40px;">
-            <button id="cred-bottom-close-btn" style="background: transparent; border: 1px solid #38bdf8; color: #38bdf8; padding: 10px 28px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 0.85rem; font-weight: bold; letter-spacing: 2px;">
+            <button id="cred-bottom-close-btn" style="background: transparent; border: 1px solid #9aa0aa; color: #9aa0aa; padding: 10px 28px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 0.85rem; font-weight: bold; letter-spacing: 2px;">
               [ KEMBALI KE MENU UTAMA ]
             </button>
           </div>
@@ -136,7 +136,7 @@ export class CreditsUI {
     this.toggleScrollBtn.addEventListener('click', () => {
       this.isAutoScroll = !this.isAutoScroll;
       this.toggleScrollBtn.textContent = `[ AUTO-SCROLL: ${this.isAutoScroll ? 'ON' : 'OFF'} ]`;
-      this.toggleScrollBtn.style.color = this.isAutoScroll ? '#38bdf8' : '#94a3b8';
+      this.toggleScrollBtn.style.color = this.isAutoScroll ? '#9aa0aa' : '#94a3b8';
     });
 
     window.addEventListener('keydown', (e) => {
@@ -155,7 +155,7 @@ export class CreditsUI {
     this.isAutoScroll = true;
     if (this.toggleScrollBtn) {
       this.toggleScrollBtn.textContent = '[ AUTO-SCROLL: ON ]';
-      this.toggleScrollBtn.style.color = '#38bdf8';
+      this.toggleScrollBtn.style.color = '#9aa0aa';
     }
 
     if (document.exitPointerLock) {

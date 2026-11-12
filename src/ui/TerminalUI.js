@@ -32,7 +32,7 @@ Ketik 'bantuan' untuk daftar perintah atau 'ls' untuk melihat file.
       <div class="terminal-quick-actions" id="term-quick-actions">
         <span class="term-quick-label">PINTASAN:</span>
         <button type="button" class="term-quick-btn" data-cmd="ls">📁 LIHAT FILE [ls]</button>
-        <button type="button" class="term-quick-btn" data-cmd="lapor" style="border-color: #38bdf8; color: #38bdf8;">📢 LAPOR TEMUAN [lapor]</button>
+        <button type="button" class="term-quick-btn" data-cmd="lapor" style="border-color: #9aa0aa; color: #9aa0aa;">📢 LAPOR TEMUAN [lapor]</button>
         <button type="button" class="term-quick-btn" data-cmd="unlock 997">🔓 BUKA 997</button>
         <button type="button" class="term-quick-btn" data-cmd="unlock echo">🔓 BUKA ECHO</button>
         <button type="button" class="term-quick-btn" data-cmd="override chamber 47.3">⚡ BUKA REAKTOR 47.3</button>
@@ -86,7 +86,7 @@ Ketik 'bantuan' untuk daftar perintah atau 'ls' untuk melihat file.
     if (!cmd.trim()) return;
 
     // Append user input
-    this.printLine(`> ${cmd}`, '#86efac');
+    this.printLine(`> ${cmd}`, '#c7ccd4');
 
     const res = this.computer.execute(cmd);
     if (res.text === '__CLEAR__') {
@@ -94,15 +94,15 @@ Ketik 'bantuan' untuk daftar perintah atau 'ls' untuk melihat file.
       return;
     }
 
-    let color = '#4ade80';
-    if (res.type === 'error') color = '#f87171';
-    else if (res.type === 'warning') color = '#fbbf24';
-    else if (res.type === 'success') color = '#38bdf8';
+    let color = '#b0b6bf';
+    if (res.type === 'error') color = '#c27b7b';
+    else if (res.type === 'warning') color = '#a3aab5';
+    else if (res.type === 'success') color = '#9aa0aa';
 
     this.printLine(res.text, color);
   }
 
-  printLine(text, color = '#4ade80') {
+  printLine(text, color = '#b0b6bf') {
     const p = document.createElement('div');
     p.style.color = color;
     p.style.whiteSpace = 'pre-wrap';

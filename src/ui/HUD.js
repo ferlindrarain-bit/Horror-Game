@@ -13,27 +13,27 @@ export class HUD {
         <div class="hud-value" id="hud-night-title">MALAM 1 : KEDATANGAN</div>
       </div>
       <div class="hud-right">
-        <div class="flashlight-indicator">
-          <div class="hud-label">SENTER [F]</div>
-          <div class="battery-bar"><div class="fill" id="hud-battery-fill" style="width: 100%;"></div></div>
+        <div class="hud-indicator">
+          <div class="hud-label">SENTER [F] <span id="hud-battery-text">100%</span></div>
+          <div class="hud-bar"><div class="fill" id="hud-battery-fill" style="width: 100%;"></div></div>
         </div>
-        <div class="stamina-indicator" style="display: flex; align-items: center; gap: 6px;">
-          <div class="hud-label">STAMINA [SHIFT]</div>
-          <div class="stamina-bar"><div class="fill" id="hud-stamina-fill" style="width: 100%;"></div></div>
+        <div class="hud-indicator">
+          <div class="hud-label">STAMINA [SHIFT] <span id="hud-stamina-text">100%</span></div>
+          <div class="hud-bar"><div class="fill" id="hud-stamina-fill" style="width: 100%;"></div></div>
         </div>
-        <div style="font-size: 0.65rem; color: #38bdf8; letter-spacing: 1.2px; margin-top: 6px; text-align: right; display: flex; justify-content: flex-end; gap: 6px; pointer-events: auto;">
-          <span id="hud-btn-map" style="cursor: pointer; padding: 2px 6px; border: 1px solid rgba(56,189,248,0.45); background: rgba(3,7,18,0.7); border-radius: 2px; user-select: none;" title="Buka Denah Peta Fasilitas">[M] PETA</span>
-          <span id="hud-btn-tutorial" style="cursor: pointer; padding: 2px 6px; border: 1px solid rgba(245,158,11,0.45); color: #f59e0b; background: rgba(3,7,18,0.7); border-radius: 2px; user-select: none;" title="Buka Panduan & Tutorial">[H] TUTORIAL</span>
-          <span id="hud-btn-tab" style="cursor: pointer; padding: 2px 6px; border: 1px solid rgba(148,163,184,0.45); color: #94a3b8; background: rgba(3,7,18,0.7); border-radius: 2px; user-select: none;" title="Menu Jeda & Daftar Objektif">[TAB] PAUSE</span>
+        <div class="hud-actions">
+          <span id="hud-btn-map" class="hud-action-btn" title="Buka Peta">[M] PETA</span>
+          <span id="hud-btn-tutorial" class="hud-action-btn" title="Buka Tutorial">[H] TUTORIAL</span>
+          <span id="hud-btn-tab" class="hud-action-btn" title="Menu Jeda">[TAB] PAUSE</span>
         </div>
       </div>
       <div class="hud-objective" id="hud-objective-box">
-        <div class="hud-label" style="margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center;">
-          <span>TARGET SAAT INI</span>
-          <span style="font-size: 0.62rem; color: #38bdf8; letter-spacing: 0.5px;">[M] PETA</span>
+        <div class="hud-label hud-objective-header">
+          <span>TARGET SAAT INI <span id="hud-objective-progress"></span></span>
+          <span class="hud-hint">[M] PETA</span>
         </div>
         <div id="hud-objective-text">Masuk ke Sektor 09 dan periksa Ruang Kontrol Keamanan.</div>
-        <div id="hud-nav-guidance" style="font-size: 0.72rem; color: #f59e0b; margin-top: 5px; font-weight: bold; display: flex; align-items: center; gap: 4px; letter-spacing: 0.5px;">📍 PANDUAN: Ruang Kontrol Keamanan (Lobi Tengah)</div>
+        <div id="hud-nav-guidance" class="hud-guidance">PANDUAN: Ruang Kontrol Keamanan (Lobi Tengah)</div>
       </div>
       <div class="interact-prompt" id="hud-interact-prompt">[E] Interaksi</div>
     `;
@@ -114,9 +114,12 @@ export class HUD {
 
     // Cache elements
     this.batteryFill = document.getElementById('hud-battery-fill');
+    this.batteryText = document.getElementById('hud-battery-text');
     this.staminaFill = document.getElementById('hud-stamina-fill');
+    this.staminaText = document.getElementById('hud-stamina-text');
     this.nightTitle = document.getElementById('hud-night-title');
     this.objectiveText = document.getElementById('hud-objective-text');
+    this.objectiveProgress = document.getElementById('hud-objective-progress');
     this.guidanceText = document.getElementById('hud-nav-guidance');
     this.interactPrompt = document.getElementById('hud-interact-prompt');
     this.currentNightTitle = '';
@@ -137,15 +140,39 @@ export class HUD {
   }
 
   updateBattery(pct) {
+    const v = Math.max(0, Math.min(100, Math.round(pct)));
     if (this.batteryFill) {
-      this.batteryFill.style.width = `${pct}%`;
-      this.batteryFill.style.background = pct < 20 ? '#ef4444' : '#eab308';
+      this.batteryFill.style.width = `${v}%`;
+      if (v < 20) this.batteryFill.dataset.state = 'critical';
+      else if (v < 40) this.batteryFill.dataset.state = 'low';
+      else this.batteryFill.dataset.state = 'normal';
+    }
+    if (this.batteryText) {
+      this.batteryText.textContent = `${v}%`;
+      this.batteryText.dataset.state = this.batteryFill ? this.batteryFill.dataset.state : 'normal';
     }
   }
 
   updateStamina(pct) {
+    const v = Math.max(0, Math.min(100, Math.round(pct)));
     if (this.staminaFill) {
-      this.staminaFill.style.width = `${pct}%`;
+      this.staminaFill.style.width = `${v}%`;
+      if (v < 25) this.staminaFill.dataset.state = 'critical';
+      else if (v < 50) this.staminaFill.dataset.state = 'low';
+      else this.staminaFill.dataset.state = 'normal';
+    }
+    if (this.staminaText) {
+      this.staminaText.textContent = `${v}%`;
+      this.staminaText.dataset.state = this.staminaFill ? this.staminaFill.dataset.state : 'normal';
+    }
+  }
+
+  updateObjectiveProgress(completed, total) {
+    if (!this.objectiveProgress) return;
+    if (typeof total === 'number' && total > 0) {
+      this.objectiveProgress.textContent = `(${completed}/${total})`;
+    } else {
+      this.objectiveProgress.textContent = '';
     }
   }
 

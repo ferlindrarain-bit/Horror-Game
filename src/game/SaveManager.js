@@ -13,11 +13,13 @@ export class SaveManager {
    * 2. Asynchronously attempts sync with Supabase cloud
    */
   static saveGame(data) {
+    let localSaved = true;
     try {
-      localStorage.setItem(SaveManager.SAVE_KEY, JSON.stringify(data));
+      const payload = { ...data, savedAt: Date.now() };
+      localStorage.setItem(SaveManager.SAVE_KEY, JSON.stringify(payload));
     } catch (e) {
       console.error('Failed to save game locally:', e);
-      return false;
+      localSaved = false;
     }
 
     // Trigger cloud sync asynchronously
@@ -37,7 +39,7 @@ export class SaveManager {
         });
     }
 
-    return true;
+    return localSaved;
   }
 
   /**

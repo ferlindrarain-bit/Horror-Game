@@ -17,9 +17,9 @@ export class MainMenu {
       nightmare: 'NIGHTMARE / ANOMALI'
     };
     this.difficultyColors = {
-      easy: '#22c55e',
-      normal: '#38bdf8',
-      nightmare: '#ef4444'
+      easy: '#8a8f98',
+      normal: '#9aa0aa',
+      nightmare: '#b71c1c'
     };
 
     const savedSettings = SaveManager.loadSettings();
@@ -32,25 +32,33 @@ export class MainMenu {
     this.container = document.createElement('div');
     this.container.id = 'main-menu';
     this.container.innerHTML = `
-      <div class="menu-title">THE LAST SIGNAL</div>
-      <div style="font-size: 1.1rem; color: #ef4444; letter-spacing: 4px; margin-bottom: 0.6rem;">REALITY ERROR</div>
-      <div class="menu-subtitle">"The truth is not what you see. The truth is what remains when everything disappears."</div>
-      
-      <button id="btn-new-game">NEW GAME</button>
-      <button id="btn-continue">CONTINUE</button>
-      <button id="btn-difficulty" style="border-color: ${this.difficultyColors[this.currentDifficulty]}; color: ${this.difficultyColors[this.currentDifficulty]}; font-size: 0.8rem; letter-spacing: 1.5px;">
-        DIFFICULTY: ${this.difficultyLabels[this.currentDifficulty]} [GANTI]
-      </button>
-      <button id="btn-tutorial" style="border-color:#f59e0b; color:#fbbf24;">📖 TUTORIAL // PANDUAN BERMAIN</button>
-      <button id="btn-cloud-save" style="border-color:#38bdf8; color:#38bdf8;">☁ CLOUD SAVE // SUPABASE</button>
-      <button id="btn-settings">SETTINGS</button>
-      <button id="btn-credits">CREDITS // TIM PENGEMBANG</button>
+      <div class="menu-bg-overlay"></div>
+      <div class="menu-bg-fade" id="menu-bg-fade"></div>
+      <div class="menu-content">
+        <div class="menu-title">THE LAST SIGNAL</div>
+        <div class="menu-subline">REALITY ERROR</div>
+        <div class="menu-subtitle">"The truth is not what you see. The truth is what remains when everything disappears."</div>
 
-      <div style="margin-top: 2.5rem; font-size: 0.7rem; color: #444; letter-spacing: 1px;">
-        SECTOR 09 EMERGENCY MONITORING DIVISION // VER 2049.5
+        <div class="menu-location" id="menu-location-label">SECTOR 09 // LIVE FEED</div>
+
+        <div class="menu-buttons">
+          <button id="btn-new-game">NEW GAME</button>
+          <button id="btn-continue">CONTINUE</button>
+          <button id="btn-difficulty">
+            DIFFICULTY: ${this.difficultyLabels[this.currentDifficulty]} [GANTI]
+          </button>
+          <button id="btn-tutorial">TUTORIAL // PANDUAN BERMAIN</button>
+          <button id="btn-cloud-save">CLOUD SAVE // SUPABASE</button>
+          <button id="btn-settings">SETTINGS</button>
+          <button id="btn-credits">CREDITS // TIM PENGEMBANG</button>
+        </div>
+
+        <div class="menu-footer">SECTOR 09 EMERGENCY MONITORING DIVISION // VER 2049.5</div>
       </div>
     `;
     document.body.appendChild(this.container);
+    this.locationLabel = document.getElementById('menu-location-label');
+    this.bgFade = document.getElementById('menu-bg-fade');
 
     this.btnNewGame = document.getElementById('btn-new-game');
     this.btnContinue = document.getElementById('btn-continue');
@@ -98,8 +106,6 @@ export class MainMenu {
     if (!this.difficulties.includes(diff)) return;
     this.currentDifficulty = diff;
     if (this.btnDifficulty) {
-      this.btnDifficulty.style.borderColor = this.difficultyColors[diff];
-      this.btnDifficulty.style.color = this.difficultyColors[diff];
       this.btnDifficulty.textContent = `DIFFICULTY: ${this.difficultyLabels[diff]} [GANTI]`;
     }
     const settings = SaveManager.loadSettings() || {};
@@ -114,6 +120,24 @@ export class MainMenu {
       this.btnContinue.style.opacity = hasSave ? '1' : '0.35';
       this.btnContinue.style.cursor = hasSave ? 'pointer' : 'not-allowed';
     }
+  }
+
+  setLocationLabel(text) {
+    if (this.locationLabel) this.locationLabel.textContent = text || 'SECTOR 09 // LIVE FEED';
+  }
+
+  async transitionShot(label, applyShot) {
+    if (!this.bgFade) {
+      if (applyShot) applyShot();
+      this.setLocationLabel(label);
+      return;
+    }
+    this.bgFade.classList.add('active');
+    await new Promise(r => setTimeout(r, 450));
+    if (applyShot) applyShot();
+    this.setLocationLabel(label);
+    await new Promise(r => setTimeout(r, 80));
+    this.bgFade.classList.remove('active');
   }
 
   show() {

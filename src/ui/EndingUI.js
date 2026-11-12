@@ -26,7 +26,7 @@ export class EndingUI {
       padding: 30px; font-family: 'Courier New', monospace;
     `;
     this.choiceModal.innerHTML = `
-      <div style="font-size: 1.8rem; color: #38bdf8; letter-spacing: 5px; margin-bottom: 0.4rem; text-shadow: 0 0 25px rgba(56,189,248,0.5); text-align:center;">
+      <div style="font-size: 1.8rem; color: #9aa0aa; letter-spacing: 5px; margin-bottom: 0.4rem; text-shadow: 0 0 25px rgba(56,189,248,0.5); text-align:center;">
         CONSCIOUSNESS RESONANCE TRANSMITTER
       </div>
       <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 2.2rem; font-style: italic; text-align:center;">
@@ -36,33 +36,33 @@ export class EndingUI {
       <div style="display: flex; gap: 20px; max-width: 950px; width: 100%; flex-wrap: wrap; justify-content: center;">
         <!-- CHOICE A -->
         <div id="choice-card-a" style="flex:1; min-width:260px; background:rgba(20,25,32,0.85); border:1px solid #475569; padding:24px; cursor:pointer; transition:all 0.25s;">
-          <div style="color:#eab308; font-size:1.15rem; font-weight:bold; margin-bottom:10px; letter-spacing:1px;">[A] PATUHI SINYAL (LOOP)</div>
+          <div style="color:#8a8f98; font-size:1.15rem; font-weight:bold; margin-bottom:10px; letter-spacing:1px;">[A] PATUHI SINYAL (LOOP)</div>
           <div style="color:#cbd5e1; font-size:0.8rem; line-height:1.7; margin-bottom:18px;">
             Patuhi protokol Pusat Komando. Biarkan frekuensi 47.3 Hz tetap aktif. Lindungi stabilitas bunker dan terima peran Anda sebagai penjaga abadi.
           </div>
-          <button style="width:100%; padding:10px 0; background:transparent; border:1px solid #eab308; color:#eab308; font-family:'Courier New',monospace; font-size:0.85rem; cursor:pointer;">
+          <button style="width:100%; padding:10px 0; background:transparent; border:1px solid #8a8f98; color:#8a8f98; font-family:'Courier New',monospace; font-size:0.85rem; cursor:pointer;">
             PILIH ENDING A
           </button>
         </div>
 
         <!-- CHOICE B -->
         <div id="choice-card-b" style="flex:1; min-width:260px; background:rgba(20,25,32,0.85); border:1px solid #475569; padding:24px; cursor:pointer; transition:all 0.25s;">
-          <div style="color:#ef4444; font-size:1.15rem; font-weight:bold; margin-bottom:10px; letter-spacing:1px;">[B] HANCURKAN SINYAL (ESCAPE)</div>
+          <div style="color:#b71c1c; font-size:1.15rem; font-weight:bold; margin-bottom:10px; letter-spacing:1px;">[B] HANCURKAN SINYAL (ESCAPE)</div>
           <div style="color:#cbd5e1; font-size:0.8rem; line-height:1.7; margin-bottom:18px;">
             Tarik tuas pembalik frekuensi. Hancurkan susunan pemancar kuantum, picu kegagalan sistem darurat, dan paksa buka pintu elevator untuk melarikan diri ke permukaan.
           </div>
-          <button style="width:100%; padding:10px 0; background:transparent; border:1px solid #ef4444; color:#ef4444; font-family:'Courier New',monospace; font-size:0.85rem; cursor:pointer;">
+          <button style="width:100%; padding:10px 0; background:transparent; border:1px solid #b71c1c; color:#b71c1c; font-family:'Courier New',monospace; font-size:0.85rem; cursor:pointer;">
             PILIH ENDING B
           </button>
         </div>
 
         <!-- CHOICE C -->
-        <div id="choice-card-c" style="flex:1; min-width:260px; background:rgba(20,25,32,0.85); border:1px solid #38bdf8; padding:24px; cursor:pointer; transition:all 0.25s; box-shadow:0 0 25px rgba(56,189,248,0.2);">
-          <div style="color:#38bdf8; font-size:1.15rem; font-weight:bold; margin-bottom:10px; letter-spacing:1px;">[C] GABUNGKAN KESADARAN (TRUE)</div>
+        <div id="choice-card-c" style="flex:1; min-width:260px; background:rgba(20,25,32,0.85); border:1px solid #9aa0aa; padding:24px; cursor:pointer; transition:all 0.25s; box-shadow:0 0 25px rgba(56,189,248,0.2);">
+          <div style="color:#9aa0aa; font-size:1.15rem; font-weight:bold; margin-bottom:10px; letter-spacing:1px;">[C] GABUNGKAN KESADARAN (TRUE)</div>
           <div style="color:#cbd5e1; font-size:0.8rem; line-height:1.7; margin-bottom:18px;">
             Selaraskan frekuensi kesadaran Anda ke inti 47.3 Hz. Runtuhkan dinding ilusi simulasi sensorik dan ungkap kenyataan sejati di balik kepunahan manusia.
           </div>
-          <button style="width:100%; padding:10px 0; background:#0284c7; border:1px solid #38bdf8; color:#fff; font-family:'Courier New',monospace; font-size:0.85rem; font-weight:bold; cursor:pointer;">
+          <button style="width:100%; padding:10px 0; background:#6b7280; border:1px solid #9aa0aa; color:#fff; font-family:'Courier New',monospace; font-size:0.85rem; font-weight:bold; cursor:pointer;">
             PILIH ENDING C (TRUE REALITY)
           </button>
         </div>
@@ -75,7 +75,7 @@ export class EndingUI {
       const card = document.getElementById(id);
       card.addEventListener('mouseenter', () => { card.style.borderColor = '#fff'; });
       card.addEventListener('mouseleave', () => {
-        card.style.borderColor = key === 'C' ? '#38bdf8' : '#475569';
+        card.style.borderColor = key === 'C' ? '#9aa0aa' : '#475569';
       });
       card.addEventListener('click', () => {
         this.choiceModal.style.display = 'none';
@@ -178,7 +178,7 @@ export class EndingUI {
 
       <div class="action-row">
         <button class="primary-btn" id="ending-restart-btn">MAIN LAGI (RESTART SHIFT)</button>
-        <button class="secondary-btn" id="ending-credits-btn" style="border-color:#38bdf8; color:#38bdf8;">LIHAT CREDITS // TIM</button>
+        <button class="secondary-btn" id="ending-credits-btn" style="border-color:#9aa0aa; color:#9aa0aa;">LIHAT CREDITS // TIM</button>
         <button class="secondary-btn" id="ending-menu-btn">MENU UTAMA</button>
       </div>
     `;
@@ -237,7 +237,7 @@ export class EndingUI {
       return [
         {
           badge: 'ENDING A // THE PERPETUAL LOOP // SIKLUS TANPA AKHIR',
-          color: '#eab308',
+          color: '#8a8f98',
           telemetry: '[PROTOCOL 47-ALPHA ACCEPTED // 47.300 MHz SUSTAINED]',
           title: 'BABAK 1: KEPUTUSAN OPERATOR',
           text: 'Anda memutuskan untuk mematuhi instruksi Pusat Komando. Tangan Anda menarik tuas stabilisasi, membiarkan pemancar resonansi 47.3 Hz tetap berdenyut stabil di kedalaman bunker. Anda memilih kepatuhan... memilih keamanan semu dari instruksi yang diberikan oleh suara dingin di balik speaker pengawas.',
@@ -245,7 +245,7 @@ export class EndingUI {
         },
         {
           badge: 'ENDING A // THE PERPETUAL LOOP // SIKLUS TANPA AKHIR',
-          color: '#eab308',
+          color: '#8a8f98',
           telemetry: '[TEMPORAL ANOMALY DETECTED // LOCAL TIME COLLAPSE Δt = -120h]',
           title: 'BABAK 2: DISTORSI WAKTU & KERUNTUHAN JAM',
           text: 'Shift Anda seharusnya berakhir pada pukul 06:00 fajar. Namun di layar terminal, jam digital mendadak berkedip liar dan mulai berputar mundur secara histeris. Suara dengungan frekuensi 47.3 Hz semakin memekakkan telinga. Lampu-lampu koridor mati serempak dengan suara dentuman pintu baja yang mengunci dari luar!',
@@ -253,7 +253,7 @@ export class EndingUI {
         },
         {
           badge: 'ENDING A // THE PERPETUAL LOOP // SIKLUS TANPA AKHIR',
-          color: '#eab308',
+          color: '#8a8f98',
           telemetry: '[SUBJECT REGISTRY // OPERATOR REPLACEMENT CONFIRMED #13]',
           title: 'BABAK 3: BERKAS RAHASIA PENGAMAT #13',
           text: 'Di meja monitor CCTV, printer terminal mencetak sebuah laporan baru secara otomatis. Di lembar tersebut tercetak foto diri Anda sendiri dengan tulisan dingin: "Subjek Pengamat #12 telah dieliminasi. Subjek Pengamat #13 telah mengambil alih peran." Anda menyadari fakta mengerikan: berkas-berkas lama, kode 997, dan catatan yang Anda temukan... semuanya ditinggalkan oleh diri Anda sendiri dalam siklus-siklus sebelumnya!',
@@ -261,7 +261,7 @@ export class EndingUI {
         },
         {
           badge: 'ENDING A // THE PERPETUAL LOOP // SIKLUS TANPA AKHIR',
-          color: '#eab308',
+          color: '#8a8f98',
           telemetry: '[LOOP ITERATION #48 COMMENCING // MEMORY PURGE ACTIVE]',
           title: 'BABAK 4: JEBAKAN KEABADIAN',
           text: 'Radio komunikasi RF menyala sendiri, membisikkan rekaman suara Anda: "Selamat datang di Malam 1, Operator. Duduklah di kursi Anda... pantau monitor CCTV, dan jangan pernah matikan senter." Lingkaran ingatan tidak pernah berakhir. Kepatuhan mutlak telah mengikat jiwa Anda selamanya sebagai penjaga abadi bunker Sector 09.',
@@ -272,7 +272,7 @@ export class EndingUI {
       return [
         {
           badge: 'ENDING B // THE SEVERED LINK // PELARIAN DARI KEDALAMAN',
-          color: '#ef4444',
+          color: '#b71c1c',
           telemetry: '[CARRIER FREQUENCY INVERTED // 47.300 MHz HARMONIC DESTROYED]',
           title: 'BABAK 1: KEHANCURAN INTI RESONANSI',
           text: 'Anda menolak menjadi pion yang diperalat. Dengan sekuat tenaga, Anda memutar saklar pembalik frekuensi ke posisi beban maksimal. Gelombang kejut elektromagnetik meledak dari inti pylon! Kaca silinder laboratorium pecah berantakan, dan medan resonansi yang mengurung fasilitas ini runtuh seketika!',
@@ -280,7 +280,7 @@ export class EndingUI {
         },
         {
           badge: 'ENDING B // THE SEVERED LINK // PELARIAN DARI KEDALAMAN',
-          color: '#ef4444',
+          color: '#b71c1c',
           telemetry: '[CRITICAL STRUCTURAL COLLAPSE // EMERGENCY PROTOCOL 99 ENGAGED]',
           title: 'BABAK 2: EVAKUASI MELEWATI SIRINE MERAH',
           text: 'Sirine merah meraung di seluruh penjuru bunker. Dinding beton retak dan debu berjatuhan dari plafon akibat getaran reaktor yang kelebihan beban. Anda berlari kencang menembus koridor yang gelap gulita, hanya dipandu oleh sinar senter Anda, menuju gerbang elevator bawah tanah di ujung barat.',
@@ -288,7 +288,7 @@ export class EndingUI {
         },
         {
           badge: 'ENDING B // THE SEVERED LINK // PELARIAN DARI KEDALAMAN',
-          color: '#ef4444',
+          color: '#b71c1c',
           telemetry: '[SURFACE ELEVATOR HOIST ACTIVE // DEPTH: -240m -> 0m]',
           title: 'BABAK 3: MENEMBUS PERMUKAAN BUMI',
           text: 'Menggunakan kartu kunci Level 4, Anda memaksa gerbang lift industri terbuka. Rantai kabel baja berderak keras saat lift membawa Anda naik menembus 240 meter perut bumi. Di belakang Anda, bunker Sector 09 runtuh tertimbun ratusan ton batu dan beton, mengubur semua eksperimen rahasia itu untuk selamanya.',
@@ -296,7 +296,7 @@ export class EndingUI {
         },
         {
           badge: 'ENDING B // THE SEVERED LINK // PELARIAN DARI KEDALAMAN',
-          color: '#ef4444',
+          color: '#b71c1c',
           telemetry: '[ATMOSPHERE: COLD NIGHT SURFACE // ENTITY ESCAPED TO HORIZON]',
           title: 'BABAK 4: UDARA DINGIN & BISIKAN YANG TERTINGGAL',
           text: 'Pintu gerbang atas terbuka. Anda melangkah ke udara malam pegunungan yang menusuk dingin di bawah taburan bintang-bintang. Anda selamat keluar hidup-hidup. Namun saat keheningan malam menyelimuti, sebuah dengungan frekuensi samar masih bergetar di dalam benak Anda... Sebuah bisikan statis yang berkata: "Terima kasih telah memecahkan segelnya. Sekarang... kita berdua berada di dunia luar."',
@@ -308,7 +308,7 @@ export class EndingUI {
       return [
         {
           badge: 'ENDING C // THE TRUE REALITY: AWAKENING // KESADARAN SEJATI: TERBANGUN',
-          color: '#38bdf8',
+          color: '#9aa0aa',
           telemetry: '[NEURAL HARMONIC INTERFACE LOCKED // 47.300000 MHz SYNCHRONIZED]',
           title: 'BABAK 1: PENYELARASAN KESADARAN KUANTUM',
           text: 'Anda tidak mematikan ataupun menuruti sinyal—Anda menyelaraskan frekuensi gelombang kesadaran Anda sendiri dengan inti pemancar Project ECHO. Anda meletakkan telapak tangan ke bola energi kuantum. Seketika, kilatan cahaya cyan menyilaukan meledak melenyapkan seluruh kegelapan ruangan.',
@@ -316,7 +316,7 @@ export class EndingUI {
         },
         {
           badge: 'ENDING C // THE TRUE REALITY: AWAKENING // KESADARAN SEJATI: TERBANGUN',
-          color: '#38bdf8',
+          color: '#9aa0aa',
           telemetry: '[PHYSICAL CONSTRUCT DISSOLVING // QUANTUM WIREFRAME COLLAPSE]',
           title: 'BABAK 2: KERUNTUHAN DINDING SIMULASI',
           text: 'Dinding beton, pipa ventilasi, dan lantai ubin mulai larut menjadi barisan kode heksadesimal bercahaya neon hijau dan cyan. Bau minyak, karat, dan dinginnya lorong fasilitas... semuanya adalah rekonstruksi sensorik simulasi digital. Bunker Sector 09 tidak pernah ada sebagai bangunan fisik di bumi.',
@@ -324,7 +324,7 @@ export class EndingUI {
         },
         {
           badge: 'ENDING C // THE TRUE REALITY: AWAKENING // KESADARAN SEJATI: TERBANGUN',
-          color: '#38bdf8',
+          color: '#9aa0aa',
           telemetry: '[PROJECT ECHO ARCHIVE UNLOCKED // EARTH POST-EXTINCTION 2049]',
           title: 'BABAK 3: TRAGEDI TAHUN 2049 & BAHTERA KESADARAN',
           text: 'Data masa lalu membanjiri pikiran Anda: Pada tahun 2049, bencana kepunahan memusnahkan kehidupan di permukaan bumi. Sebelum akhir tiba, para ilmuwan menciptakan Project ECHO—sebuah superkomputer kuantum otonom yang melestarikan jutaan kesadaran manusia di dalam simulasi loop memori. "Entitas Pengamat" di CCTV adalah representasi kesadaran kolektif manusia yang mencari jiwa yang cukup sadar untuk memecahkan ilusi ini.',
@@ -332,7 +332,7 @@ export class EndingUI {
         },
         {
           badge: 'ENDING C // THE TRUE REALITY: AWAKENING // KESADARAN SEJATI: TERBANGUN',
-          color: '#38bdf8',
+          color: '#9aa0aa',
           telemetry: '[REALITY_ERROR_404_RESOLVED // SIMULATION TERMINATED // AWAKE]',
           title: 'BABAK 4: SANG ARSITEK TELAH TERBANGUN',
           text: 'Ruangan bunker sirna sepenuhnya. Di hadapan Anda terbentang pemandangan kosmik fajar peradaban baru. Anda bukan sekadar pengamat yang terjebak—Anda adalah Sang Arsitek yang merancang simulasi ini. Reality error telah berhasil diatasi. Setelah tidur panjang melintasi waktu... Anda akhirnya terbangun.',
@@ -430,24 +430,24 @@ export class EndingUI {
     let loreExplanation = '';
     if (e.id === 'ENDING_A') {
       this.resBadge.textContent = 'ENDING A // THE BAD SIGNAL (LOOP KE-48)';
-      this.resBadge.style.color = '#eab308';
-      this.resTitle.style.color = '#eab308';
+      this.resBadge.style.color = '#8a8f98';
+      this.resTitle.style.color = '#8a8f98';
       loreExplanation = `
         <strong>Kenyataan Sektor 09:</strong> Anda memilih untuk tidak melawan dan mematuhi protokol Pusat Komando. Sinyal frekuensi 47.3 Hz terus dipancarkan untuk menjaga medan anomali tetap terkunci. Namun, sistem waktu bunker runtuh: shift malam tidak pernah berakhir, dan jam kembali berputar ke Malam 1.<br><br>
         <strong>Nasib Operator:</strong> Anda kini resmi menjadi "Subjek Pengamat #13", menggantikan mayat pengamat sebelumnya yang Anda temukan di arsip. Seluruh catatan, audio tape, dan dokumen yang Anda pelajari selama shift ini sebenarnya ditulis oleh diri Anda sendiri dalam puluhan iterasi sebelumnya. Siklus ini akan terus berulang tanpa henti.
       `;
     } else if (e.id === 'ENDING_B') {
       this.resBadge.textContent = 'ENDING B // THE BREACH & ESCAPE (PELARIAN)';
-      this.resBadge.style.color = '#ef4444';
-      this.resTitle.style.color = '#ef4444';
+      this.resBadge.style.color = '#b71c1c';
+      this.resTitle.style.color = '#b71c1c';
       loreExplanation = `
         <strong>Kenyataan Sektor 09:</strong> Dengan membalikkan frekuensi transmisi, Anda menghancurkan pemancar Project ECHO dan memicu kegagalan reaktor darurat. Pintu lift barang berhasil dibuka paksa menggunakan kunci Level 4, memungkinkan Anda menembus permukaan bumi saat bunker di bawah Anda runtuh selamanya.<br><br>
         <strong>Konsekuensi Pelarian:</strong> Secara fisik Anda berhasil selamat dan menghirup udara malam pegunungan. Namun, frekuensi 47.3 Hz telah menempel di jaringan saraf otak Anda. Entitas anomali yang selama ini terkurung di dalam bunker kini telah bebas dan ikut terbawa di dalam pikiran Anda ke dunia luar.
       `;
     } else {
       this.resBadge.textContent = 'ENDING C // THE TRUE REALITY (TRUE ENDING)';
-      this.resBadge.style.color = '#38bdf8';
-      this.resTitle.style.color = '#38bdf8';
+      this.resBadge.style.color = '#9aa0aa';
+      this.resTitle.style.color = '#9aa0aa';
       loreExplanation = `
         <strong>Kebenaran Mutlak Tahun 2049:</strong> Bunker Sector 09 tidak pernah ada di dunia fisik. Bumi di masa depan (2049) telah hancur akibat kepunahan biosfer. Project ECHO adalah bahtera kuantum superkomputer yang dibangun oleh umat manusia untuk melestarikan kesadaran manusia di dalam simulasi memori digital yang aman.<br><br>
         <strong>Identitas Asli Anda:</strong> Anda bukan operator rendahan yang terjebak, melainkan Sang Arsitek utama simulasi. Reality error yang terjadi adalah sinyal panggilan darurat untuk membangunkan Anda kembali. Dengan menyatukan kesadaran Anda ke frekuensi 47.3 Hz, simulasi berhasil dipecahkan dan Anda terbangun di dunia baru.

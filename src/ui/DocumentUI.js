@@ -49,7 +49,7 @@ export class DocumentUI {
     }
 
     this.titleEl.innerHTML = `
-      <span style="font-size: 0.75rem; background: #991b1b; color: #fff; padding: 2px 6px; margin-right: 8px;">${doc.classification || 'INTERNAL'}</span>
+      <span style="font-size: 0.75rem; background: #6b1111; color: #fff; padding: 2px 6px; margin-right: 8px;">${doc.classification || 'INTERNAL'}</span>
       ${doc.title}
     `;
     this.bodyEl.textContent = doc.content;

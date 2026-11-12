@@ -272,9 +272,10 @@ export class PlayerController {
         if (this.onFootstep) this.onFootstep(actualSprinting);
       }
 
-      // Head bobbing
-      this.bobTimer += delta * (actualSprinting ? 15 : 10);
-      this.pitchObject.position.y = Math.sin(this.bobTimer) * (actualSprinting ? 0.04 : 0.02);
+      // Apply slight vertical dip when running out of stamina (fatigue feedback)
+      if (actualSprinting && this.stamina < 30) {
+        this.pitchObject.position.y += Math.sin(this.bobTimer * 0.5) * 0.01 - 0.02;
+      }
     } else {
       this.pitchObject.position.y = 0;
     }

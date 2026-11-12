@@ -18,7 +18,7 @@ export class CloudSaveUI {
       <div class="cloud-modal-content">
         <div class="cloud-header">
           <div style="display:flex; align-items:center; gap:10px;">
-            <span style="color:#ef4444; font-size:1.1rem; font-weight:bold;">SECTOR 09 // QUANTUM CLOUD ARCHIVE</span>
+            <span style="color:#b71c1c; font-size:1.1rem; font-weight:bold;">SECTOR 09 // QUANTUM CLOUD ARCHIVE</span>
             <span id="cloud-status-badge" class="cloud-badge unconfigured">○ LOCAL ONLY</span>
           </div>
           <button id="cloud-close-btn" class="cloud-btn-close">[ × CLOSE (ESC) ]</button>
@@ -34,7 +34,7 @@ export class CloudSaveUI {
               <div>
                 <label>OPERATOR ID (KODE UNIK CLOUD):</label>
                 <div style="display:flex; gap:6px;">
-                  <input type="text" id="cloud-operator-id" class="cloud-input" style="font-weight:bold; letter-spacing:2px; color:#38bdf8;" />
+                  <input type="text" id="cloud-operator-id" class="cloud-input" style="font-weight:bold; letter-spacing:2px; color:#9aa0aa;" />
                   <button id="cloud-btn-copy-id" class="cloud-btn-sm" title="Salin ID">[ SALIN ]</button>
                   <button id="cloud-btn-new-id" class="cloud-btn-sm" title="Buat ID Baru">[ BARU ]</button>
                 </div>
@@ -309,18 +309,18 @@ export class CloudSaveUI {
     this.statusBox.style.display = 'block';
     this.statusBox.textContent = msg;
 
-    let color = '#38bdf8';
+    let color = '#9aa0aa';
     let bg = 'rgba(56,189,248,0.1)';
-    let border = '#0284c7';
+    let border = '#6b7280';
 
     if (type === 'success') {
-      color = '#4ade80';
+      color = '#b0b6bf';
       bg = 'rgba(34,197,94,0.12)';
-      border = '#16a34a';
+      border = '#6b7280';
     } else if (type === 'error') {
-      color = '#f87171';
+      color = '#c27b7b';
       bg = 'rgba(239,68,68,0.12)';
-      border = '#dc2626';
+      border = '#6b1111';
     }
 
     this.statusBox.style.color = color;
