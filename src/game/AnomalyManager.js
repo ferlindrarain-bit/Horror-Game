@@ -121,15 +121,22 @@ export class AnomalyManager {
 
   update(delta, nightIndex) {
     this.timer += delta;
-    // Ambient spontaneous minor anomaly check every 30-45 seconds
-    if (this.timer > 35) {
+    // Ambient spontaneous psychological horror events pacing
+    const interval = Math.max(16, 32 - (nightIndex || 0) * 4);
+    if (this.timer > interval) {
       this.timer = 0;
-      if (Math.random() < 0.4) {
-        // Subtle light flicker or audio footsteps
-        if (Math.random() < 0.5) {
+      const roll = Math.random();
+      if (roll < 0.55) {
+        if (roll < 0.20) {
           this.triggerAnomaly('light_flicker');
-        } else {
+        } else if (roll < 0.35) {
           this.triggerAnomaly('footsteps_behind');
+        } else if (roll < 0.45 && nightIndex >= 1) {
+          this.triggerAnomaly('shadow_hallway');
+        } else if (this.audio) {
+          if (typeof this.audio.playCreepyWhisper === 'function') {
+            this.audio.playCreepyWhisper();
+          }
         }
       }
     }

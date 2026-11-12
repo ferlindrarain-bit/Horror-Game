@@ -569,6 +569,15 @@ export class Game {
         }
         break;
 
+      case 'battery':
+        this.flashlight.recharge(item.data.amount || 50);
+        this.hud.showNotification('🔋 BATERAI CADANGAN DIPEROLEH (+50%)', 3000);
+        this.audio.playItemPickup();
+        this.facility.group.remove(item.mesh);
+        const bIdx = this.facility.interactables.indexOf(item);
+        if (bIdx !== -1) this.facility.interactables.splice(bIdx, 1);
+        break;
+
       case 'item':
         this.story.addItem(item.data.item);
         this.facility.group.remove(item.mesh);

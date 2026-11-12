@@ -106,9 +106,15 @@ export class FlashlightSystem {
     this.camera.getWorldPosition(camPos);
     this.camera.getWorldDirection(camDir);
 
-    // Slight offset down/right to simulate holding flashlight in hand
+    // Slight offset down/right with organic handheld sway
+    const t = performance.now() * 0.0018;
+    const swayX = Math.sin(t) * 0.02;
+    const swayY = Math.cos(t * 1.6) * 0.015;
     const right = new THREE.Vector3(1, 0, 0).applyQuaternion(this.camera.quaternion);
-    const lightPos = camPos.clone().add(camDir.clone().multiplyScalar(0.2)).add(right.multiplyScalar(0.25)).add(new THREE.Vector3(0, -0.2, 0));
+    const lightPos = camPos.clone()
+      .add(camDir.clone().multiplyScalar(0.2))
+      .add(right.multiplyScalar(0.24 + swayX))
+      .add(new THREE.Vector3(0, -0.2 + swayY, 0));
 
     this.spotLight.position.copy(lightPos);
     this.coreLight.position.copy(lightPos);

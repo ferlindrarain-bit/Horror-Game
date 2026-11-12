@@ -28,6 +28,7 @@ export class Facility {
     this._buildWallMountedDetails();
     this._buildAllRoomProps();
     this._buildAtmosphericStoryDetails();
+    this._buildCollectibleBatteries();
     this._buildObserverEntity();
     this._buildDustParticles();
   }
@@ -2766,6 +2767,56 @@ export class Facility {
     }
   }
 
+  _buildCollectibleBatteries() {
+    const createBattery = (x, y, z, id) => {
+      const batGroup = new THREE.Group();
+      const body = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.08, 0.08, 0.28, 10),
+        new THREE.MeshStandardMaterial({
+          color: 0x1e293b,
+          roughness: 0.3,
+          metalness: 0.8
+        })
+      );
+      body.rotation.z = Math.PI / 2;
+      batGroup.add(body);
+
+      const ring = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.082, 0.082, 0.08, 10),
+        new THREE.MeshStandardMaterial({
+          color: 0xeab308,
+          emissive: 0xca8a04,
+          emissiveIntensity: 0.9,
+          roughness: 0.2
+        })
+      );
+      ring.rotation.z = Math.PI / 2;
+      batGroup.add(ring);
+
+      const pLight = new THREE.PointLight(0xeab308, 0.9, 3.0, 2.0);
+      pLight.position.set(0, 0.15, 0);
+      batGroup.add(pLight);
+
+      batGroup.position.set(x, y, z);
+      this.group.add(batGroup);
+
+      this.interactables.push({
+        mesh: batGroup,
+        type: 'battery',
+        id: id,
+        prompt: '[E] Ambil Baterai Cadangan (+50%)',
+        data: { item: 'battery_pack', amount: 50 }
+      });
+    };
+
+    // 1. Electrical Substation: On workbench
+    createBattery(-22.8, 0.95, 7.5, 'battery_elec');
+    // 2. Storage Bay A: On cargo shelf
+    createBattery(-15.5, 1.25, 18.0, 'battery_storage');
+    // 3. Medical Ward: On bedside nightstand
+    createBattery(16.0, 0.74, 7.8, 'battery_med');
+  }
+
   setLighting(lighting) {
     this.lighting = lighting;
   }
@@ -2807,7 +2858,7 @@ export class Facility {
 
     const inter = this.interactables.find(i => i.id === doorId);
     if (inter) {
-      inter.prompt = '[E] Door Unlocked (Open)';
+      inter.prompt = '[E] Pintu Terbuka (Akses Diberikan)';
     }
 
     return true;
